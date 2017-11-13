@@ -1,0 +1,167 @@
+﻿<controls:MetroWindow
+  x:Class="NNS_T.Views.MainWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:views="clr-namespace:NNS_T.Views"
+  Title="NNS_T"
+  Width="{Binding Settings.Window.Width, Mode=TwoWay}"
+  Height="{Binding Settings.Window.Height, Mode=TwoWay}"
+  Background="#FFEDEDED"
+  BorderBrush="Black"
+  BorderThickness="1"
+  Closing="OnClosing"
+  FontSize="15"
+  Left="{Binding Settings.Window.Left, Mode=TwoWay}"
+  Top="{Binding Settings.Window.Top, Mode=TwoWay}"
+  WindowState="{Binding WindowState}"
+  mc:Ignorable="d">
+  <controls:MetroWindow.Resources>
+    <DataTemplate x:Key="MenuItemTemplate" DataType="{x:Type MenuItem}">
+      <Grid Height="48">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="48" />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <ContentControl
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Content="{Binding Icon}"
+          Focusable="False"
+          Foreground="White" />
+        <TextBlock
+          Grid.Column="1"
+          VerticalAlignment="Center"
+          FontSize="16"
+          Foreground="White"
+          Text="{Binding Label}" />
+      </Grid>
+    </DataTemplate>
+  </controls:MetroWindow.Resources>
+  <controls:MetroWindow.LeftWindowCommands>
+    <controls:WindowCommands>
+      <ToggleButton IsChecked="{Binding IsTemporaryMuted}">
+        <ToggleButton.Style>
+          <Style BasedOn="{StaticResource MetroFlatToggleButton}" TargetType="ToggleButton">
+            <Setter Property="Background" Value="{x:Null}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Opacity" Value="0.5" />
+            <Style.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="#FFEF3A0F" />
+                <Setter Property="Background" Value="{x:Null}" />
+                <Setter Property="Opacity" Value="1" />
+              </Trigger>
+              <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="#FFEF3A0F" />
+                <Setter Property="Background" Value="{x:Null}" />
+                <Setter Property="Opacity" Value="1" />
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+        </ToggleButton.Style>
+        <Rectangle
+          Width="20"
+          Height="20"
+          Fill="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton}, Path=Foreground}">
+          <Rectangle.OpacityMask>
+            <VisualBrush Stretch="Fill" Visual="{iconPacks:PackIconOcticons Mute}" />
+          </Rectangle.OpacityMask>
+        </Rectangle>
+      </ToggleButton>
+    </controls:WindowCommands>
+  </controls:MetroWindow.LeftWindowCommands>
+  <controls:MetroWindow.RightWindowCommands>
+    <controls:WindowCommands>
+      <Button Command="{Binding ProcessStartCommand}" CommandParameter="https://github.com/TN8001/">
+        <StackPanel Orientation="Horizontal">
+          <Rectangle
+            Width="20"
+            Height="20"
+            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+            <Rectangle.OpacityMask>
+              <VisualBrush Stretch="Fill" Visual="{iconPacks:PackIconOcticons MarkGithub}" />
+            </Rectangle.OpacityMask>
+          </Rectangle>
+          <TextBlock
+            Margin="4,0,0,0"
+            VerticalAlignment="Center"
+            Text="Github" />
+        </StackPanel>
+      </Button>
+    </controls:WindowCommands>
+  </controls:MetroWindow.RightWindowCommands>
+  <Grid>
+    <controls:HamburgerMenu
+      x:Name="HamburgerMenuControl"
+      Background="#FFF6F6F6"
+      DisplayMode="CompactInline"
+      Foreground="Black"
+      IsPaneOpen="False"
+      ItemClick="HamburgerMenuControl_OnItemClick"
+      ItemTemplate="{StaticResource MenuItemTemplate}"
+      OpenPaneLength="120"
+      OptionsItemClick="HamburgerMenuControl_OnItemClick"
+      OptionsItemTemplate="{StaticResource MenuItemTemplate}"
+      PaneBackground="#FF444444">
+      <controls:HamburgerMenu.ItemsSource>
+        <controls:HamburgerMenuItemCollection>
+          <controls:HamburgerMenuIconItem Icon="{iconPacks:PackIconOcticons Search}" Label="Search">
+            <controls:HamburgerMenuIconItem.Tag>
+              <views:SearchPane />
+            </controls:HamburgerMenuIconItem.Tag>
+          </controls:HamburgerMenuIconItem>
+          <controls:HamburgerMenuIconItem Icon="{iconPacks:PackIconOcticons CircleSlash}" Label="Mute">
+            <controls:HamburgerMenuIconItem.Tag>
+              <views:MutePane />
+            </controls:HamburgerMenuIconItem.Tag>
+          </controls:HamburgerMenuIconItem>
+          <controls:HamburgerMenuIconItem Icon="{iconPacks:PackIconOcticons Gear}" Label="Settings">
+            <controls:HamburgerMenuIconItem.Tag>
+              <views:SettingsPane />
+            </controls:HamburgerMenuIconItem.Tag>
+          </controls:HamburgerMenuIconItem>
+        </controls:HamburgerMenuItemCollection>
+      </controls:HamburgerMenu.ItemsSource>
+
+      <controls:HamburgerMenu.OptionsItemsSource>
+        <controls:HamburgerMenuItemCollection>
+          <controls:HamburgerMenuIconItem Icon="{iconPacks:PackIconOcticons Info}" Label="About">
+            <controls:HamburgerMenuIconItem.Tag>
+              <views:AboutPane />
+            </controls:HamburgerMenuIconItem.Tag>
+          </controls:HamburgerMenuIconItem>
+        </controls:HamburgerMenuItemCollection>
+      </controls:HamburgerMenu.OptionsItemsSource>
+
+      <controls:HamburgerMenu.ContentTemplate>
+        <DataTemplate DataType="{x:Type controls:HamburgerMenuItem}">
+          <Grid x:Name="TheContentGrid">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="48" />
+              <RowDefinition />
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" Background="#FF444444">
+              <TextBlock
+                x:Name="Header"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="24"
+                Foreground="White"
+                Text="{Binding Label}" />
+            </Border>
+            <ContentControl
+              x:Name="TheContent"
+              Grid.Row="1"
+              Content="{Binding Tag}"
+              Focusable="False"
+              Foreground="{DynamicResource BlackBrush}" />
+          </Grid>
+        </DataTemplate>
+      </controls:HamburgerMenu.ContentTemplate>
+    </controls:HamburgerMenu>
+  </Grid>
+</controls:MetroWindow>

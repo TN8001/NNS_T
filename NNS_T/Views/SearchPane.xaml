@@ -1,0 +1,331 @@
+﻿<UserControl
+  x:Class="NNS_T.Views.SearchPane"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:cnv="clr-namespace:NNS_T.Utility.Converters"
+  xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:debug="debug-mode"
+  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+  xmlns:local="clr-namespace:NNS_T.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:models="clr-namespace:NNS_T.Models"
+  xmlns:nicoApi="clr-namespace:NNS_T.Models.NicoAPI"
+  xmlns:viewModels="clr-namespace:NNS_T.ViewModels"
+  d:DesignHeight="200"
+  d:DesignWidth="400"
+  mc:Ignorable="d mc">
+  <UserControl.Resources>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <cnv:Targets2CheckBoxConverter x:Key="Targets2CheckBoxConverter" />
+    <cnv:Mute2VisibilityConverter x:Key="Mute2VisibilityConverter" />
+
+    <Storyboard x:Key="Storyboard" FillBehavior="Stop">
+      <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)">
+        <EasingColorKeyFrame KeyTime="0:0:2" Value="Pink" />
+        <EasingColorKeyFrame KeyTime="0:0:4" Value="White" />
+        <mc:AlternateContent>
+          <mc:Choice Requires="debug" />
+          <mc:Fallback>
+            <EasingColorKeyFrame KeyTime="0:0:6" Value="Pink" />
+            <EasingColorKeyFrame KeyTime="0:0:8" Value="White" />
+            <EasingColorKeyFrame KeyTime="0:0:10" Value="Pink" />
+            <EasingColorKeyFrame KeyTime="0:0:12" Value="White" />
+          </mc:Fallback>
+        </mc:AlternateContent>
+      </ColorAnimationUsingKeyFrames>
+    </Storyboard>
+
+    <Style x:Key="MuteButton" TargetType="ToggleButton">
+      <Setter Property="Foreground" Value="LightGray" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ToggleButton">
+            <Grid>
+              <Ellipse Fill="#01FFFFFF" />
+              <iconPacks:PackIconOcticons Kind="CircleSlash" />
+            </Grid>
+            <ControlTemplate.Triggers>
+              <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.Official}">
+                <Setter Property="Visibility" Value="Hidden" />
+              </DataTrigger>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="Red" />
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="DarkRed" />
+              </Trigger>
+              <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="Red" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="ListBoxItemBlinkStyle" TargetType="{x:Type ListBoxItem}">
+      <Setter Property="Visibility">
+        <Setter.Value>
+          <MultiBinding Converter="{StaticResource Mute2VisibilityConverter}">
+            <Binding Path="DataContext.Settings.Mute.HideList" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBox}}" />
+            <Binding Path="IsMuted" />
+          </MultiBinding>
+        </Setter.Value>
+      </Setter>
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <!--<EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />-->
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding IsLoaded}" Value="True">
+          <DataTrigger.EnterActions>
+            <BeginStoryboard Storyboard="{StaticResource Storyboard}" />
+          </DataTrigger.EnterActions>
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style TargetType="Expander">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Expander">
+            <StackPanel>
+              <StackPanel>
+                <ToggleButton
+                  Name="headerToggle"
+                  MinHeight="0"
+                  Padding="0"
+                  HorizontalContentAlignment="Center"
+                  BorderBrush="{x:Null}"
+                  Content="▼"
+                  Focusable="False"
+                  FontSize="6"
+                  IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                  Style="{StaticResource AccentedSquareButtonStyle}" />
+              </StackPanel>
+              <Border
+                Name="content"
+                BorderBrush="{DynamicResource AccentColorBrush}"
+                BorderThickness="1,0,1,1"
+                Visibility="Collapsed">
+                <ContentPresenter />
+              </Border>
+            </StackPanel>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsExpanded" Value="True">
+                <Setter TargetName="headerToggle" Property="Content" Value="▲" />
+                <Setter TargetName="content" Property="Visibility" Value="Visible" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <DataTemplate DataType="{x:Type viewModels:LiveItemViewModel}">
+      <Grid Margin="1" TextBlock.FontSize="12">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal">
+          <Border>
+            <Border.Style>
+              <Style TargetType="{x:Type Border}">
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.Official}">
+                    <Setter Property="Background" Value="#FF78D0FF" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.User}">
+                    <Setter Property="Background" Value="#FF77B8B8" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.Channel}">
+                    <Setter Property="Background" Value="#FFFFD979" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Border.Style>
+            <TextBlock
+              Margin="3,0"
+              VerticalAlignment="Center"
+              FontWeight="Bold"
+              LineHeight="15"
+              LineStackingStrategy="BlockLineHeight"
+              Text="{Binding ProviderType, Converter={StaticResource ProviderTypeConverter}}" />
+          </Border>
+          <Image
+            Width="70"
+            Height="70"
+            ImageFailed="Image_ImageFailed"
+            Source="{Binding IconUrl}" />
+        </StackPanel>
+        <StackPanel
+          Grid.Column="1"
+          MinWidth="50"
+          Margin="3,0,0,0"
+          VerticalAlignment="Top">
+          <HeaderedContentControl Content="{Binding ViewCount}" Header="来場:" />
+          <HeaderedContentControl Content="{Binding CommentCount}" Header="コメ:" />
+          <HeaderedContentControl Content="{Binding TimeshiftCount}" Header="予約:" />
+        </StackPanel>
+        <StackPanel
+          Grid.Column="2"
+          Margin="10,0,0,0"
+          VerticalAlignment="Top">
+          <TextBlock Text="{Binding StartTime, Converter={StaticResource StartTimeConverter}}" />
+          <TextBlock FontSize="16">
+            <local:HyperlinkEx NavigateUri="{Binding LiveUrl}"><Run Text="{Binding Title, Mode=OneTime}" /></local:HyperlinkEx>
+          </TextBlock>
+          <TextBlock Text="{Binding NonTagDescription}" />
+        </StackPanel>
+        <ToggleButton
+          Grid.Column="2"
+          Width="16"
+          Height="16"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Top"
+          Command="{Binding DataContext.MuteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
+          CommandParameter="{Binding}"
+          IsChecked="{Binding IsMuted}"
+          Style="{StaticResource MuteButton}" />
+      </Grid>
+    </DataTemplate>
+  </UserControl.Resources>
+
+
+  <Grid Margin="5">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+    <StackPanel Margin="0" Grid.IsSharedSizeScope="True">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBox
+          VerticalContentAlignment="Center"
+          controls:TextBoxHelper.ClearTextButton="True"
+          controls:TextBoxHelper.Watermark="ボーカル OR ヴォーカル ミク -歌ってみた"
+          Text="{Binding Settings.Search.Query}" />
+        <Button
+          Grid.Column="1"
+          MinWidth="50"
+          BorderBrush="Gray"
+          BorderThickness="1"
+          Click="Button_Click"
+          Command="{Binding SearchCommand}"
+          Content="{iconPacks:PackIconOcticons Search}"
+          IsDefault="true"
+          Style="{StaticResource AccentedSquareButtonStyle}" />
+      </Grid>
+      <Expander IsExpanded="True">
+        <StackPanel>
+          <RadioButton
+            Margin="5,0"
+            Content="タグ検索"
+            GroupName="Target"
+            IsChecked="{Binding Settings.Search.Targets, ConverterParameter={x:Static nicoApi:Targets.TagsExact}, Converter={StaticResource Targets2CheckBoxConverter}}" />
+          <StackPanel Orientation="Horizontal">
+            <RadioButton
+              x:Name="radioButton"
+              Margin="5,0"
+              Content="キーワード検索"
+              GroupName="Target"
+              IsChecked="True" />
+            <StackPanel IsEnabled="{Binding IsChecked, ElementName=radioButton}" Orientation="Horizontal">
+              <CheckBox
+                Margin="5,0"
+                Content="タイトル"
+                IsChecked="{Binding Settings.Search.Targets, Converter={StaticResource Targets2CheckBoxConverter}, ConverterParameter={x:Static nicoApi:Targets.Title}}" />
+              <CheckBox
+                Margin="5,0"
+                Content="説明文"
+                IsChecked="{Binding Settings.Search.Targets, Converter={StaticResource Targets2CheckBoxConverter}, ConverterParameter={x:Static nicoApi:Targets.Description}}" />
+              <CheckBox
+                Margin="5,0"
+                Content="タグ"
+                IsChecked="{Binding Settings.Search.Targets, Converter={StaticResource Targets2CheckBoxConverter}, ConverterParameter={x:Static nicoApi:Targets.Tags}}" />
+            </StackPanel>
+          </StackPanel>
+          <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+            <CheckBox
+              Margin="5,0"
+              Content="公式をミュート"
+              IsChecked="{Binding Settings.Mute.OfficialIgnored}" />
+            <CheckBox
+              Margin="5,0"
+              Content="ミュートを非表示"
+              IsChecked="{Binding Settings.Mute.HideList}" />
+          </StackPanel>
+        </StackPanel>
+      </Expander>
+      <TextBlock Text="{Binding ErrorStatus, StringFormat=エラー:{0}}">
+        <TextBlock.Style>
+          <Style TargetType="TextBlock">
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding ErrorStatus}" Value="{x:Null}">
+                <Setter Property="Visibility" Value="Collapsed" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </TextBlock.Style>
+      </TextBlock>
+      <!--
+        debug mode hack
+        https://stackoverflow.com/questions/8732307/does-xaml-have-a-conditional-compiler-directive-for-debug-mode
+        便利ではあるがタグ内はデザイナが作動しないので編集しづらいｗ
+        普通に作ってからAlternateContentで囲うといいと思います
+      -->
+      <mc:AlternateContent>
+        <mc:Choice Requires="debug">
+          <StackPanel>
+            <Grid>
+              <Button
+                MinWidth="50"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                BorderBrush="Gray"
+                BorderThickness="1"
+                Command="{Binding ClearCommand}"
+                Content="Clear"
+                Style="{DynamicResource SquareButtonStyle}" />
+              <StackPanel>
+                <CheckBox Content="説明文も取得する" IsChecked="{Binding Settings.Search.UseDescription}" />
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Hit:" />
+                  <TextBlock Margin="5,0" Text="{Binding HitCount}" />
+                  <TextBlock Text="Add:" />
+                  <TextBlock Margin="5,0" Text="{Binding AddCount}" />
+                  <TextBlock Text="Items:" />
+                  <TextBlock Margin="5,0" Text="{Binding ItemCount}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                  <CheckBox
+                    Margin="5,0"
+                    Content="タイマー"
+                    IsChecked="{Binding IsTimerEnabled}" />
+                  <CheckBox
+                    Margin="5,0"
+                    Content="通知"
+                    IsChecked="{Binding Settings.Notify.IsEnabled}" />
+                  <TextBlock Text="{Binding WorkingSet64}" />
+                </StackPanel>
+              </StackPanel>
+            </Grid>
+          </StackPanel>
+        </mc:Choice>
+      </mc:AlternateContent>
+
+    </StackPanel>
+
+    <ListBox
+      Grid.Row="1"
+      ItemContainerStyle="{StaticResource ListBoxItemBlinkStyle}"
+      ItemsSource="{Binding Items}"
+      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+      VirtualizingPanel.IsVirtualizing="False"
+      VirtualizingPanel.ScrollUnit="Pixel" />
+  </Grid>
+</UserControl>

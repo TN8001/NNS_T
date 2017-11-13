@@ -1,0 +1,75 @@
+﻿<UserControl
+  x:Class="NNS_T.Views.AboutPane"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:views="clr-namespace:NNS_T.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:utility="clr-namespace:NNS_T.Utility"
+  d:DesignHeight="300"
+  d:DesignWidth="300"
+  mc:Ignorable="d">
+  <Grid>
+    <ScrollViewer Padding="5" VerticalScrollBarVisibility="Auto">
+      <StackPanel Grid.IsSharedSizeScope="True">
+        <Grid>
+          <Image
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Source="/NNS_T;component/Resources/App.ico"
+            Stretch="None" />
+          <StackPanel>
+            <HeaderedContentControl Content="{x:Static utility:ProductInfo.Description}" Header="名前:" />
+            <HeaderedContentControl Content="{x:Static utility:ProductInfo.Copyright}" Header="作者:" />
+            <HeaderedContentControl Content="{x:Static utility:ProductInfo.Version}" Header="バージョン:" />
+          </StackPanel>
+        </Grid>
+        <TextBlock Text="説明:" />
+        <TextBlock TextWrapping="Wrap">
+          <Run Text="ニコ生を定期的に監視をして新規放送が始まったら、トースト通知風（Google Chromeの通知のほうが近いです）のポップアップを出して、お知らせするアプリです。" />
+          <LineBreak />
+          <LineBreak />
+          <Run Text="簡単な使い方や、どんなク/ソコードか見てみたい方は" />
+          <views:HyperlinkEx NavigateUri="https://github.com/TN8001/">
+            <Run Text="GitHub" />
+          </views:HyperlinkEx>
+          <Run Text="をご覧ください。" />
+          <LineBreak />
+          <LineBreak />
+          <!--    -->
+          <LineBreak /><Run Text="ハンバーガーメニュー等見た目のカスタマイズに、下記を利用させて頂いております。" />
+          <LineBreak />
+          <views:HyperlinkEx NavigateUri="https://github.com/MahApps/MahApps.Metro">
+            <Run Text="MahApps.Metro" />
+          </views:HyperlinkEx>
+          <Run Text="Copyright (c) 2016 MahApps" />
+          <LineBreak />
+          <!--    -->
+          <LineBreak /><Run Text="アプリアイコン以外のアイコンはすべて、下記を利用させて頂いております。" />
+          <LineBreak />
+          <views:HyperlinkEx NavigateUri="https://github.com/MahApps/MahApps.Metro">
+            <Run Text="MahApps.Metro.IconPacks GitHub Octicons" />
+          </views:HyperlinkEx>
+          <Run Text="Copyright (c) 2016 MahApps" />
+          <LineBreak />
+          <!--    -->
+          <LineBreak /><Run Text="検索結果の解析に、下記を利用させて頂いております。" />
+          <LineBreak />
+          <views:HyperlinkEx NavigateUri="https://www.newtonsoft.com/json">
+            <Run Text="Newtonsoft.Json" />
+          </views:HyperlinkEx>
+          <Run Text="Copyright (c) 2007 James Newton-King" />
+          <LineBreak />
+          <!--    -->
+          <LineBreak /><Run Text="コミュニティ名・チャンネル名取得に、下記を利用させて頂いております。" />
+          <LineBreak />
+          <views:HyperlinkEx NavigateUri="https://anglesharp.github.io/">
+            <Run Text="AngleSharp" />
+          </views:HyperlinkEx>
+          <Run Text="Copyright (c) 2013 - 2015 AngleSharp" />
+          <LineBreak />
+        </TextBlock>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl>

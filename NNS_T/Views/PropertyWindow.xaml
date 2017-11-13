@@ -1,0 +1,58 @@
+﻿<Window
+  x:Class="NNS_T.Views.PropertyWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Title="Property"
+  Width="600"
+  Height="500"
+  mc:Ignorable="d">
+  <Window.Resources>
+    <Style TargetType="TextBlock">
+      <Setter Property="Margin" Value="5,2" />
+    </Style>
+    <Style TargetType="TextBox">
+      <Setter Property="Margin" Value="5,2" />
+      <Setter Property="IsReadOnly" Value="True" />
+    </Style>
+  </Window.Resources>
+  <StackPanel Grid.IsSharedSizeScope="True">
+    <HeaderedContentControl Header="ContentID:">
+      <TextBox Text="{Binding ContentID, Mode=OneTime}" />
+    </HeaderedContentControl>
+    <HeaderedContentControl Header="Title:">
+      <TextBox Text="{Binding Title, Mode=OneTime}" TextWrapping="Wrap" />
+    </HeaderedContentControl>
+    <HeaderedContentControl Header="ViewCount:">
+      <TextBox Text="{Binding ViewCount, Mode=OneTime}" />
+    </HeaderedContentControl>
+    <HeaderedContentControl Header="CommentCount:">
+      <TextBox Text="{Binding CommentCount, Mode=OneTime}" />
+    </HeaderedContentControl>
+    <HeaderedContentControl Header="TimeshiftCount:">
+      <TextBox Text="{Binding TimeshiftCount, Mode=OneTime}" />
+    </HeaderedContentControl>
+    <HeaderedContentControl Header="StartTime:">
+      <TextBox Text="{Binding StartTime, Mode=OneTime}" />
+    </HeaderedContentControl>
+    <HeaderedContentControl Header="IconUrl:">
+      <TextBox Text="{Binding IconUrl, Mode=OneTime}" />
+    </HeaderedContentControl>
+    <HeaderedContentControl Header="LiveUrl:">
+      <TextBox Text="{Binding LiveUrl, Mode=OneTime}" />
+    </HeaderedContentControl>
+    <HeaderedContentControl Header="ProviderType:">
+      <TextBox Text="{Binding ProviderType, Mode=OneTime}" />
+    </HeaderedContentControl>
+    <HeaderedContentControl Header="RoomID:">
+      <TextBox Text="{Binding ProviderType, Mode=OneTime}" />
+    </HeaderedContentControl>
+    <HeaderedContentControl Header="Description:">
+      <TextBox
+        Text="{Binding Description, Mode=OneTime}"
+        TextWrapping="Wrap"
+        VerticalScrollBarVisibility="Auto" />
+    </HeaderedContentControl>
+  </StackPanel>
+</Window>
