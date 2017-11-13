@@ -19,15 +19,15 @@
 使用を中止する場合はインストールしたフォルダとともに、上記NNS_Tフォルダも削除してください。
 * 一切責任は持ちません
 ## 謝辞
-ハンバーガーメニュー等見た目のカスタマイズに、下記を利用させて頂いております。
+ハンバーガーメニュー等見た目のカスタマイズに、下記を利用させて頂いております。  
 [MahApps.Metro](https://github.com/MahApps/MahApps.Metro) Copyright (c) 2016 MahApps
 
-アプリアイコン以外のアイコンはすべて、下記を利用させて頂いております。
+アプリアイコン以外のアイコンはすべて、下記を利用させて頂いております。  
 [MahApps.Metro.IconPacks GitHub Octicons](https://github.com/MahApps/MahApps.Metro) Copyright (c) 2016 MahApps
 
-検索結果の解析に、下記を利用させて頂いております。
+検索結果の解析に、下記を利用させて頂いております。  
 [Newtonsoft.Json](https://www.newtonsoft.com/json) Copyright (c) 2007 James Newton-King
 
-コミュニティ名・チャンネル名取得に、下記を利用させて頂いております。
+コミュニティ名・チャンネル名取得に、下記を利用させて頂いております。  
 [AngleSharp](https://anglesharp.github.io/) Copyright (c) 2013 - 2015 AngleSharp
 
