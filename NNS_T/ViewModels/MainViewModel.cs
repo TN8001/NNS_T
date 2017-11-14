@@ -249,14 +249,13 @@ namespace NNS_T.ViewModels
                 item.Update(i);
             }
 
-            var addItems = responseItems.Except(Items);//.OrderBy(x => x.StartTime);
-            if(Items.Any())
-            {
-                // fix?? bug 古い放送が新規扱いに
-                // 2分の根拠はないが1分だと取り逃しが出そうな気がする
-                var t = Items[0].StartTime - TimeSpan.FromMinutes(2);
-                addItems = addItems.Where(x => x.StartTime > t);
-            }
+            // fix?? bug 古い放送が新規扱いに
+            // 2分の根拠はないが1分だと取り逃しが出そうな気がする
+            var first = Items.FirstOrDefault();
+            var time = first != null ? first.StartTime - TimeSpan.FromMinutes(2) : DateTime.MinValue;
+            var addItems = responseItems.Except(Items)
+                                        .Where(x => x.StartTime > time)
+                                        .OrderBy(x => x.StartTime).ToArray();
             var addCount = addItems.Count();
             if(addCount > 0) Debug.WriteLine($"Add count:{addCount}");
 
