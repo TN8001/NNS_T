@@ -13,7 +13,7 @@ namespace NNS_T.Utility
         ///<summary>ファイルからデシリアライズ (ファイル名省略時[ユーザー]\AppData\Local\[アセンブリ名]\user.config)</summary>
         public static T Load<T>(string path = null) where T : new()
         {
-            if(path == null) path = GetDefaultPath();
+            if(string.IsNullOrEmpty(path)) path = GetDefaultPath();
 
             using(var xr = XmlReader.Create(path))
                 return (T)new XmlSerializer(typeof(T)).Deserialize(xr);
@@ -36,7 +36,7 @@ namespace NNS_T.Utility
         ///<summary>ファイルへシリアライズ (ファイル名省略時[ユーザー]\AppData\Local\[アセンブリ名]\user.config)</summary>
         public static void Save<T>(T obj, string path = null) where T : new()
         {
-            if(path == null) path = GetDefaultPath();
+            if(string.IsNullOrEmpty(path)) path = GetDefaultPath();
 
             Directory.CreateDirectory(Path.GetDirectoryName(path));
 
@@ -48,7 +48,8 @@ namespace NNS_T.Utility
             }
         }
 
-        private static string GetDefaultPath()
+        ///<summary>デフォルトファイルパス ([ユーザー]\AppData\Local\[アセンブリ名]\user.config)</summary>
+        public static string GetDefaultPath()
         {
             var p = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             return Path.Combine(p, ProductInfo.Name, "user.config");

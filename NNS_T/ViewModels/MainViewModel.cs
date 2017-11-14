@@ -91,14 +91,13 @@ namespace NNS_T.ViewModels
         private NicoApi nicoApi = new NicoApi(ProductInfo.Name);
         // 条件変更フラグ
         private bool isDirty = true;
-
+        // 設定ファイルパス コマンドラインで指定（ファイル名のみ採用
+        private readonly string configPath;
 
         public MainViewModel()
         {
-            Settings = SettingsHelper.LoadOrDefault<SettingsModel>();
-#if DEBUG
-            Settings.Search.IntervalSec = 5;
-#endif
+            configPath = GetConfigPath();
+            Settings = SettingsHelper.LoadOrDefault<SettingsModel>(configPath);
 
             // 検索間隔 条件変更フラグ
             Settings.Search.PropertyChanged += (s, e) =>
@@ -119,7 +118,7 @@ namespace NNS_T.ViewModels
                     item.IsMuted = mute.OfficialIgnored;
             };
             SearchCommand = new RelayCommand(async () => await SearchCommandImplAsync(), () => !IsBusy);
-            SaveCommand = new RelayCommand(() => SettingsHelper.Save(Settings));
+            SaveCommand = new RelayCommand(() => SettingsHelper.Save(Settings, configPath));
             MuteCommand = new RelayCommand<LiveItemViewModel>(async (liveItem) =>
             {
                 if(liveItem.ProviderType == ProviderType.Official) return; // 来ないはず
@@ -180,6 +179,7 @@ namespace NNS_T.ViewModels
 
             SearchCommand.Execute();
         }
+
 
         private async Task SearchCommandImplAsync()
         {
@@ -298,6 +298,20 @@ namespace NNS_T.ViewModels
             }
 
             ToastWindow.ShowToast(list);
+        }
+        private string GetConfigPath()
+        {
+            var cmds = Environment.GetCommandLineArgs();
+            if(cmds.Count() > 1)
+            {
+                var s = Path.GetFileName(cmds[1]);
+                if(s == "") return null;
+
+                var p = Path.GetDirectoryName(SettingsHelper.GetDefaultPath());
+                return Path.Combine(p, s);
+            }
+
+            return null;
         }
 
         [Conditional("DEBUG")]

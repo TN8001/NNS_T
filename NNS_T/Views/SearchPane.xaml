@@ -227,14 +227,18 @@
             Content="タグ検索"
             GroupName="Target"
             IsChecked="{Binding Settings.Search.Targets, ConverterParameter={x:Static nicoApi:Targets.TagsExact}, Converter={StaticResource Targets2CheckBoxConverter}}" />
-          <StackPanel Orientation="Horizontal">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto"/>
+              <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
             <RadioButton
               x:Name="radioButton"
               Margin="5,0"
               Content="キーワード検索"
               GroupName="Target"
-              IsChecked="True" />
-            <StackPanel IsEnabled="{Binding IsChecked, ElementName=radioButton}" Orientation="Horizontal">
+              IsChecked="True" VerticalAlignment="Top" />
+            <WrapPanel IsEnabled="{Binding IsChecked, ElementName=radioButton}" Orientation="Horizontal" Grid.Column="1">
               <CheckBox
                 Margin="5,0"
                 Content="タイトル"
@@ -247,9 +251,9 @@
                 Margin="5,0"
                 Content="タグ"
                 IsChecked="{Binding Settings.Search.Targets, Converter={StaticResource Targets2CheckBoxConverter}, ConverterParameter={x:Static nicoApi:Targets.Tags}}" />
-            </StackPanel>
-          </StackPanel>
-          <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+            </WrapPanel>
+          </Grid>
+          <WrapPanel Margin="0,5,0,0" Orientation="Horizontal">
             <CheckBox
               Margin="5,0"
               Content="公式をミュート"
@@ -258,7 +262,7 @@
               Margin="5,0"
               Content="ミュートを非表示"
               IsChecked="{Binding Settings.Mute.HideList}" />
-          </StackPanel>
+          </WrapPanel>
         </StackPanel>
       </Expander>
       <TextBlock Text="{Binding ErrorStatus, StringFormat=エラー:{0}}">
