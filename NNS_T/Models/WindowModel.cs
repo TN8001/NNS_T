@@ -27,6 +27,11 @@ namespace NNS_T.Models
         public double Height { get => _Height; set => Set(ref _Height, value); }
         private double _Height;
 
+        ///<summary>検索オプション開閉</summary>
+        [XmlAttribute]
+        public bool IsExpanded { get => _IsExpanded; set => Set(ref _IsExpanded, value); }
+        private bool _IsExpanded;
+
 
         public WindowModel() => Initialize();
 
@@ -36,6 +41,7 @@ namespace NNS_T.Models
             Left = double.NaN;
             Width = 500;
             Height = 500;
+            IsExpanded = true;
         }
         [OnDeserializing]
         private void OnDeserializing(StreamingContext sc) => Initialize();

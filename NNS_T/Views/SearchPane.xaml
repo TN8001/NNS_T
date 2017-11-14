@@ -220,7 +220,7 @@
           IsDefault="true"
           Style="{StaticResource AccentedSquareButtonStyle}" />
       </Grid>
-      <Expander IsExpanded="True">
+      <Expander IsExpanded="{Binding Settings.Window.IsExpanded}">
         <StackPanel>
           <RadioButton
             Margin="5,0"
