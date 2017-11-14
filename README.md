@@ -36,4 +36,5 @@ APIの仕様のようなのでこちらにはどうしようもありません�
 [AngleSharp](https://anglesharp.github.io/) Copyright (c) 2013 - 2015 AngleSharp
 ## リリースノート
 * 2017/11/13 ver1.0.0 初回リリース
+* 2017/11/14 ver1.0.1 bugfix
 
