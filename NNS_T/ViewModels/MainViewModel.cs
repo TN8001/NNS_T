@@ -189,6 +189,7 @@ namespace NNS_T.ViewModels
                 ErrorStatus = e.Message;
                 HitCount = 0;
                 IsBusy = false;
+                timer.Start();
                 return;
             }
 

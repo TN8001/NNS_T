@@ -77,6 +77,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <None Include="memo.cs" />
     <Compile Include="Models\MuteModel.cs" />
     <Compile Include="Models\NicoAPI\NicoApi.cs" />
     <Compile Include="Models\NicoAPI\Query.cs" />

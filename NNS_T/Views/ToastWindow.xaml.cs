@@ -17,10 +17,6 @@ using System.Windows.Media.Animation;
 
 namespace NNS_T.Views
 {
-    //ToDo 同時取得画像が多いと通知中に画像ロードが間に合わない時がある
-    //Imageのキャッシュ周りはできれば触りたくない。。。ｗ
-
-
     ///<summary>通知ウィンドウ</summary>
     public partial class ToastWindow : Window
     {
