@@ -16,6 +16,7 @@ namespace NNS_T.Views
             var l = (IList)HamburgerMenuControl.ItemsSource;
             var h = (HamburgerMenuItem)l[0];
             ((FrameworkElement)h.Tag).DataContext = DataContext;
+            HamburgerMenuControl.SelectedIndex = 0;
             HamburgerMenuControl.Content = h;
         }
 

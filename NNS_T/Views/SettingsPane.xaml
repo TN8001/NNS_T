@@ -1,4 +1,5 @@
 ﻿<UserControl
+  x:Class="NNS_T.Views.SettingsPane"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
@@ -7,7 +8,6 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:models="clr-namespace:NNS_T.Models"
   xmlns:sys="clr-namespace:System;assembly=mscorlib"
-  x:Class="NNS_T.Views.SettingsPane"
   d:DesignHeight="300"
   d:DesignWidth="300"
   mc:Ignorable="d">
@@ -16,9 +16,9 @@
       <StackPanel Margin="5" Grid.IsSharedSizeScope="True">
         <HeaderedContentControl Margin="5" Header="通知:">
           <ComboBox
-              DisplayMemberPath="Value"
-              SelectedValue="{Binding Settings.Notify.State, Mode=TwoWay}"
-              SelectedValuePath="Key">
+            DisplayMemberPath="Value"
+            SelectedValue="{Binding Settings.Notify.State, Mode=TwoWay}"
+            SelectedValuePath="Key">
             <ComboBox.ItemsSource>
               <local:NotifyPatternDictionary>
                 <sys:String x:Key="{x:Static models:NotifyState.Always}">常に出す</sys:String>
@@ -32,9 +32,9 @@
 
         <HeaderedContentControl Margin="5" Header="通知音:">
           <ComboBox
-              DisplayMemberPath="Value"
-              SelectedValue="{Binding Settings.Notify.Sound, Mode=TwoWay}"
-              SelectedValuePath="Key">
+            DisplayMemberPath="Value"
+            SelectedValue="{Binding Settings.Notify.Sound, Mode=TwoWay}"
+            SelectedValuePath="Key">
             <ComboBox.ItemsSource>
               <local:NotifySoundDictionary>
                 <sys:String x:Key="{x:Static models:NotifySound.System}">Windows設定</sys:String>
@@ -47,22 +47,22 @@
 
         <HeaderedContentControl Margin="5" Header="通知表示期間:">
           <controls:NumericUpDown
-              HorizontalContentAlignment="Left"
-              HasDecimals="False"
-              Maximum="60"
-              Minimum="1"
-              StringFormat="{}{0} 秒"
-              Value="{Binding Settings.Notify.ShowSec}" />
+            HorizontalContentAlignment="Left"
+            HasDecimals="False"
+            Maximum="60"
+            Minimum="1"
+            StringFormat="{}{0} 秒"
+            Value="{Binding Settings.Notify.ShowSec}" />
         </HeaderedContentControl>
 
         <HeaderedContentControl Margin="5" Header="検索間隔:">
           <controls:NumericUpDown
-              HorizontalContentAlignment="Left"
-              HasDecimals="False"
-              Maximum="1800"
-              Minimum="10"
-              StringFormat="{}{0} 秒"
-              Value="{Binding Settings.Search.IntervalSec}" />
+            HorizontalContentAlignment="Left"
+            HasDecimals="False"
+            Maximum="1800"
+            Minimum="10"
+            StringFormat="{}{0} 秒"
+            Value="{Binding Settings.Search.IntervalSec}" />
         </HeaderedContentControl>
 
         <CheckBox
@@ -77,7 +77,20 @@
           Margin="5"
           Content="ミュートを非表示"
           IsChecked="{Binding Settings.Mute.HideList}" />
-
+        <WrapPanel Orientation="Horizontal">
+          <Button
+            Margin="5"
+            Command="{Binding OpenFolderCommand}"
+            CommandParameter="{x:Static models:FolderType.Assembly}"
+            Content="インストールフォルダを開く"
+          />
+          <Button
+            Margin="5"
+              Command="{Binding OpenFolderCommand}"
+            CommandParameter="{x:Static models:FolderType.Settings}"
+          Content="設定ファイルフォルダを開く"
+           />
+        </WrapPanel>
       </StackPanel>
     </ScrollViewer>
   </Grid>

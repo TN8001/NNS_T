@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -52,6 +53,9 @@ namespace NNS_T.ViewModels
 
         ///<summary>規定ブラウザで開くコマンド</summary>
         public RelayCommand<string> ProcessStartCommand { get; }
+
+        ///<summary>規定ブラウザで開くコマンド</summary>
+        public RelayCommand<FolderType> OpenFolderCommand { get; }
 
         #region デバッグ用
         // どこかに表示してもいいのですが あまりごちゃごちゃさせたくないので
@@ -142,6 +146,29 @@ namespace NNS_T.ViewModels
             });
             ProcessStartCommand = new RelayCommand<string>((s) => Process.Start(s));
             ClearCommand = new RelayCommand(() => Items.Clear());
+            OpenFolderCommand = new RelayCommand<FolderType>((f) =>
+            {
+                string path;
+                switch(f)
+                {
+                    case FolderType.Assembly:
+                        path = AppDomain.CurrentDomain.BaseDirectory;
+                        break;
+                    case FolderType.Settings:
+                        var p = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                        path = Path.Combine(p, ProductInfo.Name);
+                        break;
+                    default:
+                        return;
+                }
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = path,
+                    UseShellExecute = true,
+                    Verb = "open",
+                });
+            });
 
 
             timer.Interval = TimeSpan.FromSeconds(Settings.Search.IntervalSec);
@@ -222,7 +249,14 @@ namespace NNS_T.ViewModels
                 item.Update(i);
             }
 
-            var addItems = responseItems.Except(Items).OrderBy(x => x.StartTime).ToList();
+            var addItems = responseItems.Except(Items);//.OrderBy(x => x.StartTime);
+            if(Items.Any())
+            {
+                // fix?? bug 古い放送が新規扱いに
+                // 2分の根拠はないが1分だと取り逃しが出そうな気がする
+                var t = Items[0].StartTime - TimeSpan.FromMinutes(2);
+                addItems = addItems.Where(x => x.StartTime > t);
+            }
             var addCount = addItems.Count();
             if(addCount > 0) Debug.WriteLine($"Add count:{addCount}");
 
@@ -237,7 +271,7 @@ namespace NNS_T.ViewModels
                 item.IsLoaded = true;
             }
 
-            ShowToast(addItems.Where(x => !x.IsMuted));
+            ShowToast(addItems.Where(x => !x.IsMuted).Reverse());
 
             return addCount;
         }
