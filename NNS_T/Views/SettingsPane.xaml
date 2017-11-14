@@ -82,14 +82,12 @@
             Margin="5"
             Command="{Binding OpenFolderCommand}"
             CommandParameter="{x:Static models:FolderType.Assembly}"
-            Content="インストールフォルダを開く"
-          />
+            Content="インストールフォルダを開く" />
           <Button
             Margin="5"
-              Command="{Binding OpenFolderCommand}"
+            Command="{Binding OpenFolderCommand}"
             CommandParameter="{x:Static models:FolderType.Settings}"
-          Content="設定ファイルフォルダを開く"
-           />
+            Content="設定ファイルフォルダを開く" />
         </WrapPanel>
       </StackPanel>
     </ScrollViewer>
