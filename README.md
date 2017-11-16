@@ -7,7 +7,7 @@
 * コミュニティ・チャンネルごとの通知ミュート（除外）機能
 * 無駄におしゃれな見た目
 ## 使い方
-[詳しい説明](https://github.com/TN8001/NNS_T/blob/master/How2Use/Usage.md)
+[詳しい説明](https://github.com/TN8001/NNS_T/blob/master/How2Use/README.md)
 ## ライセンス
 [MIT](https://github.com/TN8001/NNS_T/blob/master/LICENSE)
 ## 注意事項
