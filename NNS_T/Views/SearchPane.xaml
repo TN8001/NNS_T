@@ -220,7 +220,7 @@
         VerticalAlignment="Center"
         Focusable="False"
         IsTabStop="False"
-        MouseRightButtonUp="OnMouseRightButtonUp" >
+        MouseRightButtonUp="OnMouseRightButtonUp">
         <Label
           Padding="0"
           Content="{Binding HitCount}"
@@ -257,7 +257,7 @@
             Style="{StaticResource AccentedSquareButtonStyle}" />
         </Grid>
         <Expander Margin="0,0,0,-1" IsExpanded="{Binding Settings.Window.IsExpanded}">
-          <Border Padding="5"> 
+          <Border Padding="5">
             <StackPanel>
               <RadioButton
                 HorizontalAlignment="Left"

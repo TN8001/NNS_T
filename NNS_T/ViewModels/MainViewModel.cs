@@ -76,18 +76,16 @@ namespace NNS_T.ViewModels
         private NicoApi nicoApi = new NicoApi(ProductInfo.Name);
         // 条件変更フラグ
         private bool isDirty = true;
-        // 設定ファイルパス コマンドラインで指定（ファイル名のみ採用
+        // 設定ファイルフルパス コマンドラインで指定
+        // （ファイル名のみ採用しdirはユーザーフォルダ固定
         private readonly string configPath;
 
         public MainViewModel()
         {
-            //Process.Start("SndVol.exe"); // 音量ミキサー
-
-
             configPath = GetConfigPath();
             Settings = SettingsHelper.LoadOrDefault<SettingsModel>(configPath);
 
-            // 検索間隔 条件変更フラグ更新
+            // 検索間隔 条件変更フラグ 更新
             Settings.Search.PropertyChanged += (s, e) =>
             {
                 var search = (SearchModel)s;
@@ -96,7 +94,7 @@ namespace NNS_T.ViewModels
                 else
                     isDirty = true;
             };
-            // 公式ミュート変更
+            // 公式をミュート 変更
             Settings.Mute.PropertyChanged += (s, e) =>
             {
                 var mute = (MuteModel)s;
@@ -129,34 +127,42 @@ namespace NNS_T.ViewModels
             });
             ProcessStartCommand = new RelayCommand<string>((s) =>
             {
-                var index = s.IndexOf(' ');
-                if(index < 0)
-                    Process.Start(s);
-                else
-                    Process.Start(s.Substring(0, index), s.Substring(index + 1));
+                try
+                {
+                    var index = s.IndexOf(' ');
+                    if(index < 0)
+                        Process.Start(s);
+                    else
+                        Process.Start(s.Substring(0, index), s.Substring(index + 1));
+                }
+                catch { /* NOP */ }
             });
             OpenFolderCommand = new RelayCommand<FolderType>((f) =>
             {
-                string path;
-                switch(f)
+                try
                 {
-                    case FolderType.Assembly:
-                        path = AppDomain.CurrentDomain.BaseDirectory;
-                        break;
-                    case FolderType.Settings:
-                        var p = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                        path = Path.Combine(p, ProductInfo.Name);
-                        break;
-                    default:
-                        return;
-                }
+                    string path;
+                    switch(f)
+                    {
+                        case FolderType.Assembly:
+                            path = AppDomain.CurrentDomain.BaseDirectory;
+                            break;
+                        case FolderType.Settings:
+                            var p = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                            path = Path.Combine(p, ProductInfo.Name);
+                            break;
+                        default:
+                            return;
+                    }
 
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = path,
-                    UseShellExecute = true,
-                    Verb = "open",
-                });
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = path,
+                        UseShellExecute = true,
+                        Verb = "open",
+                    });
+                }
+                catch { /* NOP */ }
             });
             PlaySoundCommand = new RelayCommand(() => ToastWindow.PlaySound());
             ToggleTimerCommand = new RelayCommand(() => IsTimerEnabled = !IsTimerEnabled);
@@ -245,7 +251,6 @@ namespace NNS_T.ViewModels
                 item.Update(i);
             }
 
-            // fix?? bug 古い放送が新規扱いに
             // 2分の根拠はないが1分だと取り逃しが出そうな気がする
             var first = Items.FirstOrDefault();
             var time = first != null ? first.StartTime - TimeSpan.FromMinutes(2) : DateTime.MinValue;
@@ -271,7 +276,7 @@ namespace NNS_T.ViewModels
             return addCount;
         }
 
-        private void ShowToast(IEnumerable<LiveItemViewModel> list)
+        private void ShowToast(IEnumerable<LiveItemViewModel> items)
         {
             if(isDirty) return;
             if(!Settings.Notify.IsEnabled) return;
@@ -293,18 +298,18 @@ namespace NNS_T.ViewModels
                     return;
             }
 
-            ToastWindow.ShowToast(list);
+            ToastWindow.ShowToast(items);
         }
         private string GetConfigPath()
         {
             var cmds = Environment.GetCommandLineArgs();
             if(cmds.Count() > 1)
             {
-                var s = Path.GetFileName(cmds[1]);
-                if(s == "") return null;
+                var name = Path.GetFileName(cmds[1]);
+                if(name == "") return null;
 
-                var p = Path.GetDirectoryName(SettingsHelper.GetDefaultPath());
-                return Path.Combine(p, s);
+                var dir = Path.GetDirectoryName(SettingsHelper.GetDefaultPath());
+                return Path.Combine(dir, name);
             }
 
             return null;

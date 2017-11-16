@@ -66,12 +66,24 @@
             </ComboBox.ItemsSource>
           </ComboBox>
         </HeaderedContentControl>
-        <Button Command="{Binding ProcessStartCommand}" CommandParameter="control.exe /name Microsoft.Sound /page 2" Margin="5,0,5,5" Content="サウンドを開く" HorizontalAlignment="Right" />
+        <Button
+          Margin="5,0,5,5"
+          HorizontalAlignment="Right"
+          Command="{Binding ProcessStartCommand}"
+          CommandParameter="control.exe /name Microsoft.Sound /page 2"
+          Content="サウンドを開く" />
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-          <Button Command="{Binding PlaySoundCommand}" Margin="5,0,5,5" Foreground="#FF0E730E">
+          <Button
+            Margin="5,0,5,5"
+            Command="{Binding PlaySoundCommand}"
+            Foreground="#FF0E730E">
             <iconPacks:PackIconOcticons Kind="Megaphone" />
           </Button>
-          <Button Command="{Binding ProcessStartCommand}" CommandParameter="SndVol.exe" Margin="5,0,5,5" Content="音量ミキサーを開く" />
+          <Button
+            Margin="5,0,5,5"
+            Command="{Binding ProcessStartCommand}"
+            CommandParameter="SndVol.exe"
+            Content="音量ミキサーを開く" />
         </StackPanel>
         <HeaderedContentControl Margin="5" Header="通知表示期間:">
           <controls:NumericUpDown
