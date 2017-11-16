@@ -77,7 +77,7 @@
   </controls:MetroWindow.LeftWindowCommands>
   <controls:MetroWindow.RightWindowCommands>
     <controls:WindowCommands>
-      <Button Command="{Binding ProcessStartCommand}" CommandParameter="https://github.com/TN8001/">
+      <Button Command="{Binding ProcessStartCommand}" CommandParameter="https://github.com/TN8001/NNS_T">
         <StackPanel Orientation="Horizontal">
           <Rectangle
             Width="20"

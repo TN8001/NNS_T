@@ -55,7 +55,7 @@
           <LineBreak />
           <LineBreak />
           <Run Text="簡単な使い方や、どんなク/ソコードか見てみたい方は" />
-          <views:HyperlinkEx NavigateUri="https://github.com/TN8001/">
+          <views:HyperlinkEx NavigateUri="https://github.com/TN8001/NNS_T">
             <Run Text="GitHub" />
           </views:HyperlinkEx>
           <Run Text="をご覧ください。" />
