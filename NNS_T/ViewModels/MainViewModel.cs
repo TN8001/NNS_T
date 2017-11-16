@@ -223,6 +223,8 @@ namespace NNS_T.ViewModels
 
             ErrorStatus = null;
             HitCount = response.Meta.TotalCount;
+            if(isDirty)
+                Items.Clear();
             ItemsUpdate(response);
 
             IsBusy = false;

@@ -1,6 +1,6 @@
 ﻿# 詳細説明
 ## メインウィンドウ
-![メインウィンドウ画像](https://github.com/TN8001/NNS_T/blob/master/MainWindow.png)
+![メインウィンドウ画像](https://github.com/TN8001/NNS_T/blob/master/How2Use/MainWindow.png)
 1. 消音トグルボタン  
 オプション設定の状態によらず、消音のON・OFFを切り替えます。  
 赤がON（通知音を出さない）、グレーがOFF（オプション設定の通知音に従う）です。
@@ -25,7 +25,7 @@ GithubのNNS_Tのページを、規定ブラウザで開きます。
 
 
 ### 検索ページ
-![検索ページ画像](https://github.com/TN8001/NNS_T/blob/master/Search.png)
+![検索ページ画像](https://github.com/TN8001/NNS_T/blob/master/How2Use/Search.png)
 
 メインのページ 検索条件とその結果
 1. キーワード入力エリア  
@@ -68,7 +68,7 @@ GithubのNNS_Tのページを、規定ブラウザで開きます。
 ドラッグで他のアプリに落とすことも可能です。（NCV[ニコ生コメントビューア]と、Google Chromeで確認‎）
 
 ### 通知除外ページ
-![通知除外ページ画像](https://github.com/TN8001/NNS_T/blob/master/Mute.png)
+![通知除外ページ画像](https://github.com/TN8001/NNS_T/blob/master/How2Use/Mute.png)
 
 通知表示を除外するコミュニティ・チャンネルの管理
 1. リンク  
@@ -79,7 +79,7 @@ GithubのNNS_Tのページを、規定ブラウザで開きます。
 通知除外を解除します。
 
 ### 設定ページ
-![設定ページ画像](https://github.com/TN8001/NNS_T/blob/master/Settings.png)
+![設定ページ画像](https://github.com/TN8001/NNS_T/blob/master/How2Use/Settings.png)
 
 オプション設定
 1. 通知
@@ -103,7 +103,7 @@ GithubのNNS_Tのページを、規定ブラウザで開きます。
 3. サウンドを開く  
 Windowsのサウンド設定ウィンドウを開きます。
 ###### 通知音の場所
-![サウンドWindows設定画像](https://github.com/TN8001/NNS_T/blob/master/Sound.png)
+![サウンドWindows設定画像](https://github.com/TN8001/NNS_T/blob/master/How2Use/Sound.png)
 
 プログラム イベント→Windows→通知 の音を使用します。  
 
@@ -138,12 +138,12 @@ niconicoAPIに検索に行く間隔 10秒～1800秒（30分）
 NNS_T.exeのあるフォルダをエクスプローラーで開きます。
 
 ### アプリについてページ
-![アプリについてページ画像](https://github.com/TN8001/NNS_T/blob/master/About.png)
+![アプリについてページ画像](https://github.com/TN8001/NNS_T/blob/master/How2Use/About.png)
 
 バージョン情報・謝辞
 
 ## 通知ウィンドウ
-![通知ウィンドウ画像](https://github.com/TN8001/NNS_T/blob/master/Toast.png)
+![通知ウィンドウ画像](https://github.com/TN8001/NNS_T/blob/master/How2Use/Toast.png)
 
 新規生放送があった場合、メインウィンドウの右下に、通知を最前面でポップアップします。（マルチモニタでの検証はできていません）  
 複数の放送があった場合まとめて表示します。（３～４件は一覧できますがそれ以上はスクロールしてください）  
