@@ -16,6 +16,7 @@
   Closing="OnClosing"
   FontSize="15"
   Left="{Binding Settings.Window.Left, Mode=TwoWay}"
+  ShowMaxRestoreButton="False"
   Top="{Binding Settings.Window.Top, Mode=TwoWay}"
   WindowState="{Binding WindowState}"
   mc:Ignorable="d">
@@ -94,74 +95,57 @@
       </Button>
     </controls:WindowCommands>
   </controls:MetroWindow.RightWindowCommands>
-  <Grid>
-    <controls:HamburgerMenu
-      x:Name="HamburgerMenuControl"
-      Background="#FFF6F6F6"
-      DisplayMode="CompactInline"
-      Foreground="Black"
-      IsPaneOpen="False"
-      ItemClick="HamburgerMenuControl_OnItemClick"
-      ItemTemplate="{StaticResource MenuItemTemplate}"
-      OpenPaneLength="120"
-      OptionsItemClick="HamburgerMenuControl_OnItemClick"
-      OptionsItemTemplate="{StaticResource MenuItemTemplate}"
-      PaneBackground="#FF444444">
-      <controls:HamburgerMenu.ItemsSource>
-        <controls:HamburgerMenuItemCollection>
-          <controls:HamburgerMenuIconItem Icon="{iconPacks:PackIconOcticons Search}" Label="Search">
-            <controls:HamburgerMenuIconItem.Tag>
-              <views:SearchPane />
-            </controls:HamburgerMenuIconItem.Tag>
-          </controls:HamburgerMenuIconItem>
-          <controls:HamburgerMenuIconItem Icon="{iconPacks:PackIconOcticons CircleSlash}" Label="Mute">
-            <controls:HamburgerMenuIconItem.Tag>
-              <views:MutePane />
-            </controls:HamburgerMenuIconItem.Tag>
-          </controls:HamburgerMenuIconItem>
-          <controls:HamburgerMenuIconItem Icon="{iconPacks:PackIconOcticons Gear}" Label="Settings">
-            <controls:HamburgerMenuIconItem.Tag>
-              <views:SettingsPane />
-            </controls:HamburgerMenuIconItem.Tag>
-          </controls:HamburgerMenuIconItem>
-        </controls:HamburgerMenuItemCollection>
-      </controls:HamburgerMenu.ItemsSource>
+  <controls:HamburgerMenu
+    x:Name="HamburgerMenuControl"
+    DisplayMode="Overlay"
+    HamburgerHeight="36"
+    HamburgerWidth="36"
+    IsPaneOpen="False"
+    ItemClick="HamburgerMenuControl_OnItemClick"
+    ItemTemplate="{StaticResource MenuItemTemplate}"
+    OpenPaneLength="120"
+    OptionsItemClick="HamburgerMenuControl_OnItemClick"
+    OptionsItemTemplate="{StaticResource MenuItemTemplate}"
+    PaneForeground="Black"
+    SelectedIndex="0">
+    <controls:HamburgerMenu.ItemsSource>
+      <controls:HamburgerMenuItemCollection>
+        <controls:HamburgerMenuIconItem Icon="{iconPacks:PackIconOcticons Search}" Label="Search">
+          <controls:HamburgerMenuIconItem.Tag>
+            <views:SearchPane />
+          </controls:HamburgerMenuIconItem.Tag>
+        </controls:HamburgerMenuIconItem>
+        <controls:HamburgerMenuIconItem Icon="{iconPacks:PackIconOcticons CircleSlash}" Label="Mute">
+          <controls:HamburgerMenuIconItem.Tag>
+            <views:MutePane />
+          </controls:HamburgerMenuIconItem.Tag>
+        </controls:HamburgerMenuIconItem>
+        <controls:HamburgerMenuIconItem Icon="{iconPacks:PackIconOcticons Gear}" Label="Settings">
+          <controls:HamburgerMenuIconItem.Tag>
+            <views:SettingsPane />
+          </controls:HamburgerMenuIconItem.Tag>
+        </controls:HamburgerMenuIconItem>
+      </controls:HamburgerMenuItemCollection>
+    </controls:HamburgerMenu.ItemsSource>
 
-      <controls:HamburgerMenu.OptionsItemsSource>
-        <controls:HamburgerMenuItemCollection>
-          <controls:HamburgerMenuIconItem Icon="{iconPacks:PackIconOcticons Info}" Label="About">
-            <controls:HamburgerMenuIconItem.Tag>
-              <views:AboutPane />
-            </controls:HamburgerMenuIconItem.Tag>
-          </controls:HamburgerMenuIconItem>
-        </controls:HamburgerMenuItemCollection>
-      </controls:HamburgerMenu.OptionsItemsSource>
+    <controls:HamburgerMenu.OptionsItemsSource>
+      <controls:HamburgerMenuItemCollection>
+        <controls:HamburgerMenuIconItem Icon="{iconPacks:PackIconOcticons Info}" Label="About">
+          <controls:HamburgerMenuIconItem.Tag>
+            <views:AboutPane />
+          </controls:HamburgerMenuIconItem.Tag>
+        </controls:HamburgerMenuIconItem>
+      </controls:HamburgerMenuItemCollection>
+    </controls:HamburgerMenu.OptionsItemsSource>
 
-      <controls:HamburgerMenu.ContentTemplate>
-        <DataTemplate DataType="{x:Type controls:HamburgerMenuItem}">
-          <Grid x:Name="TheContentGrid">
-            <Grid.RowDefinitions>
-              <RowDefinition Height="48" />
-              <RowDefinition />
-            </Grid.RowDefinitions>
-            <Border Grid.Row="0" Background="#FF444444">
-              <TextBlock
-                x:Name="Header"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontSize="24"
-                Foreground="White"
-                Text="{Binding Label}" />
-            </Border>
-            <ContentControl
-              x:Name="TheContent"
-              Grid.Row="1"
-              Content="{Binding Tag}"
-              Focusable="False"
-              Foreground="{DynamicResource BlackBrush}" />
-          </Grid>
-        </DataTemplate>
-      </controls:HamburgerMenu.ContentTemplate>
-    </controls:HamburgerMenu>
-  </Grid>
+    <controls:HamburgerMenu.ContentTemplate>
+      <DataTemplate DataType="{x:Type controls:HamburgerMenuItem}">
+        <ContentControl
+          Grid.Row="1"
+          Content="{Binding Tag}"
+          Focusable="False"
+          Foreground="{DynamicResource BlackBrush}" />
+      </DataTemplate>
+    </controls:HamburgerMenu.ContentTemplate>
+  </controls:HamburgerMenu>
 </controls:MetroWindow>

@@ -39,7 +39,7 @@ namespace NNS_T.Models
         {
             Top = double.NaN;
             Left = double.NaN;
-            Width = 500;
+            Width = 400;
             Height = 500;
             IsExpanded = true;
         }

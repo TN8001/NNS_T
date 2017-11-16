@@ -16,7 +16,7 @@ namespace NNS_T.Views
             var l = (IList)HamburgerMenuControl.ItemsSource;
             var h = (HamburgerMenuItem)l[0];
             ((FrameworkElement)h.Tag).DataContext = DataContext;
-            HamburgerMenuControl.SelectedIndex = 0;
+            //HamburgerMenuControl.SelectedIndex = 0;
             HamburgerMenuControl.Content = h;
         }
 
@@ -25,6 +25,7 @@ namespace NNS_T.Views
             var h = (HamburgerMenuItem)e.ClickedItem;
             ((FrameworkElement)h.Tag).DataContext = DataContext;
             HamburgerMenuControl.Content = h;
+            HamburgerMenuControl.IsPaneOpen = false;
         }
 
         private void OnClosing(object sender, CancelEventArgs e)

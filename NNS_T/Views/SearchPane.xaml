@@ -37,12 +37,13 @@
     </Storyboard>
 
     <Style x:Key="MuteButton" TargetType="ToggleButton">
+      <Setter Property="Background" Value="White" />
       <Setter Property="Foreground" Value="LightGray" />
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="ToggleButton">
             <Grid>
-              <Ellipse Fill="#01FFFFFF" />
+              <Ellipse Fill="{TemplateBinding Background}" />
               <iconPacks:PackIconOcticons Kind="CircleSlash" />
             </Grid>
             <ControlTemplate.Triggers>
@@ -74,7 +75,6 @@
         </Setter.Value>
       </Setter>
       <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-      <!--<EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />-->
       <Style.Triggers>
         <DataTrigger Binding="{Binding IsLoaded}" Value="True">
           <DataTrigger.EnterActions>
@@ -161,7 +161,6 @@
         </StackPanel>
         <StackPanel
           Grid.Column="1"
-          MinWidth="50"
           Margin="3,0,0,0"
           VerticalAlignment="Top">
           <HeaderedContentControl Content="{Binding ViewCount}" Header="来場:" />
@@ -170,7 +169,7 @@
         </StackPanel>
         <StackPanel
           Grid.Column="2"
-          Margin="10,0,0,0"
+          Margin="5,0,0,0"
           VerticalAlignment="Top">
           <TextBlock Text="{Binding StartTime, Converter={StaticResource StartTimeConverter}}" />
           <TextBlock FontSize="16">
@@ -191,145 +190,155 @@
       </Grid>
     </DataTemplate>
   </UserControl.Resources>
-
-
-  <Grid Margin="5">
+  <Grid>
     <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
+      <RowDefinition Height="36" />
       <RowDefinition />
     </Grid.RowDefinitions>
-    <StackPanel Margin="0" Grid.IsSharedSizeScope="True">
-      <Grid>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition />
-          <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <TextBox
-          VerticalContentAlignment="Center"
-          controls:TextBoxHelper.ClearTextButton="True"
-          controls:TextBoxHelper.Watermark="ボーカル OR ヴォーカル ミク -歌ってみた"
-          Text="{Binding Settings.Search.Query}" />
-        <Button
-          Grid.Column="1"
-          MinWidth="50"
-          BorderBrush="Gray"
-          BorderThickness="1"
-          Click="Button_Click"
-          Command="{Binding SearchCommand}"
-          Content="{iconPacks:PackIconOcticons Search}"
-          IsDefault="true"
-          Style="{StaticResource AccentedSquareButtonStyle}" />
-      </Grid>
-      <Expander IsExpanded="{Binding Settings.Window.IsExpanded}">
-        <StackPanel>
-          <RadioButton
-            Margin="5,0"
-            Content="タグ検索"
-            GroupName="Target"
-            IsChecked="{Binding Settings.Search.Targets, ConverterParameter={x:Static nicoApi:Targets.TagsExact}, Converter={StaticResource Targets2CheckBoxConverter}}" />
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="Auto"/>
-              <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <RadioButton
-              x:Name="radioButton"
-              Margin="5,0"
-              Content="キーワード検索"
-              GroupName="Target"
-              IsChecked="True" VerticalAlignment="Top" />
-            <WrapPanel IsEnabled="{Binding IsChecked, ElementName=radioButton}" Orientation="Horizontal" Grid.Column="1">
-              <CheckBox
-                Margin="5,0"
-                Content="タイトル"
-                IsChecked="{Binding Settings.Search.Targets, Converter={StaticResource Targets2CheckBoxConverter}, ConverterParameter={x:Static nicoApi:Targets.Title}}" />
-              <CheckBox
-                Margin="5,0"
-                Content="説明文"
-                IsChecked="{Binding Settings.Search.Targets, Converter={StaticResource Targets2CheckBoxConverter}, ConverterParameter={x:Static nicoApi:Targets.Description}}" />
-              <CheckBox
-                Margin="5,0"
-                Content="タグ"
-                IsChecked="{Binding Settings.Search.Targets, Converter={StaticResource Targets2CheckBoxConverter}, ConverterParameter={x:Static nicoApi:Targets.Tags}}" />
-            </WrapPanel>
-          </Grid>
-          <WrapPanel Margin="0,5,0,0" Orientation="Horizontal">
-            <CheckBox
-              Margin="5,0"
-              Content="公式をミュート"
-              IsChecked="{Binding Settings.Mute.OfficialIgnored}" />
-            <CheckBox
-              Margin="5,0"
-              Content="ミュートを非表示"
-              IsChecked="{Binding Settings.Mute.HideList}" />
-          </WrapPanel>
-        </StackPanel>
-      </Expander>
-      <TextBlock Text="{Binding ErrorStatus, StringFormat=エラー:{0}}">
-        <TextBlock.Style>
-          <Style TargetType="TextBlock">
+
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="36" />
+        <ColumnDefinition Width="36" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
+      <iconPacks:PackIconOcticons
+        Grid.Column="1"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Kind="Search" />
+      <TextBlock
+        Grid.Column="2"
+        VerticalAlignment="Center"
+        FontSize="16"
+        Text="Search" />
+      <ContentControl
+        Grid.Column="3"
+        Margin="5,0"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Center"
+        Focusable="False"
+        IsTabStop="False"
+        MouseRightButtonUp="OnMouseRightButtonUp" >
+        <Label
+          Padding="0"
+          Content="{Binding HitCount}"
+          ContentStringFormat="HitCount: {0}"
+          IsEnabled="{Binding IsTimerEnabled}" />
+      </ContentControl>
+    </Grid>
+
+    <Grid Grid.Row="1" Margin="5,0,5,5">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition />
+      </Grid.RowDefinitions>
+      <StackPanel Panel.ZIndex="1">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <TextBox
+            VerticalContentAlignment="Center"
+            controls:TextBoxHelper.ClearTextButton="True"
+            controls:TextBoxHelper.Watermark="ボーカル OR ヴォーカル ミク -歌ってみた"
+            Text="{Binding Settings.Search.Query}" />
+          <Button
+            Grid.Column="1"
+            MinWidth="50"
+            BorderBrush="Gray"
+            BorderThickness="1"
+            Click="Button_Click"
+            Command="{Binding SearchCommand}"
+            Content="{iconPacks:PackIconOcticons Search}"
+            IsDefault="true"
+            Style="{StaticResource AccentedSquareButtonStyle}" />
+        </Grid>
+        <Expander Margin="0,0,0,-1" IsExpanded="{Binding Settings.Window.IsExpanded}">
+          <Border Padding="5"> 
+            <StackPanel>
+              <RadioButton
+                HorizontalAlignment="Left"
+                Content="タグ検索"
+                GroupName="Target"
+                IsChecked="{Binding Settings.Search.Targets, ConverterParameter={x:Static nicoApi:Targets.TagsExact}, Converter={StaticResource Targets2CheckBoxConverter}}" />
+              <Grid Margin="0,2,0,0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <RadioButton
+                  x:Name="radioButton"
+                  VerticalAlignment="Top"
+                  Content="キーワード検索"
+                  GroupName="Target"
+                  IsChecked="True" />
+                <WrapPanel
+                  Grid.Column="1"
+                  IsEnabled="{Binding IsChecked, ElementName=radioButton}"
+                  Orientation="Horizontal">
+                  <CheckBox
+                    Margin="5,0,0,0"
+                    Content="タイトル"
+                    IsChecked="{Binding Settings.Search.Targets, Converter={StaticResource Targets2CheckBoxConverter}, ConverterParameter={x:Static nicoApi:Targets.Title}}" />
+                  <CheckBox
+                    Margin="5,0,0,0"
+                    Content="説明文"
+                    IsChecked="{Binding Settings.Search.Targets, Converter={StaticResource Targets2CheckBoxConverter}, ConverterParameter={x:Static nicoApi:Targets.Description}}" />
+                  <CheckBox
+                    Margin="5,0,0,0"
+                    Content="タグ"
+                    IsChecked="{Binding Settings.Search.Targets, Converter={StaticResource Targets2CheckBoxConverter}, ConverterParameter={x:Static nicoApi:Targets.Tags}}" />
+                </WrapPanel>
+              </Grid>
+              <WrapPanel Margin="0,5,0,0" Orientation="Horizontal">
+                <CheckBox
+                  Margin="0,0,5,0"
+                  Content="公式をミュートする"
+                  IsChecked="{Binding Settings.Mute.Official}" />
+                <CheckBox Content="ミュートを表示する" IsChecked="{Binding Settings.Mute.ShowList}" />
+              </WrapPanel>
+            </StackPanel>
+          </Border>
+        </Expander>
+        <TextBlock Text="{Binding ErrorStatus, StringFormat=エラー:{0}}">
+          <TextBlock.Style>
+            <Style TargetType="TextBlock">
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding ErrorStatus}" Value="{x:Null}">
+                  <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </TextBlock.Style>
+        </TextBlock>
+      </StackPanel>
+      <Label
+        Grid.Row="1"
+        HorizontalContentAlignment="Center"
+        Background="White"
+        Content="Empty" />
+      <ListBox
+        Grid.Row="1"
+        ItemContainerStyle="{StaticResource ListBoxItemBlinkStyle}"
+        ItemsSource="{Binding Items}"
+        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+        VirtualizingPanel.IsVirtualizing="False"
+        VirtualizingPanel.ScrollUnit="Pixel">
+        <ListBox.Style>
+          <Style TargetType="ListBox">
+            <Setter Property="Background" Value="White" />
             <Style.Triggers>
-              <DataTrigger Binding="{Binding ErrorStatus}" Value="{x:Null}">
-                <Setter Property="Visibility" Value="Collapsed" />
+              <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Items.Count}" Value="0">
+                <Setter Property="Background" Value="{x:Null}" />
               </DataTrigger>
             </Style.Triggers>
           </Style>
-        </TextBlock.Style>
-      </TextBlock>
-      <!--
-        debug mode hack
-        https://stackoverflow.com/questions/8732307/does-xaml-have-a-conditional-compiler-directive-for-debug-mode
-        便利ではあるがタグ内はデザイナが作動しないので編集しづらいｗ
-        普通に作ってからAlternateContentで囲うといいと思います
-      -->
-      <mc:AlternateContent>
-        <mc:Choice Requires="debug">
-          <StackPanel>
-            <Grid>
-              <Button
-                MinWidth="50"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                BorderBrush="Gray"
-                BorderThickness="1"
-                Command="{Binding ClearCommand}"
-                Content="Clear"
-                Style="{DynamicResource SquareButtonStyle}" />
-              <StackPanel>
-                <CheckBox Content="説明文も取得する" IsChecked="{Binding Settings.Search.UseDescription}" />
-                <StackPanel Orientation="Horizontal">
-                  <TextBlock Text="Hit:" />
-                  <TextBlock Margin="5,0" Text="{Binding HitCount}" />
-                  <TextBlock Text="Add:" />
-                  <TextBlock Margin="5,0" Text="{Binding AddCount}" />
-                  <TextBlock Text="Items:" />
-                  <TextBlock Margin="5,0" Text="{Binding ItemCount}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                  <CheckBox
-                    Margin="5,0"
-                    Content="タイマー"
-                    IsChecked="{Binding IsTimerEnabled}" />
-                  <CheckBox
-                    Margin="5,0"
-                    Content="通知"
-                    IsChecked="{Binding Settings.Notify.IsEnabled}" />
-                  <TextBlock Text="{Binding WorkingSet64}" />
-                </StackPanel>
-              </StackPanel>
-            </Grid>
-          </StackPanel>
-        </mc:Choice>
-      </mc:AlternateContent>
+        </ListBox.Style>
+      </ListBox>
+    </Grid>
 
-    </StackPanel>
-
-    <ListBox
-      Grid.Row="1"
-      ItemContainerStyle="{StaticResource ListBoxItemBlinkStyle}"
-      ItemsSource="{Binding Items}"
-      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-      VirtualizingPanel.IsVirtualizing="False"
-      VirtualizingPanel.ScrollUnit="Pixel" />
   </Grid>
 </UserControl>

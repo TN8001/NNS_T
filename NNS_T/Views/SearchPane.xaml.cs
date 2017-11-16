@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using NNS_T.ViewModels;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -17,5 +18,12 @@ namespace NNS_T.Views
 
         // TextBoxのbindingを走らせてからコマンド実行
         private void Button_Click(object sender, RoutedEventArgs e) => ((Button)sender).Focus();
+
+        // 裏コマンド
+        private void OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if(e.LeftButton == MouseButtonState.Pressed)
+                ((MainViewModel)DataContext).ToggleTimerCommand.Execute();
+        }
     }
 }

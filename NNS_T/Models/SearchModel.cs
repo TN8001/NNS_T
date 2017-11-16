@@ -28,14 +28,14 @@ namespace NNS_T.Models
 
         ///<summary>レスポンスに説明文を含めるかどうか</summary>
         [XmlAttribute]
-        public bool UseDescription
+        public bool UnuseDescription
         {
-            get => Fields.HasFlag(Fields.Description);
+            get => !Fields.HasFlag(Fields.Description);
             set
             {
-                if(UseDescription == value) return;
-                Fields = value ? Fields | Fields.Description
-                               : Fields & ~Fields.Description;
+                if(UnuseDescription == value) return;
+                Fields = value ? Fields & ~Fields.Description
+                               : Fields | Fields.Description;
                 OnPropertyChanged();
             }
         }

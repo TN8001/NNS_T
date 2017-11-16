@@ -33,6 +33,14 @@ namespace NNS_T.ViewModels
         public WindowState WindowState { get => _WindowState; set => Set(ref _WindowState, value); }
         private WindowState _WindowState;
 
+        ///<summary>取得タイマonoff</summary>
+        public bool IsTimerEnabled { get => _IsTimerEnabled; set { if(Set(ref _IsTimerEnabled, value)) timer.IsEnabled = value; } }
+        private bool _IsTimerEnabled = true;
+
+        ///<summary>ヒットカウント</summary>
+        public int HitCount { get => _HitCount; set => Set(ref _HitCount, value); }
+        private int _HitCount;
+
         ///<summary>検索結果放送コレクション</summary>
         public ObservableCollection<LiveItemViewModel> Items { get; } = new ObservableCollection<LiveItemViewModel>();
 
@@ -54,37 +62,14 @@ namespace NNS_T.ViewModels
         ///<summary>規定ブラウザで開くコマンド</summary>
         public RelayCommand<string> ProcessStartCommand { get; }
 
-        ///<summary>規定ブラウザで開くコマンド</summary>
+        ///<summary>規定ファイラで開くコマンド</summary>
         public RelayCommand<FolderType> OpenFolderCommand { get; }
 
-        #region デバッグ用
-        // どこかに表示してもいいのですが あまりごちゃごちゃさせたくないので
-        ///<summary>取得タイマonoff</summary>
-        public bool IsTimerEnabled { get => timer.IsEnabled; set { timer.IsEnabled = value; OnPropertyChanged(); } }
+        ///<summary>通知音を鳴らすコマンド</summary>
+        public RelayCommand PlaySoundCommand { get; }
 
-        ///<summary>ヒットカウント</summary>
-        public int HitCount { get => _HitCount; set => Set(ref _HitCount, value); }
-        private int _HitCount;
-
-        ///<summary>追加カウント</summary>
-        public int AddCount { get => _AddCount; set => Set(ref _AddCount, value); }
-        private int _AddCount;
-
-        ///<summary>アイテムカウント</summary>
-        public int ItemCount { get => _ItemCount; set => Set(ref _ItemCount, value); }
-        private int _ItemCount;
-
-        ///<summary>レスポンス取得にかかった時間</summary>
-        public TimeSpan ResponseTime { get => _ResponseTime; set => Set(ref _ResponseTime, value); }
-        private TimeSpan _ResponseTime;
-
-        ///<summary>WorkingSet64</summary>
-        public string WorkingSet64 { get => _Mem; set => Set(ref _Mem, value); }
-        private string _Mem;
-
-        ///<summary>一覧クリアコマンド</summary>
-        public RelayCommand ClearCommand { get; }
-        #endregion
+        ///<summary>取得タイマonoff（裏）コマンド</summary>
+        public RelayCommand ToggleTimerCommand { get; }
         #endregion
 
         private DispatcherTimer timer = new DispatcherTimer();
@@ -96,10 +81,13 @@ namespace NNS_T.ViewModels
 
         public MainViewModel()
         {
+            //Process.Start("SndVol.exe"); // 音量ミキサー
+
+
             configPath = GetConfigPath();
             Settings = SettingsHelper.LoadOrDefault<SettingsModel>(configPath);
 
-            // 検索間隔 条件変更フラグ
+            // 検索間隔 条件変更フラグ更新
             Settings.Search.PropertyChanged += (s, e) =>
             {
                 var search = (SearchModel)s;
@@ -108,15 +96,16 @@ namespace NNS_T.ViewModels
                 else
                     isDirty = true;
             };
-            // 公式ミュート
+            // 公式ミュート変更
             Settings.Mute.PropertyChanged += (s, e) =>
             {
                 var mute = (MuteModel)s;
-                if(e.PropertyName != nameof(mute.OfficialIgnored)) return;
+                if(e.PropertyName != nameof(mute.Official)) return;
 
                 foreach(var item in Items.Where(x => x.ProviderType == ProviderType.Official))
-                    item.IsMuted = mute.OfficialIgnored;
+                    item.IsMuted = mute.Official;
             };
+
             SearchCommand = new RelayCommand(async () => await SearchCommandImplAsync(), () => !IsBusy);
             SaveCommand = new RelayCommand(() => SettingsHelper.Save(Settings, configPath));
             MuteCommand = new RelayCommand<LiveItemViewModel>(async (liveItem) =>
@@ -128,12 +117,7 @@ namespace NNS_T.ViewModels
                 if(liveItem.IsMuted)
                     Settings.Mute.Items.Add(room);
                 else
-                {
-                    Debug.WriteLine(Settings.Mute.Items.Count);
-                    var b = Settings.Mute.Items.Remove(room);
-                    Debug.WriteLine(Settings.Mute.Items.Count);
-                    Debug.WriteLine($"Remove:{b}");
-                }
+                    Settings.Mute.Items.Remove(room);
             });
             UnMuteCommand = new RelayCommand<RoomModel>((room) =>
             {
@@ -143,8 +127,14 @@ namespace NNS_T.ViewModels
 
                 liveItem.IsMuted = false;
             });
-            ProcessStartCommand = new RelayCommand<string>((s) => Process.Start(s));
-            ClearCommand = new RelayCommand(() => Items.Clear());
+            ProcessStartCommand = new RelayCommand<string>((s) =>
+            {
+                var index = s.IndexOf(' ');
+                if(index < 0)
+                    Process.Start(s);
+                else
+                    Process.Start(s.Substring(0, index), s.Substring(index + 1));
+            });
             OpenFolderCommand = new RelayCommand<FolderType>((f) =>
             {
                 string path;
@@ -168,7 +158,8 @@ namespace NNS_T.ViewModels
                     Verb = "open",
                 });
             });
-
+            PlaySoundCommand = new RelayCommand(() => ToastWindow.PlaySound());
+            ToggleTimerCommand = new RelayCommand(() => IsTimerEnabled = !IsTimerEnabled);
 
             timer.Interval = TimeSpan.FromSeconds(Settings.Search.IntervalSec);
             timer.Tick += (s, e) =>
@@ -185,12 +176,16 @@ namespace NNS_T.ViewModels
         {
             Debug.WriteLine("SearchCommand");
             if(IsBusy) return; // 通らないはず
-            CheckMemory();
 
+            if(string.IsNullOrEmpty(Settings.Search.Query))
+            {
+                IsTimerEnabled = false;
+                return;
+            }
             // 取得時間があんまり安定しないので取得中は止めてみる
             // よって実際の取得間隔は設定以上の間隔が開く
+            IsTimerEnabled = true;
             timer.Stop();
-            if(string.IsNullOrEmpty(Settings.Search.Query)) return;
 
             IsBusy = true;
             Response response;
@@ -208,7 +203,6 @@ namespace NNS_T.ViewModels
                     Context = ProductInfo.Name,
                 };
                 response = await nicoApi.GetResponseAsync(Services.Live, q);
-                ResponseTime = DateTime.Now - t;
             }
             catch(NicoApiRequestException e)
             {
@@ -216,17 +210,19 @@ namespace NNS_T.ViewModels
                 ErrorStatus = e.Message;
                 HitCount = 0;
                 IsBusy = false;
-                timer.Start();
+                if(IsTimerEnabled)
+                    timer.Start();
                 return;
             }
 
             ErrorStatus = null;
             HitCount = response.Meta.TotalCount;
-            AddCount = ItemsUpdate(response);
-            ItemCount = Items.Count;
+            ItemsUpdate(response);
+
             IsBusy = false;
             isDirty = false;
-            timer.Start();
+            if(IsTimerEnabled)
+                timer.Start();
         }
 
         private int ItemsUpdate(Response response)
@@ -261,7 +257,7 @@ namespace NNS_T.ViewModels
 
             foreach(var item in addItems)
             {
-                if(item.ProviderType == ProviderType.Official && Settings.Mute.OfficialIgnored)
+                if(item.ProviderType == ProviderType.Official && Settings.Mute.Official)
                     item.IsMuted = true;
                 else if(Settings.Mute.Items.Any(x => x.IconUrl == item.IconUrl))
                     item.IsMuted = true;
@@ -313,8 +309,5 @@ namespace NNS_T.ViewModels
 
             return null;
         }
-
-        [Conditional("DEBUG")]
-        private void CheckMemory() => WorkingSet64 = $"{Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024} MB";
     }
 }

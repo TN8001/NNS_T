@@ -13,13 +13,14 @@ namespace NNS_T.Models
     {
         ///<summary>公式放送をミュート</summary>
         [XmlAttribute]
-        public bool OfficialIgnored { get => _OfficialIgnored; set => Set(ref _OfficialIgnored, value); }
-        private bool _OfficialIgnored;
+        public bool Official { get => _Official; set => Set(ref _Official, value); }
+        private bool _Official;
 
-        ///<summary>ミュートを一覧に非表示</summary>
+        ///<summary>ミュートを一覧に表示</summary>
         [XmlAttribute]
-        public bool HideList { get => _HideList; set => Set(ref _HideList, value); }
-        private bool _HideList;
+        public bool ShowList { get => _showList; set { if(Set(ref _showList, value)) OnPropertyChanged(nameof(HideList)); } }
+        private bool _showList;
+        public bool HideList { get => !_showList;  }
 
         ///<summary>ミュートしている部屋</summary>
         [XmlArrayItem("Item")]
@@ -30,8 +31,8 @@ namespace NNS_T.Models
 
         private void Initialize()
         {
-            OfficialIgnored = false;
-            HideList = true;
+            _Official = false;
+            _showList = false;
             Items = new MuteCollection();
         }
         [OnDeserializing]

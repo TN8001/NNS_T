@@ -82,6 +82,23 @@ namespace NNS_T.Views
             if(winQueue.Count == 1)
                 w.Show();
         }
+        public static void PlaySound()
+        {
+            if(NotifySound == NotifySound.System)
+            {
+                if(File.Exists(soundFilePath))
+                    player.Play();
+            }
+
+            if(NotifySound == NotifySound.PC9801)
+            {
+                Task.Run(() =>
+                {
+                    Console.Beep(2000, 100);
+                    Console.Beep(1000, 80);
+                });
+            }
+        }
 
         private static void Timer_Tick(object sender, EventArgs e)
         {
@@ -101,26 +118,6 @@ namespace NNS_T.Views
             };
             // フェードアウト
             win.BeginAnimation(OpacityProperty, ani);
-        }
-
-        private static void PlaySound()
-        {
-            if(IsTemporaryMuted) return;
-
-            if(NotifySound == NotifySound.System)
-            {
-                if(File.Exists(soundFilePath))
-                    player.Play();
-            }
-
-            if(NotifySound == NotifySound.PC9801)
-            {
-                Task.Run(() =>
-                {
-                    Console.Beep(2000, 100);
-                    Console.Beep(1000, 80);
-                });
-            }
         }
 
         private void DragStart(object sender, RoutedEventArgs e)
@@ -156,7 +153,9 @@ namespace NNS_T.Views
             Top = h - ActualHeight - 10;
 
             Visibility = Visibility.Visible;
-            PlaySound();
+            if(!IsTemporaryMuted)
+                PlaySound();
+
             timer.Start(); // 表示完了後タイマ作動 ロードに時間がかかってすぐ次に行く場合があったため
         }
         private void Window_Closing(object sender, CancelEventArgs e)

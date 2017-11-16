@@ -43,6 +43,7 @@
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition />
+          <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal">
           <Border>
@@ -82,7 +83,7 @@
           <local:HyperlinkEx NavigateUri="{Binding RoomUrl}"><Run Text="{Binding Title, Mode=OneTime}" /></local:HyperlinkEx>
         </TextBlock>
         <Button
-          Grid.Column="1"
+          Grid.Column="2"
           Width="16"
           Height="16"
           HorizontalAlignment="Right"
@@ -95,8 +96,37 @@
 
   </UserControl.Resources>
   <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="36" />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="36" />
+        <ColumnDefinition Width="36" />
+        <ColumnDefinition />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <iconPacks:PackIconOcticons
+        Grid.Column="1"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Kind="CircleSlash" />
+      <TextBlock
+        Grid.Column="2"
+        VerticalAlignment="Center"
+        FontSize="16"
+        Text="Mute" />
+      <TextBlock
+        Grid.Column="3"
+        Margin="5,0"
+        VerticalAlignment="Center"
+        Text="{Binding Items.Count, StringFormat=Total: {0}, ElementName=listBox, Mode=OneWay}" />
+    </Grid>
     <ListBox
+      x:Name="listBox"
       Grid.Row="1"
+      Margin="5,0,5,5"
       ItemsSource="{Binding Settings.Mute.Items}"
       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
       VirtualizingPanel.IsVirtualizing="False"

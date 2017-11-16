@@ -4,16 +4,38 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
   xmlns:local="clr-namespace:NNS_T.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:models="clr-namespace:NNS_T.Models"
   xmlns:sys="clr-namespace:System;assembly=mscorlib"
-  d:DesignHeight="300"
+  d:DesignHeight="400"
   d:DesignWidth="300"
   mc:Ignorable="d">
   <Grid>
-    <ScrollViewer>
-      <StackPanel Margin="5" Grid.IsSharedSizeScope="True">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="36" />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="36" />
+        <ColumnDefinition Width="36" />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
+      <iconPacks:PackIconOcticons
+        Grid.Column="1"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Kind="Gear" />
+      <TextBlock
+        Grid.Column="2"
+        VerticalAlignment="Center"
+        FontSize="16"
+        Text="Settings" />
+    </Grid>
+    <ScrollViewer Grid.Row="1">
+      <StackPanel Margin="5,0,5,5" Grid.IsSharedSizeScope="True">
         <HeaderedContentControl Margin="5" Header="通知:">
           <ComboBox
             DisplayMemberPath="Value"
@@ -44,7 +66,13 @@
             </ComboBox.ItemsSource>
           </ComboBox>
         </HeaderedContentControl>
-
+        <Button Command="{Binding ProcessStartCommand}" CommandParameter="control.exe /name Microsoft.Sound /page 2" Margin="5,0,5,5" Content="サウンドを開く" HorizontalAlignment="Right" />
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+          <Button Command="{Binding PlaySoundCommand}" Margin="5,0,5,5" Foreground="#FF0E730E">
+            <iconPacks:PackIconOcticons Kind="Megaphone" />
+          </Button>
+          <Button Command="{Binding ProcessStartCommand}" CommandParameter="SndVol.exe" Margin="5,0,5,5" Content="音量ミキサーを開く" />
+        </StackPanel>
         <HeaderedContentControl Margin="5" Header="通知表示期間:">
           <controls:NumericUpDown
             HorizontalContentAlignment="Left"
@@ -67,27 +95,27 @@
 
         <CheckBox
           Margin="5"
-          Content="説明文も取得する"
-          IsChecked="{Binding Settings.Search.UseDescription}" />
+          Content="説明文を取得しない"
+          IsChecked="{Binding Settings.Search.UnuseDescription}" />
         <CheckBox
           Margin="5"
-          Content="公式をミュート"
-          IsChecked="{Binding Settings.Mute.OfficialIgnored}" />
+          Content="公式をミュートする"
+          IsChecked="{Binding Settings.Mute.Official}" />
         <CheckBox
           Margin="5"
-          Content="ミュートを非表示"
-          IsChecked="{Binding Settings.Mute.HideList}" />
+          Content="ミュートを表示する"
+          IsChecked="{Binding Settings.Mute.ShowList}" />
         <WrapPanel Orientation="Horizontal">
-          <Button
-            Margin="5"
-            Command="{Binding OpenFolderCommand}"
-            CommandParameter="{x:Static models:FolderType.Assembly}"
-            Content="インストールフォルダを開く" />
           <Button
             Margin="5"
             Command="{Binding OpenFolderCommand}"
             CommandParameter="{x:Static models:FolderType.Settings}"
             Content="設定ファイルフォルダを開く" />
+          <Button
+            Margin="5"
+            Command="{Binding OpenFolderCommand}"
+            CommandParameter="{x:Static models:FolderType.Assembly}"
+            Content="インストールフォルダを開く" />
         </WrapPanel>
       </StackPanel>
     </ScrollViewer>
