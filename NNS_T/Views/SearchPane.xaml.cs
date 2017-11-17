@@ -10,8 +10,8 @@ namespace NNS_T.Views
     {
         public SearchPane() => InitializeComponent();
 
-        public void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e)
-            => ((Image)sender).Source = Application.Current.Resources["NoImageImage"] as DrawingImage;
+        //public void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        //    => ((Image)sender).Source = Application.Current.Resources["NoImageImage"] as DrawingImage;
 
         void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
             => new PropertyWindow(((ListBoxItem)sender).DataContext).Show();

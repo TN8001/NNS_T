@@ -130,8 +130,8 @@ namespace NNS_T.Views
             IsDragging = false;
             timer.Resume();
         }
-        private void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e)
-            => ((Image)sender).Source = noImageImage;
+        //private void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        //    => ((Image)sender).Source = noImageImage;
 
         private void OnMouseEnter(object sender, MouseEventArgs e) => timer.Pause();
         private void OnMouseLeave(object sender, MouseEventArgs e)

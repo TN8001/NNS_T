@@ -94,7 +94,6 @@
     <Compile Include="Utility\ProductInfo.cs" />
     <Compile Include="Utility\Converters\BoolInverseConverter.cs" />
     <Compile Include="Utility\Converters\FlagsEnum2BoolConverter.cs" />
-    <Compile Include="Utility\Converters\ProviderTypeConverter.cs" />
     <Compile Include="Utility\Converters\StartTimeConverter.cs" />
     <Compile Include="Utility\SettingsHelper.cs" />
     <Compile Include="ViewModels\LiveItemViewModel.cs" />
@@ -127,6 +126,10 @@
     <Compile Include="Views\ToastWindow.xaml.cs">
       <DependentUpon>ToastWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PropertyWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

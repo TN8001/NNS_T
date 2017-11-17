@@ -7,16 +7,12 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:debug="debug-mode"
   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-  xmlns:local="clr-namespace:NNS_T.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:models="clr-namespace:NNS_T.Models"
   xmlns:nicoApi="clr-namespace:NNS_T.Models.NicoAPI"
-  xmlns:viewModels="clr-namespace:NNS_T.ViewModels"
   d:DesignHeight="200"
   d:DesignWidth="400"
   mc:Ignorable="d mc">
   <UserControl.Resources>
-    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <cnv:Targets2CheckBoxConverter x:Key="Targets2CheckBoxConverter" />
     <cnv:Mute2VisibilityConverter x:Key="Mute2VisibilityConverter" />
 
@@ -35,35 +31,6 @@
         </mc:AlternateContent>
       </ColorAnimationUsingKeyFrames>
     </Storyboard>
-
-    <Style x:Key="MuteButton" TargetType="ToggleButton">
-      <Setter Property="Background" Value="White" />
-      <Setter Property="Foreground" Value="LightGray" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="ToggleButton">
-            <Grid>
-              <Ellipse Fill="{TemplateBinding Background}" />
-              <iconPacks:PackIconOcticons Kind="CircleSlash" />
-            </Grid>
-            <ControlTemplate.Triggers>
-              <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.Official}">
-                <Setter Property="Visibility" Value="Hidden" />
-              </DataTrigger>
-              <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="Red" />
-              </Trigger>
-              <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Foreground" Value="DarkRed" />
-              </Trigger>
-              <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Foreground" Value="Red" />
-              </Trigger>
-            </ControlTemplate.Triggers>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
 
     <Style x:Key="ListBoxItemBlinkStyle" TargetType="{x:Type ListBoxItem}">
       <Setter Property="Visibility">
@@ -100,7 +67,7 @@
                   Focusable="False"
                   FontSize="6"
                   IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                  Style="{StaticResource AccentedSquareButtonStyle}" />
+                  Style="{StaticResource AccentedSquareButtonStyle}"  />
               </StackPanel>
               <Border
                 Name="content"
@@ -121,74 +88,6 @@
       </Setter>
     </Style>
 
-    <DataTemplate DataType="{x:Type viewModels:LiveItemViewModel}">
-      <Grid Margin="1" TextBlock.FontSize="12">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal">
-          <Border>
-            <Border.Style>
-              <Style TargetType="{x:Type Border}">
-                <Style.Triggers>
-                  <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.Official}">
-                    <Setter Property="Background" Value="#FF78D0FF" />
-                  </DataTrigger>
-                  <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.User}">
-                    <Setter Property="Background" Value="#FF77B8B8" />
-                  </DataTrigger>
-                  <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.Channel}">
-                    <Setter Property="Background" Value="#FFFFD979" />
-                  </DataTrigger>
-                </Style.Triggers>
-              </Style>
-            </Border.Style>
-            <TextBlock
-              Margin="3,0"
-              VerticalAlignment="Center"
-              FontWeight="Bold"
-              LineHeight="15"
-              LineStackingStrategy="BlockLineHeight"
-              Text="{Binding ProviderType, Converter={StaticResource ProviderTypeConverter}}" />
-          </Border>
-          <Image
-            Width="70"
-            Height="70"
-            ImageFailed="Image_ImageFailed"
-            Source="{Binding IconUrl}" />
-        </StackPanel>
-        <StackPanel
-          Grid.Column="1"
-          Margin="3,0,0,0"
-          VerticalAlignment="Top">
-          <HeaderedContentControl Content="{Binding ViewCount}" Header="来場:" />
-          <HeaderedContentControl Content="{Binding CommentCount}" Header="コメ:" />
-          <HeaderedContentControl Content="{Binding TimeshiftCount}" Header="予約:" />
-        </StackPanel>
-        <StackPanel
-          Grid.Column="2"
-          Margin="5,0,0,0"
-          VerticalAlignment="Top">
-          <TextBlock Text="{Binding StartTime, Converter={StaticResource StartTimeConverter}}" />
-          <TextBlock FontSize="16">
-            <local:HyperlinkEx NavigateUri="{Binding LiveUrl}"><Run Text="{Binding Title, Mode=OneTime}" /></local:HyperlinkEx>
-          </TextBlock>
-          <TextBlock Text="{Binding NonTagDescription}" />
-        </StackPanel>
-        <ToggleButton
-          Grid.Column="2"
-          Width="16"
-          Height="16"
-          HorizontalAlignment="Right"
-          VerticalAlignment="Top"
-          Command="{Binding DataContext.MuteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
-          CommandParameter="{Binding}"
-          IsChecked="{Binding IsMuted}"
-          Style="{StaticResource MuteButton}" />
-      </Grid>
-    </DataTemplate>
   </UserControl.Resources>
   <Grid>
     <Grid.RowDefinitions>

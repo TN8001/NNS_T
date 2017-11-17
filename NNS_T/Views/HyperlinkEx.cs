@@ -21,6 +21,10 @@ namespace NNS_T.Views
 
         private Point? downPos;
 
+        static HyperlinkEx()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(HyperlinkEx), new FrameworkPropertyMetadata(typeof(HyperlinkEx)));
+        }
 
         protected override void OnInitialized(EventArgs e)
         {
