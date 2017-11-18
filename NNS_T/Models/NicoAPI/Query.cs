@@ -48,6 +48,24 @@ namespace NNS_T.Models.NicoAPI
                 return content.ReadAsStringAsync().Result;
         }
 
+        // ここに置くのは冗長な感じがしないでもないが似た処理なのでまかせてみた
+        ///<summary>エンコード済みWeb版検索クエリ文字列</summary>
+        public string GetSearchString(bool muteOfficial)
+        {
+            var d = new Dictionary<string, string>();
+            d.Add("sort", "recent");
+            d.Add("keyword", Keyword);
+            if(muteOfficial)
+                d.Add("filter", ":onair:+:channel:+:community:");
+            else
+                d.Add("filter", ":onair:");
+            if(Targets.HasFlag(Targets.TagsExact))
+                d.Add("kind", "tags");
+
+            using(var content = new FormUrlEncodedContent(d))
+                return content.ReadAsStringAsync().Result;
+        }
+
         private Dictionary<string, string> GetQueryDict()
         {
             var d = new Dictionary<string, string>();

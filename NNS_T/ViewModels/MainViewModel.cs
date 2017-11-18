@@ -70,6 +70,9 @@ namespace NNS_T.ViewModels
 
         ///<summary>取得タイマonoff（裏）コマンド</summary>
         public RelayCommand ToggleTimerCommand { get; }
+
+        ///<summary>ニコニコ検索ページにジャンプコマンド</summary>
+        public RelayCommand NicoWebCommand { get; }
         #endregion
 
         private DispatcherTimer timer = new DispatcherTimer();
@@ -166,6 +169,17 @@ namespace NNS_T.ViewModels
             });
             PlaySoundCommand = new RelayCommand(() => ToastWindow.PlaySound());
             ToggleTimerCommand = new RelayCommand(() => IsTimerEnabled = !IsTimerEnabled);
+            NicoWebCommand = new RelayCommand(() =>
+            {
+                var q = new Query
+                {
+                    Keyword = Settings.Search.Query,
+                    Targets = Settings.Search.Targets,
+                };
+
+                var s = nicoApi.GetSearchUrl(q, Settings.Mute.Official);
+                Process.Start(s);
+            });
 
             timer.Interval = TimeSpan.FromSeconds(Settings.Search.IntervalSec);
             timer.Tick += (s, e) =>

@@ -168,11 +168,17 @@
         <Expander Margin="0,0,0,-1" IsExpanded="{Binding Settings.Window.IsExpanded}">
           <Border Padding="5">
             <StackPanel>
-              <RadioButton
+              <Grid>
+                <RadioButton
                 HorizontalAlignment="Left"
                 Content="タグ検索"
                 GroupName="Target"
-                IsChecked="{Binding Settings.Search.Targets, ConverterParameter={x:Static nicoApi:Targets.TagsExact}, Converter={StaticResource Targets2CheckBoxConverter}}" />
+                IsChecked="{Binding Settings.Search.Targets, ConverterParameter={x:Static nicoApi:Targets.TagsExact}, Converter={StaticResource Targets2CheckBoxConverter}}" VerticalAlignment="Bottom" />
+                <Button
+                  HorizontalAlignment="Right" Command="{Binding NicoWebCommand}"
+                  Content="niconico検索ページ" Padding="5,0" >
+                </Button>
+              </Grid>
               <Grid Margin="0,2,0,0">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="Auto" />
@@ -202,13 +208,13 @@
                     IsChecked="{Binding Settings.Search.Targets, Converter={StaticResource Targets2CheckBoxConverter}, ConverterParameter={x:Static nicoApi:Targets.Tags}}" />
                 </WrapPanel>
               </Grid>
-              <WrapPanel Margin="0,5,0,0" Orientation="Horizontal">
-                <CheckBox
-                  Margin="0,0,5,0"
-                  Content="公式をミュートする"
-                  IsChecked="{Binding Settings.Mute.Official}" />
-                <CheckBox Content="ミュートを表示する" IsChecked="{Binding Settings.Mute.ShowList}" />
-              </WrapPanel>
+                <WrapPanel Margin="0,5,0,0" Orientation="Horizontal">
+                  <CheckBox
+                    Margin="0,0,5,0"
+                    Content="公式をミュートする"
+                    IsChecked="{Binding Settings.Mute.Official}" />
+                  <CheckBox Content="ミュートを表示する" IsChecked="{Binding Settings.Mute.ShowList}" />
+                </WrapPanel>
             </StackPanel>
           </Border>
         </Expander>

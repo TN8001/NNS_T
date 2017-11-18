@@ -19,15 +19,22 @@ namespace NNS_T.Models.NicoAPI
     {
         ///<summary>コミュニティURL</summary>
         public const string CommunityUrl = "http://com.nicovideo.jp/community/";
-     
+
         ///<summary>チャンネルURL</summary>
         public const string ChannelUrl = "http://com.nicovideo.jp/channel/";
 
         // APIエントリポイント
         private const string ApiUrl = "http://api.search.nicovideo.jp/api/v2/:service/contents/search?";
 
+        // Web版検索ページエントリポイント
+        private const string WebUrl = "http://live.nicovideo.jp/search?";
+
         private HttpClient httpClient = new HttpClient();
 
+        public string GetSearchUrl(Query query, bool muteOfficial)
+        {
+            return WebUrl + query.GetSearchString(muteOfficial);
+        }
         public NicoApi(string appName = null)
         {
             httpClient.Timeout = TimeSpan.FromMilliseconds(10000);
