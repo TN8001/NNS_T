@@ -14,7 +14,7 @@ namespace NNS_T.Models.NicoAPI
         [JsonProperty("totalCount")]
         public int TotalCount;
 
-        ///<summary>リクエストID (54fbd5ff-df0c-42fd-8ddf-f64f73ad21b2等)</summary>
+        ///<summary>リクエストID (英数字とハイフン36文字？)</summary>
         [JsonProperty("id")]
         public string ID;
 

@@ -6,8 +6,8 @@
   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
   xmlns:models="clr-namespace:NNS_T.Models"
   xmlns:presentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
-  xmlns:view="clr-namespace:NNS_T.Views"
   xmlns:viewModels="clr-namespace:NNS_T.ViewModels"
+  xmlns:views="clr-namespace:NNS_T.Views"
   StartupUri="Views/MainWindow.xaml">
   <Application.Resources>
     <ResourceDictionary>
@@ -21,9 +21,10 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
-
+      <!--  共通リソース  -->
       <cnv:StartTimeConverter x:Key="StartTimeConverter" />
 
+      <!--  NoImageイメージをそれっぽく  -->
       <DrawingImage x:Key="NoImageImage" presentationOptions:Freeze="True">
         <DrawingImage.Drawing>
           <GeometryDrawing>
@@ -74,6 +75,7 @@
         </DrawingImage.Drawing>
       </DrawingImage>
 
+      <!--  ヘッダと中身があるようなテンプレもの向け SharedSize  -->
       <Style TargetType="HeaderedContentControl">
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Template">
@@ -85,10 +87,6 @@
                   <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <TextBlock VerticalAlignment="Center" Text="{TemplateBinding Header}" />
-                <!--<ContentPresenter
-                  Margin="{TemplateBinding Padding}"
-                  VerticalAlignment="Center"
-                  Content="{TemplateBinding Header}" />-->
                 <ContentPresenter
                   Grid.Column="1"
                   Margin="{TemplateBinding Padding}"
@@ -100,6 +98,7 @@
         </Setter>
       </Style>
 
+      <!--  ミュートボタン  -->
       <Style x:Key="MuteButton" TargetType="ToggleButton">
         <Setter Property="Background" Value="White" />
         <Setter Property="Foreground" Value="LightGray" />
@@ -129,6 +128,30 @@
         </Setter>
       </Style>
 
+      <!--  ミュート解除ボタン  -->
+      <Style x:Key="UnMuteButton" TargetType="Button">
+        <Setter Property="Foreground" Value="LightGray" />
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="Button">
+              <Grid>
+                <Ellipse Fill="#01FFFFFF" />
+                <iconPacks:PackIconOcticons Padding="1" Kind="X" />
+              </Grid>
+              <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                  <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                  <Setter Property="Foreground" Value="DarkRed" />
+                </Trigger>
+              </ControlTemplate.Triggers>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+
+      <!--  生放送アイテム  -->
       <DataTemplate DataType="{x:Type viewModels:LiveItemViewModel}">
         <Grid
           Height="80"
@@ -187,7 +210,7 @@
               FontSize="15"
               FontWeight="Bold"
               TextWrapping="Wrap">
-              <view:HyperlinkEx NavigateUri="{Binding LiveUrl}"><Run Text="{Binding Title, Mode=OneTime}" /></view:HyperlinkEx>
+              <views:HyperlinkEx NavigateUri="{Binding LiveUrl}"><Run Text="{Binding Title, Mode=OneTime}" /></views:HyperlinkEx>
             </TextBlock>
             <TextBlock Text="{Binding NonTagDescription}" />
           </StackPanel>
@@ -201,6 +224,64 @@
             CommandParameter="{Binding}"
             IsChecked="{Binding IsMuted}"
             Style="{StaticResource MuteButton}" />
+        </Grid>
+      </DataTemplate>
+
+      <!--  ミュート部屋アイテム  -->
+      <DataTemplate DataType="{x:Type models:RoomModel}">
+        <Grid Margin="2" TextBlock.FontSize="12">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <Image
+            Width="70"
+            Height="70"
+            Margin="10,10,0,0"
+            ImageFailed="Image_ImageFailed"
+            Source="{Binding IconUrl}" />
+          <Border
+            Padding="5,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            CornerRadius="8">
+            <Border.Style>
+              <Style TargetType="{x:Type Border}">
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.Official}">
+                    <Setter Property="Background" Value="#FF0080FF" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.User}">
+                    <Setter Property="Background" Value="#FF258D8D" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.Channel}">
+                    <Setter Property="Background" Value="#FFD9A300" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Border.Style>
+            <TextBlock
+              FontWeight="Bold"
+              Foreground="White"
+              Text="{Binding ProviderType}" />
+          </Border>
+          <TextBlock
+            Grid.Column="1"
+            Margin="10,0"
+            FontSize="16"
+            TextWrapping="Wrap">
+            <views:HyperlinkEx NavigateUri="{Binding RoomUrl}"><Run Text="{Binding Title, Mode=OneTime}" /></views:HyperlinkEx>
+          </TextBlock>
+          <Button
+            Grid.Column="2"
+            Width="16"
+            Height="16"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Command="{Binding DataContext.UnMuteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
+            CommandParameter="{Binding}"
+            Style="{StaticResource UnMuteButton}" />
         </Grid>
       </DataTemplate>
 

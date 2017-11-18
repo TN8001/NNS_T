@@ -3,6 +3,7 @@ using System.Xml.Serialization;
 
 namespace NNS_T.Models
 {
+    // ミュート用
     ///<summary>部屋の情報</summary>
     public class RoomModel
     {

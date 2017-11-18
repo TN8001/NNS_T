@@ -4,9 +4,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-  xmlns:local="clr-namespace:NNS_T.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:models="clr-namespace:NNS_T.Models"
   d:DesignHeight="300"
   d:DesignWidth="300"
   mc:Ignorable="d">
@@ -16,85 +14,8 @@
       <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
 
-    <Style x:Key="UnMuteButton" TargetType="Button">
-      <Setter Property="Foreground" Value="LightGray" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="Button">
-            <Grid>
-              <Ellipse Fill="#01FFFFFF" />
-              <iconPacks:PackIconOcticons Padding="1" Kind="X" />
-            </Grid>
-            <ControlTemplate.Triggers>
-              <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="Red" />
-              </Trigger>
-              <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Foreground" Value="DarkRed" />
-              </Trigger>
-            </ControlTemplate.Triggers>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-
-    <DataTemplate DataType="{x:Type models:RoomModel}">
-      <Grid Margin="2" TextBlock.FontSize="12">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition />
-          <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal">
-          <Border>
-            <Border.Style>
-              <Style TargetType="{x:Type Border}">
-                <Style.Triggers>
-                  <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.Official}">
-                    <Setter Property="Background" Value="#FF78D0FF" />
-                  </DataTrigger>
-                  <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.User}">
-                    <Setter Property="Background" Value="#FF77B8B8" />
-                  </DataTrigger>
-                  <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.Channel}">
-                    <Setter Property="Background" Value="#FFFFD979" />
-                  </DataTrigger>
-                </Style.Triggers>
-              </Style>
-            </Border.Style>
-            <TextBlock
-              Margin="3,0"
-              VerticalAlignment="Center"
-              FontWeight="Bold"
-              LineHeight="15"
-              LineStackingStrategy="BlockLineHeight"
-              Text="{Binding ProviderType, Converter={StaticResource ProviderTypeConverter}}" />
-          </Border>
-          <Image
-            Width="70"
-            Height="70"
-            ImageFailed="Image_ImageFailed"
-            Source="{Binding IconUrl}" />
-        </StackPanel>
-        <TextBlock
-          Grid.Column="1"
-          FontSize="16"
-          TextWrapping="Wrap">
-          <local:HyperlinkEx NavigateUri="{Binding RoomUrl}"><Run Text="{Binding Title, Mode=OneTime}" /></local:HyperlinkEx>
-        </TextBlock>
-        <Button
-          Grid.Column="2"
-          Width="16"
-          Height="16"
-          HorizontalAlignment="Right"
-          VerticalAlignment="Top"
-          Command="{Binding DataContext.UnMuteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
-          CommandParameter="{Binding}"
-          Style="{StaticResource UnMuteButton}" />
-      </Grid>
-    </DataTemplate>
-
   </UserControl.Resources>
+
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="36" />
@@ -123,6 +44,8 @@
         VerticalAlignment="Center"
         Text="{Binding Items.Count, StringFormat=Total: {0}, ElementName=listBox, Mode=OneWay}" />
     </Grid>
+
+    <!--  SearchPageの方は仕組み上バーチャルにできないがこっちは入れてもいいかもしれない？？  -->
     <ListBox
       x:Name="listBox"
       Grid.Row="1"

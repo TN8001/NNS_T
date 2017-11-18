@@ -6,6 +6,7 @@ using System.Windows.Data;
 
 namespace NNS_T.Utility.Converters
 {
+    // xamlでCheckBoxとのbinding用
     ///<summary>検索対象フラグとboolの変換</summary>
     public class Targets2CheckBoxConverter : FlagsEnum2BoolConverter<Targets> { }
 
@@ -14,6 +15,10 @@ namespace NNS_T.Utility.Converters
     {
         private int target;
 
+        /// <summary>フラグenum値がフラグを持っているかどうか</summary>
+        /// <param name="value">対象フラグenum値</param>
+        /// <param name="parameter">検証したいフラグ</param>
+        /// <returns>bool</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if(!(value is T)) return DependencyProperty.UnsetValue;
@@ -26,6 +31,10 @@ namespace NNS_T.Utility.Converters
             return (v & p) == p;
         }
 
+        /// <summary>フラグenum値のフラグをOnOff</summary>
+        /// <param name="value">bool</param>
+        /// <param name="parameter">操作したいフラグ</param>
+        /// <returns>合成後のフラグenum値</returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if(!(value is bool)) return DependencyProperty.UnsetValue;

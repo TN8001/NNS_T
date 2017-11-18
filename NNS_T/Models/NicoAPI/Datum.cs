@@ -3,6 +3,7 @@ using System;
 
 namespace NNS_T.Models.NicoAPI
 {
+    // 一応汎用になっているが生放送検索以外未検証
     ///<summary>コンテンツ情報</summary>
     [JsonObject]
     public class Datum

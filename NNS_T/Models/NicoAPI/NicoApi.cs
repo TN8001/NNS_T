@@ -13,8 +13,9 @@ namespace NNS_T.Models.NicoAPI
         public NicoApiRequestException(string message, Exception innerException) : base(message, innerException) { }
     }
 
+    // 一応汎用になっているが生放送検索以外未検証
     ///<summary>niconicoコンテンツ検索API</summary>
-    public  class NicoApi
+    public class NicoApi
     {
         ///<summary>コミュニティURL</summary>
         public const string CommunityUrl = "http://com.nicovideo.jp/community/";
@@ -43,6 +44,7 @@ namespace NNS_T.Models.NicoAPI
                 var s = await GetHttpStringAsync(api + query.ToEncodeString());
                 var r = JsonConvert.DeserializeObject<Response>(s);
 
+                // エラーメッセージをViewの表示に使用中
                 if(r.Meta.Status != 200)
                 {
                     var m = r.Meta.Status == 400 ? "Status:400 不正なパラメータです。"

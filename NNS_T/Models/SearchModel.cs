@@ -26,7 +26,8 @@ namespace NNS_T.Models
         [XmlIgnore]
         public Fields Fields;
 
-        ///<summary>レスポンスに説明文を含めるかどうか</summary>
+        // 否定形はいまいちだが面倒なのでxamlでの使い勝手を優先ｗ
+        ///<summary>レスポンスに説明文を含めないかどうか</summary>
         [XmlAttribute]
         public bool UnuseDescription
         {

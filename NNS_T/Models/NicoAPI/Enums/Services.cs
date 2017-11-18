@@ -2,6 +2,7 @@
 
 namespace NNS_T.Models.NicoAPI
 {
+    // 一応分けたがLiveしか使わない
     ///<summary>ニコニコ機能種別</summary>
     public enum Services
     {

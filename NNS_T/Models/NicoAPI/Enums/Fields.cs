@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace NNS_T.Models.NicoAPI
 {
+    // 一応汎用になっているが生放送検索以外未検証
     ///<summary>レスポンスに含むフィールド</summary>
     [Flags]
     public enum Fields

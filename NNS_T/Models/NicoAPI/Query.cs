@@ -5,6 +5,7 @@ using System.Net.Http;
 
 namespace NNS_T.Models.NicoAPI
 {
+    // 一応汎用になっているが生放送検索以外未検証
     ///<summary>niconico コンテンツ検索API GETクエリパラメータ</summary>
     public class Query
     {

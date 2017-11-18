@@ -18,10 +18,10 @@ namespace NNS_T.Models
         public NotifyState State { get => _State; set => Set(ref _State, value); }
         private NotifyState _State;
 
-        ///<summary>通知onoff</summary> // デバッグ用
-        [XmlAttribute, DefaultValue(true)]
-        public bool IsEnabled { get => _IsEnabled; set { if(Set(ref _IsEnabled, value)) if(!value) ToastWindow.Clear(); } }
-        private bool _IsEnabled;
+        /////<summary>通知onoff</summary> // デバッグ用
+        //[XmlAttribute, DefaultValue(true)]
+        //public bool IsEnabled { get => _IsEnabled; set { if(Set(ref _IsEnabled, value)) if(!value) ToastWindow.Clear(); } }
+        //private bool _IsEnabled;
 
         ///<summary>通知表示時間</summary>
         [XmlAttribute]
@@ -34,7 +34,7 @@ namespace NNS_T.Models
         {
             Sound = NotifySound.System;
             State = NotifyState.Always;
-            IsEnabled = true;
+            //IsEnabled = true;
             ShowSec = 15;
         }
         [OnDeserializing]

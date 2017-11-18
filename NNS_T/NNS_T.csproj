@@ -98,9 +98,6 @@
     <Compile Include="Utility\SettingsHelper.cs" />
     <Compile Include="ViewModels\LiveItemViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="Views\PropertyWindow.xaml.cs">
-      <DependentUpon>PropertyWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Utility\Timer.cs" />
     <Compile Include="Views\HyperlinkEx.cs" />
     <Compile Include="Models\NicoAPI\Datum.cs" />
@@ -127,10 +124,6 @@
       <DependentUpon>ToastWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Themes\Generic.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PropertyWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

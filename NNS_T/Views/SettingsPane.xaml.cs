@@ -4,10 +4,10 @@ using System.Windows.Controls;
 
 namespace NNS_T.Views
 {
-    ///<summary>enumと表示名の対応付け用 XAMLで指定できるようにするため専用クラスに</summary>
+    ///<summary>NotifySoundと表示名の対応付け用辞書 XAMLで指定できるようにするため専用クラス</summary>
     public class NotifySoundDictionary : Dictionary<NotifySound, string> { }
 
-    ///<summary>enumと表示名の対応付け用 XAMLで指定できるようにするため専用クラスに</summary>
+    ///<summary>NotifyStateと表示名の対応付け用辞書 XAMLで指定できるようにするため専用クラス</summary>
     public class NotifyPatternDictionary : Dictionary<NotifyState, string> { }
 
     public partial class SettingsPane : UserControl

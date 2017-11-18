@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -19,11 +18,15 @@ using System.Windows.Markup;
 
 [assembly: InternalsVisibleTo("NNS_TTests")]
 
+
+
 // XAML debug mode hack
 // https://stackoverflow.com/questions/8732307/does-xaml-have-a-conditional-compiler-directive-for-debug-mode
 #if DEBUG
 [assembly: XmlnsDefinition("debug-mode", "Namespace")]
 #endif
+
+
 
 
 // ComVisible を false に設定すると、このアセンブリ内の型は COM コンポーネントから

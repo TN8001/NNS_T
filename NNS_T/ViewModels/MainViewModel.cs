@@ -281,7 +281,7 @@ namespace NNS_T.ViewModels
         private void ShowToast(IEnumerable<LiveItemViewModel> items)
         {
             if(isDirty) return;
-            if(!Settings.Notify.IsEnabled) return;
+            //if(!Settings.Notify.IsEnabled) return;
 
             switch(Settings.Notify.State)
             {

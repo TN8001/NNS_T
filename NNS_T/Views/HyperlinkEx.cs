@@ -6,9 +6,14 @@ using System.Windows.Input;
 
 namespace NNS_T.Views
 {
+    // Process.Start
+    // 下線 マウスオーバー時のみ
+    // リンクにツールチップ
+    // リンクのドラッグ＆ドロップ
     public class HyperlinkEx : Hyperlink
     {
-        // トーストがurlドラッグ中に閉じないようにするため もっといい方法がありそうだが。。。
+        // urlドラッグ中にトーストが閉じないようにするためToastWindowでチェック
+        // もっといい方法がありそうだが。。。
         public static readonly RoutedEvent DragStartEvent
             = EventManager.RegisterRoutedEvent("DragStart", RoutingStrategy.Bubble,
                 typeof(RoutedEventHandler), typeof(HyperlinkEx));
@@ -21,10 +26,7 @@ namespace NNS_T.Views
 
         private Point? downPos;
 
-        static HyperlinkEx()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(HyperlinkEx), new FrameworkPropertyMetadata(typeof(HyperlinkEx)));
-        }
+        static HyperlinkEx() => DefaultStyleKeyProperty.OverrideMetadata(typeof(HyperlinkEx), new FrameworkPropertyMetadata(typeof(HyperlinkEx)));
 
         protected override void OnInitialized(EventArgs e)
         {

@@ -16,10 +16,17 @@
     <cnv:Targets2CheckBoxConverter x:Key="Targets2CheckBoxConverter" />
     <cnv:Mute2VisibilityConverter x:Key="Mute2VisibilityConverter" />
 
+    <!--  新規追加時のアピールアニメーション 赤く3回点滅  -->
     <Storyboard x:Key="Storyboard" FillBehavior="Stop">
       <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)">
         <EasingColorKeyFrame KeyTime="0:0:2" Value="Pink" />
         <EasingColorKeyFrame KeyTime="0:0:4" Value="White" />
+
+        <!--
+          #if DEBUG hack
+          https://stackoverflow.com/questions/8732307/does-xaml-have-a-conditional-compiler-directive-for-debug-mode
+          デバッグ時はちょっとくどいので1回で終了
+        -->
         <mc:AlternateContent>
           <mc:Choice Requires="debug" />
           <mc:Fallback>
@@ -32,6 +39,7 @@
       </ColorAnimationUsingKeyFrames>
     </Storyboard>
 
+    <!--  アニメ適用 ミュート非表示  -->
     <Style x:Key="ListBoxItemBlinkStyle" TargetType="{x:Type ListBoxItem}">
       <Setter Property="Visibility">
         <Setter.Value>
@@ -51,6 +59,7 @@
       </Style.Triggers>
     </Style>
 
+    <!--  検索詳細開閉ボタン  -->
     <Style TargetType="Expander">
       <Setter Property="Template">
         <Setter.Value>
@@ -67,7 +76,7 @@
                   Focusable="False"
                   FontSize="6"
                   IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                  Style="{StaticResource AccentedSquareButtonStyle}"  />
+                  Style="{StaticResource AccentedSquareButtonStyle}" />
               </StackPanel>
               <Border
                 Name="content"
@@ -87,8 +96,8 @@
         </Setter.Value>
       </Setter>
     </Style>
-
   </UserControl.Resources>
+
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="36" />
@@ -139,6 +148,7 @@
             <ColumnDefinition />
             <ColumnDefinition Width="Auto" />
           </Grid.ColumnDefinitions>
+          <!--  MahApps機能 クリアボタン ウォーターマーク  -->
           <TextBox
             VerticalContentAlignment="Center"
             controls:TextBoxHelper.ClearTextButton="True"
@@ -214,11 +224,19 @@
           </TextBlock.Style>
         </TextBlock>
       </StackPanel>
+
+      <!--  アイテム数が0だった時だけ表示  -->
       <Label
         Grid.Row="1"
         HorizontalContentAlignment="Center"
         Background="White"
         Content="Empty" />
+
+      <!--
+        アニメーションの関係上リサイクリングは問題外
+        ただのバーチャルもうまくアニメ発砲できなかった
+        最大100件なのでバーチャルなしでも特に問題はないと思う
+      -->
       <ListBox
         Grid.Row="1"
         ItemContainerStyle="{StaticResource ListBoxItemBlinkStyle}"
@@ -238,6 +256,5 @@
         </ListBox.Style>
       </ListBox>
     </Grid>
-
   </Grid>
 </UserControl>

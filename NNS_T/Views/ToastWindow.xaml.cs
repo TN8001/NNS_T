@@ -4,13 +4,11 @@ using NNS_T.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Media;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -130,8 +128,6 @@ namespace NNS_T.Views
             IsDragging = false;
             timer.Resume();
         }
-        //private void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e)
-        //    => ((Image)sender).Source = noImageImage;
 
         private void OnMouseEnter(object sender, MouseEventArgs e) => timer.Pause();
         private void OnMouseLeave(object sender, MouseEventArgs e)

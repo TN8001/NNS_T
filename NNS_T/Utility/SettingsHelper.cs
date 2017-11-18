@@ -7,7 +7,22 @@ using System.Xml.Serialization;
 
 namespace NNS_T.Utility
 {
-    ///<summary>シリアライズヘルパ</summary>
+    // XmlSerializerを使用しているのはただのこだわりですw
+    // 普通はDataContractSerializerを使えばいいと思います
+    // 以下ポエム
+    // バイナリは置いておいてテキストファイルで保存する以上簡単に中身を見られるわけで
+    // あまりに汚いとかっこ悪いじゃないですか？？
+    // 無駄なNamespaceはいらないですし順番や入れ子具合とか。。。
+    // DataContractSerializerは属性が使えないので無駄に行数を食うんですよね
+    // 今回の場合だとMuteItemが1行だと編集も楽だろうし
+    //
+    // 編集についても建前としては編集しないで下さいとしか言えませんが
+    // 編集してソフトを思惑通り騙せてやったと喜んだり
+    // 穴を突こうとしたらきっちり対策されていてさすがだなーと思ったり（今作はほぼ対策0ですがw）
+    // そういうのがプログラミングの原点だった気がします
+    // なので出来るだけきれいに 編集に強くしたいというこだわりでした
+
+    ///<summary>設定ファイルヘルパ</summary>
     public static class SettingsHelper
     {
         ///<summary>ファイルからデシリアライズ (ファイル名省略時[ユーザー]\AppData\Local\[アセンブリ名]\user.config)</summary>
