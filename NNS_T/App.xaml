@@ -197,7 +197,7 @@
             Grid.Column="1"
             Margin="10,0,0,0"
             VerticalAlignment="Top">
-            <StackPanel Orientation="Horizontal"  Margin="0,0,20,0">
+            <StackPanel Margin="0,0,20,0" Orientation="Horizontal">
               <iconPacks:PackIconOcticons Foreground="#FFB2BAC2" Kind="Person" />
               <TextBlock Margin="5,0,10,0" Text="{Binding ViewCount}" />
               <iconPacks:PackIconOcticons Foreground="#FFB2BAC2" Kind="Comment" />
