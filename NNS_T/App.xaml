@@ -195,9 +195,9 @@
 
           <StackPanel
             Grid.Column="1"
-            Margin="10,0"
+            Margin="10,0,0,0"
             VerticalAlignment="Top">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal"  Margin="0,0,20,0">
               <iconPacks:PackIconOcticons Foreground="#FFB2BAC2" Kind="Person" />
               <TextBlock Margin="5,0,10,0" Text="{Binding ViewCount}" />
               <iconPacks:PackIconOcticons Foreground="#FFB2BAC2" Kind="Comment" />
@@ -215,7 +215,7 @@
             <TextBlock Text="{Binding NonTagDescription}" />
           </StackPanel>
           <ToggleButton
-            Grid.Column="2"
+            Grid.Column="1"
             Width="16"
             Height="16"
             HorizontalAlignment="Right"
