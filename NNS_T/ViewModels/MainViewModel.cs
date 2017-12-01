@@ -155,9 +155,7 @@ namespace NNS_T.ViewModels
                 if(string.IsNullOrEmpty(Settings.BrowserPath))
                     Process.Start(s);
                 else
-                {
                     Process.Start(Settings.BrowserPath, s);
-                }
             });
             SelectBrowserPathCommand = new RelayCommand<string>((s) =>
             {
@@ -167,10 +165,9 @@ namespace NNS_T.ViewModels
                     FilterIndex = 0,
                     Filter = "ブラウザ(.exe)|*.exe"
                 };
-                bool? result = openFileDialog.ShowDialog();
+                var result = openFileDialog.ShowDialog();
                 if(result == true)
                     Settings.BrowserPath = openFileDialog.FileName;
-
             });
             OpenFolderCommand = new RelayCommand<FolderType>((f) =>
             {
