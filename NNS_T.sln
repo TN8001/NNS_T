@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "How2Use", "How2Use", "{EEAD
 		How2Use\Mute.png = How2Use\Mute.png
 		How2Use\README.md = How2Use\README.md
 		How2Use\Search.png = How2Use\Search.png
+		How2Use\Settings.png = How2Use\Settings.png
 		How2Use\Sound.png = How2Use\Sound.png
 		How2Use\Toast.png = How2Use\Toast.png
 	EndProjectSection
