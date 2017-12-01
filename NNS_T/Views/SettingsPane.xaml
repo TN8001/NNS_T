@@ -117,7 +117,7 @@
           Margin="5"
           Content="ミュートを表示する"
           IsChecked="{Binding Settings.Mute.ShowList}" />
-        <TextBlock Margin="5,5,5,0" Text="開くブラウザ" />
+        <TextBlock Margin="5,5,5,0" Text="開くブラウザ:" />
         <Grid Margin="5,0,5,5">
           <Grid.ColumnDefinitions>
             <ColumnDefinition />
