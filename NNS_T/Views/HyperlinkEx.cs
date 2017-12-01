@@ -44,10 +44,14 @@ namespace NNS_T.Views
 
             if(NavigateUri?.AbsoluteUri == null) return;
 
-            if(string.IsNullOrEmpty(BrowserPath))
-                Process.Start(NavigateUri.AbsoluteUri);
-            else
-                Process.Start(BrowserPath, NavigateUri.AbsoluteUri);
+            try
+            {
+                if(string.IsNullOrEmpty(BrowserPath))
+                    Process.Start(NavigateUri.AbsoluteUri);
+                else
+                    Process.Start(BrowserPath, NavigateUri.AbsoluteUri);
+            }
+            catch { /* NOP */ }
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)

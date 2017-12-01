@@ -152,10 +152,14 @@ namespace NNS_T.ViewModels
             //shell:AppsFolder\Microsoft.MicrosoftEdge_8wekyb3d8bbwe!MicrosoftEdge
             OpenBrowserCommand = new RelayCommand<string>((s) =>
             {
-                if(string.IsNullOrEmpty(Settings.BrowserPath))
-                    Process.Start(s);
-                else
-                    Process.Start(Settings.BrowserPath, s);
+                try
+                {
+                    if(string.IsNullOrEmpty(Settings.BrowserPath))
+                        Process.Start(s);
+                    else
+                        Process.Start(Settings.BrowserPath, s);
+                }
+                catch { /* NOP */ }
             });
             SelectBrowserPathCommand = new RelayCommand<string>((s) =>
             {
