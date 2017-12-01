@@ -71,7 +71,7 @@
           HorizontalAlignment="Right"
           Command="{Binding ProcessStartCommand}"
           CommandParameter="control.exe /name Microsoft.Sound /page 2"
-          Content="サウンドを開く" />
+          Content="サウンドを開く..." />
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
           <Button
             Margin="5,0,5,5"
@@ -83,7 +83,7 @@
             Margin="5,0,5,5"
             Command="{Binding ProcessStartCommand}"
             CommandParameter="SndVol.exe"
-            Content="音量ミキサーを開く" />
+            Content="音量ミキサーを開く..." />
         </StackPanel>
         <HeaderedContentControl Margin="5" Header="通知表示期間:">
           <controls:NumericUpDown
@@ -117,17 +117,32 @@
           Margin="5"
           Content="ミュートを表示する"
           IsChecked="{Binding Settings.Mute.ShowList}" />
+        <TextBlock Margin="5,5,5,0" Text="開くブラウザ" />
+        <Grid Margin="5,0,5,5">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <TextBox
+            VerticalAlignment="Center"
+            controls:TextBoxHelper.Watermark="空でデフォルトブラウザ"
+            Text="{Binding Settings.BrowserPath}" />
+          <Button
+            Grid.Column="1"
+            Command="{Binding SelectBrowserPathCommand}"
+            Content="選択..." />
+        </Grid>
         <WrapPanel Orientation="Horizontal">
           <Button
             Margin="5"
             Command="{Binding OpenFolderCommand}"
             CommandParameter="{x:Static models:FolderType.Settings}"
-            Content="設定ファイルフォルダを開く" />
+            Content="設定ファイルフォルダを開く..." />
           <Button
             Margin="5"
             Command="{Binding OpenFolderCommand}"
             CommandParameter="{x:Static models:FolderType.Assembly}"
-            Content="インストールフォルダを開く" />
+            Content="インストールフォルダを開く..." />
         </WrapPanel>
       </StackPanel>
     </ScrollViewer>

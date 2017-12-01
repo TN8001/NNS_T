@@ -7,6 +7,7 @@
   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:views="clr-namespace:NNS_T.Views"
+  x:Name="metroWindow"
   Title="NNS_T"
   Width="{Binding Settings.Window.Width, Mode=TwoWay}"
   Height="{Binding Settings.Window.Height, Mode=TwoWay}"
@@ -21,6 +22,8 @@
   WindowState="{Binding WindowState}"
   mc:Ignorable="d">
   <controls:MetroWindow.Resources>
+
+
     <DataTemplate x:Key="MenuItemTemplate" DataType="{x:Type MenuItem}">
       <Grid Height="48">
         <Grid.ColumnDefinitions>
@@ -77,7 +80,7 @@
   </controls:MetroWindow.LeftWindowCommands>
   <controls:MetroWindow.RightWindowCommands>
     <controls:WindowCommands>
-      <Button Command="{Binding ProcessStartCommand}" CommandParameter="https://github.com/TN8001/NNS_T">
+      <Button Command="{Binding OpenBrowserCommand}" CommandParameter="https://github.com/TN8001/NNS_T">
         <StackPanel Orientation="Horizontal">
           <Rectangle
             Width="20"
@@ -90,7 +93,8 @@
           <TextBlock
             Margin="4,0,0,0"
             VerticalAlignment="Center"
-            Text="Github" />
+            Text="Github"
+            Visibility="{Binding ActualWidth, ConverterParameter=350, Converter={StaticResource LessThanCollapsedConverter}, ElementName=metroWindow, Mode=OneWay}" />
         </StackPanel>
       </Button>
     </controls:WindowCommands>

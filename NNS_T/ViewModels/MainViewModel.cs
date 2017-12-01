@@ -1,4 +1,5 @@
-﻿using NNS_T.Models;
+﻿using Microsoft.Win32;
+using NNS_T.Models;
 using NNS_T.Models.NicoAPI;
 using NNS_T.Utility;
 using NNS_T.Views;
@@ -59,7 +60,13 @@ namespace NNS_T.ViewModels
         ///<summary>放送ミュート解除コマンド</summary>
         public RelayCommand<RoomModel> UnMuteCommand { get; }
 
-        ///<summary>規定ブラウザで開くコマンド</summary>
+        ///<summary>ブラウザで開くコマンド</summary>
+        public RelayCommand<string> OpenBrowserCommand { get; }
+
+        ///<summary>ブラウザ選択コマンド</summary>
+        public RelayCommand<string> SelectBrowserPathCommand { get; }
+
+        ///<summary>ProcessStartコマンド</summary>
         public RelayCommand<string> ProcessStartCommand { get; }
 
         ///<summary>規定ファイラで開くコマンド</summary>
@@ -140,6 +147,31 @@ namespace NNS_T.ViewModels
                 }
                 catch { /* NOP */ }
             });
+
+            //Edgeの場合
+            //shell:AppsFolder\Microsoft.MicrosoftEdge_8wekyb3d8bbwe!MicrosoftEdge
+            OpenBrowserCommand = new RelayCommand<string>((s) =>
+            {
+                if(string.IsNullOrEmpty(Settings.BrowserPath))
+                    Process.Start(s);
+                else
+                {
+                    Process.Start(Settings.BrowserPath, s);
+                }
+            });
+            SelectBrowserPathCommand = new RelayCommand<string>((s) =>
+            {
+                var openFileDialog = new OpenFileDialog
+                {
+                    Title = "ブラウザを選択",
+                    FilterIndex = 0,
+                    Filter = "ブラウザ(.exe)|*.exe"
+                };
+                bool? result = openFileDialog.ShowDialog();
+                if(result == true)
+                    Settings.BrowserPath = openFileDialog.FileName;
+
+            });
             OpenFolderCommand = new RelayCommand<FolderType>((f) =>
             {
                 try
@@ -178,7 +210,7 @@ namespace NNS_T.ViewModels
                 };
 
                 var s = nicoApi.GetSearchUrl(q, Settings.Mute.Official);
-                Process.Start(s);
+                OpenBrowserCommand.Execute(s);
             });
 
             timer.Interval = TimeSpan.FromSeconds(Settings.Search.IntervalSec);

@@ -92,8 +92,8 @@ namespace NNS_T.Views
             {
                 Task.Run(() =>
                 {
-                    Console.Beep(2000, 100);
-                    Console.Beep(1000, 80);
+                    Console.Beep(2000, 150);
+                    Console.Beep(1000, 160);
                 });
             }
         }

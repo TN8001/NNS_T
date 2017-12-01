@@ -12,6 +12,9 @@ namespace NNS_T.Views
     // リンクのドラッグ＆ドロップ
     public class HyperlinkEx : Hyperlink
     {
+        ///<summary>開くブラウザパス 空はデフォルト</summary>
+        public static string BrowserPath { get; set; }
+
         // urlドラッグ中にトーストが閉じないようにするためToastWindowでチェック
         // もっといい方法がありそうだが。。。
         public static readonly RoutedEvent DragStartEvent
@@ -41,7 +44,10 @@ namespace NNS_T.Views
 
             if(NavigateUri?.AbsoluteUri == null) return;
 
-            Process.Start(NavigateUri.AbsoluteUri);
+            if(string.IsNullOrEmpty(BrowserPath))
+                Process.Start(NavigateUri.AbsoluteUri);
+            else
+                Process.Start(BrowserPath, NavigateUri.AbsoluteUri);
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)

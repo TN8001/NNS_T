@@ -90,6 +90,7 @@
     <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="Models\WindowModel.cs" />
     <Compile Include="Models\NicoAPI\Enums\Fields.cs" />
+    <Compile Include="Utility\Converters\LessThanCollapsedConverter.cs" />
     <Compile Include="Utility\Converters\Mute2VisibilityConverter.cs" />
     <Compile Include="Utility\ProductInfo.cs" />
     <Compile Include="Utility\Converters\BoolInverseConverter.cs" />

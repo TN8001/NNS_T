@@ -23,6 +23,7 @@
 
       <!--  共通リソース  -->
       <cnv:StartTimeConverter x:Key="StartTimeConverter" />
+      <cnv:LessThanCollapsedConverter x:Key="LessThanCollapsedConverter" />
 
       <!--  NoImageイメージをそれっぽく  -->
       <DrawingImage x:Key="NoImageImage" presentationOptions:Freeze="True">
@@ -200,10 +201,24 @@
             <StackPanel Margin="0,0,20,0" Orientation="Horizontal">
               <iconPacks:PackIconOcticons Foreground="#FFB2BAC2" Kind="Person" />
               <TextBlock Margin="5,0,10,0" Text="{Binding ViewCount}" />
-              <iconPacks:PackIconOcticons Foreground="#FFB2BAC2" Kind="Comment" />
+              <iconPacks:PackIconOcticons
+                VerticalAlignment="Bottom"
+                Foreground="#FFB2BAC2"
+                Kind="Comment" />
               <TextBlock Margin="5,0,10,0" Text="{Binding CommentCount}" />
-              <iconPacks:PackIconOcticons Foreground="#FFB2BAC2" Kind="Clock" />
-              <TextBlock Margin="5,0,10,0" Text="{Binding TimeshiftCount}" />
+              <StackPanel Orientation="Horizontal">
+                <iconPacks:PackIconOcticons Foreground="#FFB2BAC2" Kind="Clock" />
+                <TextBlock Margin="5,0,10,0" Text="{Binding TimeshiftCount}" />
+                <StackPanel.Style>
+                  <Style TargetType="{x:Type StackPanel}">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding TimeshiftCount}" Value="0">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </StackPanel.Style>
+              </StackPanel>
               <TextBlock Text="{Binding StartTime, Converter={StaticResource StartTimeConverter}}" />
             </StackPanel>
             <TextBlock

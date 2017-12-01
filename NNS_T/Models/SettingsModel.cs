@@ -1,4 +1,5 @@
 ﻿using NNS_T.Utility;
+using NNS_T.Views;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
@@ -20,6 +21,17 @@ namespace NNS_T.Models
         ///<summary>ミュート設定</summary>
         public MuteModel Mute { get; set; }
 
+        ///<summary>開くブラウザのパス</summary>
+        public string BrowserPath
+        {
+            get => _BrowserPath;
+            set
+            {
+                if(Set(ref _BrowserPath, value))
+                    HyperlinkEx.BrowserPath = value;
+            }
+        }
+        private string _BrowserPath;
 
         public SettingsModel() => Initialize();
 
