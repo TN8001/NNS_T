@@ -137,7 +137,7 @@ niconicoAPIに検索に行く間隔 10秒～1800秒（30分）
 11. 開くブラウザ  
 開くブラウザを指定します。空の場合は規定ブラウザになります。  
 exeをダブルクリックしても開かないようなアプリの場合は、特殊な指定が必要になります。  
-例：Microsoft Edgeの場合
+例：Microsoft Edgeの場合  
 「shell:AppsFolder\Microsoft.MicrosoftEdge_8wekyb3d8bbwe!MicrosoftEdge」  
 と入力してください。
 
