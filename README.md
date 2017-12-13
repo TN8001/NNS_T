@@ -6,8 +6,17 @@
 * niconico公式APIでの監視のため比較的？安心
 * コミュニティ・チャンネルごとの通知ミュート（除外）機能
 * 無駄におしゃれな見た目
+## ダウンロード
+[最新バイナリ](https://github.com/TN8001/NNS_T/releases/download/v1.1.4/NNS_T.zip)（Windows10でのみ動作確認）
 ## 使い方
-[詳しい説明](https://github.com/TN8001/NNS_T/blob/master/How2Use/README.md)
+**注意事項**に同意された方のみ使用してください。
+1. ダウンロードしたNNS_T.zipを展開し、適当なフォルダに入れます
+2. NNS_T.exeをダブルクリックします
+3. Windows Defenderの注意喚起が出ますが、「詳細情報」を押すと「実行」ボタンが出ますので実行します（次回からは出なくなります）
+4. 入力エリアにキーワードを入れて🔍ボタンを押します
+5. NNS_T本体や通知の放送タイトルをクリックすると、放送ページをデフォルトブラウザで開きます
+
+[画像付きの詳しい説明へ](https://github.com/TN8001/NNS_T/blob/master/How2Use/README.md)
 ## ライセンス
 [MIT](https://github.com/TN8001/NNS_T/blob/master/LICENSE)
 ## 注意事項
