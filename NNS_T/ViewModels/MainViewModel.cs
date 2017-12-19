@@ -286,25 +286,33 @@ namespace NNS_T.ViewModels
 
             var responseItems = response.Data.Select(x => new LiveItemViewModel(x)).ToArray();
             var removeItems = Items.Except(responseItems).ToArray();
+            var updateItems = Items.Intersect(responseItems).ToArray();
             var count = removeItems.Count();
             if(count > 0) Debug.WriteLine($"Remove count:{count}");
 
             foreach(var item in removeItems)
-                Items.Remove(item);
+                item.Delete(Items);
 
-            foreach(var item in Items)
+            foreach(var item in updateItems)
             {
                 var i = Array.Find(responseItems, x => x.Equals(item));
-                if(i == null) continue;
+                //if(i == null) continue;
 
                 item.Update(i);
             }
 
-            // 2分の根拠はないが1分だと取り逃しが出そうな気がする
-            var first = Items.FirstOrDefault();
-            var time = first != null ? first.StartTime - TimeSpan.FromMinutes(2) : DateTime.MinValue;
+            // ToDo 放送途中でのタグ追加を考慮していなかった
+            // 表示をどうするか。。
+            // 1)時間順で並び替えをやめる（ある意味非常に楽
+            // 2)時間順でそのまま追加（見えなくてもしょうがない
+            // とりあえず1)でやってみる
+            // ↑のため ↓の小細工を中止
+
+            //// 2分の根拠はないが1分だと取り逃しが出そうな気がする
+            //var first = Items.FirstOrDefault();
+            //var time = first != null ? first.StartTime - TimeSpan.FromMinutes(2) : DateTime.MinValue;
             var addItems = responseItems.Except(Items)
-                                        .Where(x => x.StartTime > time)
+                                        //.Where(x => x.StartTime > time)
                                         .OrderBy(x => x.StartTime).ToArray();
             var addCount = addItems.Count();
             if(addCount > 0) Debug.WriteLine($"Add count:{addCount}");

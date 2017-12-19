@@ -2,6 +2,7 @@
 using NNS_T.Models.NicoAPI;
 using NNS_T.Utility;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace NNS_T.ViewModels
@@ -60,15 +61,25 @@ namespace NNS_T.ViewModels
         public bool IsLoaded { get => _IsLoaded; set => Set(ref _IsLoaded, value); }
         private bool _IsLoaded;
 
+        // 取得データが不安定なので何回か待ってから削除する用
+        private int DeleteCount;
 
         public LiveItemViewModel(Datum datum) => this.datum = datum;
 
         public void Update(LiveItemViewModel item)
         {
+            DeleteCount = 0;
             ViewCount = item.ViewCount;
             CommentCount = item.CommentCount;
             TimeshiftCount = item.TimeshiftCount;
             OnPropertyChanged(nameof(StartTime)); // 経過時間更新のためコンバータを作動させる
+        }
+
+        public void Delete(ICollection<LiveItemViewModel> items)
+        {
+            // とりあえず1回待ってみる
+            if(DeleteCount > 0) items.Remove(this);
+            DeleteCount++;
         }
 
         // 新しいもの、終わったものの差分を出すのに楽なので。。
