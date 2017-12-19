@@ -7,7 +7,7 @@
 * コミュニティ・チャンネルごとの通知ミュート（除外）機能
 * 無駄におしゃれな見た目
 ## ダウンロード
-[最新バイナリ](https://github.com/TN8001/NNS_T/releases/download/v1.1.4/NNS_T.zip)（Windows10でのみ動作確認）
+[最新バイナリ](https://github.com/TN8001/NNS_T/releases/download/v1.1.5/NNS_T.zip)（Windows10でのみ動作確認）
 ## 使い方
 **注意事項**に同意された方のみ使用してください。
 1. ダウンロードしたNNS_T.zipを展開し、適当なフォルダに入れます
