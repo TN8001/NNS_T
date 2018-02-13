@@ -1,6 +1,5 @@
 ﻿using NNS_T.Utility;
 using NNS_T.Views;
-using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace NNS_T.Models
@@ -33,16 +32,12 @@ namespace NNS_T.Models
         }
         private string _BrowserPath;
 
-        public SettingsModel() => Initialize();
-
-        private void Initialize()
+        public SettingsModel()
         {
             Window = new WindowModel();
             Notify = new NotifyModel();
             Search = new SearchModel();
             Mute = new MuteModel();
         }
-        [OnDeserializing]
-        private void OnDeserializing(StreamingContext sc) => Initialize();
     }
 }

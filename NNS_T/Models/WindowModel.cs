@@ -1,5 +1,4 @@
 ﻿using NNS_T.Utility;
-using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace NNS_T.Models
@@ -33,9 +32,7 @@ namespace NNS_T.Models
         private bool _IsExpanded;
 
 
-        public WindowModel() => Initialize();
-
-        private void Initialize()
+        public WindowModel()
         {
             Top = double.NaN;
             Left = double.NaN;
@@ -43,7 +40,5 @@ namespace NNS_T.Models
             Height = 500;
             IsExpanded = true;
         }
-        [OnDeserializing]
-        private void OnDeserializing(StreamingContext sc) => Initialize();
     }
 }

@@ -1,7 +1,5 @@
 ﻿using NNS_T.Utility;
 using NNS_T.Views;
-using System.ComponentModel;
-using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace NNS_T.Models
@@ -28,16 +26,12 @@ namespace NNS_T.Models
         public int ShowSec { get => ToastWindow.ShowSec; set { ToastWindow.ShowSec = value; OnPropertyChanged(); } }
 
 
-        public NotifyModel() => Initialize();
-
-        private void Initialize()
+        public NotifyModel()
         {
             Sound = NotifySound.System;
             State = NotifyState.Always;
             //IsEnabled = true;
             ShowSec = 15;
         }
-        [OnDeserializing]
-        private void OnDeserializing(StreamingContext sc) => Initialize();
     }
 }

@@ -94,6 +94,8 @@ namespace NNS_T.ViewModels
         {
             configPath = GetConfigPath();
             Settings = SettingsHelper.LoadOrDefault<SettingsModel>(configPath);
+            // 何故かIconUrlで同定していたため複数追加されている可能性あり
+            Settings.Mute.Items = new MuteCollection(Settings.Mute.Items.Distinct());
 
             // 検索間隔 条件変更フラグ 更新
             Settings.Search.PropertyChanged += (s, e) =>
@@ -321,8 +323,16 @@ namespace NNS_T.ViewModels
             {
                 if(item.ProviderType == ProviderType.Official && Settings.Mute.Official)
                     item.IsMuted = true;
-                else if(Settings.Mute.Items.Any(x => x.IconUrl == item.IconUrl))
+                else if(Settings.Mute.Items.Any(x => x.ID == item.RoomID))
+                {
                     item.IsMuted = true;
+                    // 新サムネ対応入れ替え処理 2018/02/13
+                    // http://icon.nimg.jp/community/373/co3734277.jpg
+                    // to
+                    // https://secure-dcdn.cdn.nimg.jp/comch/community-icon/128x128/co3734277.jpg
+                    var m = Settings.Mute.Items.First(x => x.ID == item.RoomID);
+                    if(m.IconUrl != item.IconUrl) m.IconUrl = item.IconUrl;
+                }
 
                 Items.Insert(0, item);
                 item.IsLoaded = true;

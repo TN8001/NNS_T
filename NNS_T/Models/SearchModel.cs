@@ -1,6 +1,5 @@
 ﻿using NNS_T.Models.NicoAPI;
 using NNS_T.Utility;
-using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace NNS_T.Models
@@ -42,15 +41,11 @@ namespace NNS_T.Models
         }
 
 
-        public SearchModel() => Initialize();
-
-        private void Initialize()
+        public SearchModel()
         {
             Targets = Targets.Title | Targets.Description | Targets.Tags;
             IntervalSec = 30;
             Fields = Fields.LiveAll;
         }
-        [OnDeserializing]
-        private void OnDeserializing(StreamingContext sc) => Initialize();
     }
 }

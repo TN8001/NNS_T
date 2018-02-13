@@ -1,12 +1,16 @@
 ﻿using NNS_T.Utility;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace NNS_T.Models
 {
     ///<summary>ミュートしている部屋のコレクション</summary>
-    public class MuteCollection : ObservableCollection<RoomModel> { }
+    public class MuteCollection : ObservableCollection<RoomModel>
+    {
+        public MuteCollection() : base() { }
+        public MuteCollection(IEnumerable<RoomModel> collection) : base(collection) { }
+    }
 
     ///<summary>ミュート設定</summary>
     public class MuteModel : Observable
@@ -20,22 +24,10 @@ namespace NNS_T.Models
         [XmlAttribute]
         public bool ShowList { get => _showList; set { if(Set(ref _showList, value)) OnPropertyChanged(nameof(HideList)); } }
         private bool _showList;
-        public bool HideList { get => !_showList;  }
+        public bool HideList => !_showList;
 
         ///<summary>ミュートしている部屋</summary>
         [XmlArrayItem("Item")]
-        public MuteCollection Items { get; set; }
-
-
-        public MuteModel() => Initialize();
-
-        private void Initialize()
-        {
-            _Official = false;
-            _showList = false;
-            Items = new MuteCollection();
-        }
-        [OnDeserializing]
-        private void OnDeserializing(StreamingContext sc) => Initialize();
+        public MuteCollection Items { get; set; } = new MuteCollection();
     }
 }
