@@ -53,11 +53,15 @@ namespace NNS_T.Models.NicoAPI
         ///<summary>放送ステータス (生放送のみ)</summary>
         LiveStatus = 1 << 14,
 
+        ///<summary>注意!! Undocumented Fields
+        ///コミュ限 (生放送のみ？)</summary>
+        MemberOnly = 1 << 15,
+
         ///<summary>すべて</summary>
-        All = (1 << 15) - 1,
+        All = (1 << 16) - 1,
 
         ///<summary>生放送で使えるものすべて</summary>
-        LiveAll = All & ~MylistCounter & ~LastCommentTime & ~LengthSeconds,
+        LiveAll = All & ~MylistCounter & ~LastCommentTime & ~LengthSeconds & ~MemberOnly,
     }
 
     public static class FieldsExtensions

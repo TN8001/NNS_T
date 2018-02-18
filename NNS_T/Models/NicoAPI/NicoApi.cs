@@ -1,7 +1,8 @@
-﻿using AngleSharp.Parser.Html;
+﻿//using AngleSharp.Parser.Html;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NNS_T.Models.NicoAPI
@@ -19,22 +20,19 @@ namespace NNS_T.Models.NicoAPI
     {
         ///<summary>コミュニティURL</summary>
         public const string CommunityUrl = "http://com.nicovideo.jp/community/";
-
         ///<summary>チャンネルURL</summary>
         public const string ChannelUrl = "http://com.nicovideo.jp/channel/";
 
         // APIエントリポイント
         private const string ApiUrl = "http://api.search.nicovideo.jp/api/v2/:service/contents/search?";
-
         // Web版検索ページエントリポイント
         private const string WebUrl = "http://live.nicovideo.jp/search?";
-
         private HttpClient httpClient = new HttpClient();
 
-        public string GetSearchUrl(Query query, bool muteOfficial)
-        {
-            return WebUrl + query.GetSearchString(muteOfficial);
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="appName"></param>
         public NicoApi(string appName = null)
         {
             httpClient.Timeout = TimeSpan.FromMilliseconds(10000);
@@ -42,9 +40,25 @@ namespace NNS_T.Models.NicoAPI
                 httpClient.DefaultRequestHeaders.Add("User-Agent", appName);
         }
 
+        ///<summary>Web版生放送検索ページURLを取得</summary>
+        /// <param name="query">検索パラメータ</param>
+        /// <param name="muteOfficial">公式を除外するか</param>
+        public string GetSearchUrl(Query query, bool muteOfficial)
+        {
+            if(query == null) throw new ArgumentNullException(nameof(query));
+
+            return WebUrl + query.GetSearchString(muteOfficial);
+        }
+
         ///<summary>検索結果取得</summary>
+        /// <param name="service">サービス種別（生以外未検証）</param>
+        /// <param name="query">検索パラメータ</param>
         public async Task<Response> GetResponseAsync(Services service, Query query)
         {
+            if(!Enum.IsDefined(typeof(Services), service))
+                throw new ArgumentException(nameof(service));
+            if(query == null) throw new ArgumentNullException(nameof(query));
+
             var api = ApiUrl.Replace(":service", service.ToStringEx());
             try
             {
@@ -78,7 +92,8 @@ namespace NNS_T.Models.NicoAPI
             }
         }
 
-        ///<summary>部屋の名前を取得</summary>
+        ///<summary>部屋名を取得</summary>
+        /// <param name="roomID">部屋ID（co12345 ch12345）</param>
         public async Task<string> GetRoomNameAsync(string roomID)
         {
             if(roomID == null) throw new ArgumentNullException(nameof(roomID));
@@ -87,13 +102,20 @@ namespace NNS_T.Models.NicoAPI
             {
                 if(roomID.StartsWith("co")) return await GetCommunityNameAsync(roomID);
                 if(roomID.StartsWith("ch")) return await GetChannelNameAsync(roomID);
+                throw new ArgumentException(nameof(roomID));
             }
-            catch
+            catch(TaskCanceledException e)
             {
-                return null;
+                throw new NicoApiRequestException("タイムアウトしました。", e);
             }
-
-            throw new ArgumentException(nameof(roomID));
+            catch(HttpRequestException e)
+            {
+                throw new NicoApiRequestException("取得に失敗しました。", e);
+            }
+            catch(Exception e)
+            {
+                throw new NicoApiRequestException("不明なエラーです。", e);
+            }
         }
 
         private async Task<string> GetHttpStringAsync(string encodeUri)
@@ -114,15 +136,21 @@ namespace NNS_T.Models.NicoAPI
             if(i < 0) i = t.Length;
             return t.Substring(0, i);
         }
+
+        private static Regex reg = new Regex(@"\<title\b[^>]*\>\s*(?<Title>[\s\S]*?)\</title\>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private async Task<string> GetTitleAsync(string url)
         {
             // フォロワーのみになっていると404になるのでGetAsync
             var response = await httpClient.GetAsync(url);
             var s = await response.Content.ReadAsStringAsync();
 
-            var parser = new HtmlParser();
-            var doc = await parser.ParseAsync(s);
-            return doc.Title;
+            // タイトル以外に使うことがなさそうなのでAngleSharpを外した
+            //var parser = new HtmlParser();
+            //var doc = await parser.ParseAsync(s);
+
+            //return doc.Title;
+
+            return reg.Match(s).Groups["Title"].Value.Trim();
         }
     }
 }

@@ -122,12 +122,20 @@ namespace NNS_T.ViewModels
             {
                 if(liveItem.ProviderType == ProviderType.Official) return; // 来ないはず
 
-                var name = await nicoApi.GetRoomNameAsync(liveItem.RoomID);
-                var room = new RoomModel(liveItem.RoomID, name, liveItem.IconUrl);
-                if(liveItem.IsMuted)
-                    Settings.Mute.Items.Add(room);
-                else
-                    Settings.Mute.Items.Remove(room);
+                try
+                {
+                    var name = await nicoApi.GetRoomNameAsync(liveItem.RoomID);
+                    var room = new RoomModel(liveItem.RoomID, name, liveItem.IconUrl);
+                    if(liveItem.IsMuted)
+                        Settings.Mute.Items.Add(room);
+                    else
+                        Settings.Mute.Items.Remove(room);
+                }
+                catch(Exception e)
+                {
+                    Debug.WriteLine($"MuteCommand error {e.Message}");
+                    ErrorStatus = e.Message;
+                }
             });
             UnMuteCommand = new RelayCommand<RoomModel>((room) =>
             {
@@ -147,7 +155,7 @@ namespace NNS_T.ViewModels
                     else
                         Process.Start(s.Substring(0, index), s.Substring(index + 1));
                 }
-                catch { /* NOP */ }
+                catch { /* NOP */ Debug.WriteLine($"ProcessStartCommand error"); }
             });
 
             //Edgeの場合
@@ -161,7 +169,7 @@ namespace NNS_T.ViewModels
                     else
                         Process.Start(Settings.BrowserPath, s);
                 }
-                catch { /* NOP */ }
+                catch { /* NOP */ Debug.WriteLine($"OpenBrowserCommand error"); }
             });
             SelectBrowserPathCommand = new RelayCommand<string>((s) =>
             {
@@ -200,7 +208,7 @@ namespace NNS_T.ViewModels
                         Verb = "open",
                     });
                 }
-                catch { /* NOP */ }
+                catch { /* NOP */ Debug.WriteLine($"OpenFolderCommand error"); }
             });
             PlaySoundCommand = new RelayCommand(() => ToastWindow.PlaySound());
             ToggleTimerCommand = new RelayCommand(() => IsTimerEnabled = !IsTimerEnabled);
@@ -259,9 +267,10 @@ namespace NNS_T.ViewModels
                 };
                 response = await nicoApi.GetResponseAsync(Services.Live, q);
             }
-            catch(NicoApiRequestException e)
+            catch(Exception e)
             {
-                Debug.WriteLine($"NicoApiRequestException {e.Message}");
+                Debug.WriteLine($"SearchCommandImplAsync error {e.Message}");
+
                 ErrorStatus = e.Message;
                 HitCount = 0;
                 IsBusy = false;

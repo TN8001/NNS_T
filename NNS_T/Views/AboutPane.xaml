@@ -54,7 +54,7 @@
           <Run Text="ニコ生を定期的に監視をして新規放送が始まったら、トースト通知風（Google Chromeの通知のほうが近いです）のポップアップを出して、お知らせするアプリです。" />
           <LineBreak />
           <LineBreak />
-          <Run Text="簡単な使い方や、どんなク/ソコードか見てみたい方は" />
+          <Run Text="詳しい使い方や、どんなク/ソコードか見てみたい方は" />
           <views:HyperlinkEx NavigateUri="https://github.com/TN8001/NNS_T">
             <Run Text="GitHub" />
           </views:HyperlinkEx>
@@ -72,10 +72,10 @@
           <!--    -->
           <LineBreak /><Run Text="アプリアイコン以外のアイコンはすべて、下記を利用させて頂いております。" />
           <LineBreak />
-          <views:HyperlinkEx NavigateUri="https://github.com/MahApps/MahApps.Metro">
+          <views:HyperlinkEx NavigateUri="https://github.com/MahApps/MahApps.Metro.IconPacks">
             <Run Text="MahApps.Metro.IconPacks GitHub Octicons" />
           </views:HyperlinkEx>
-          <Run Text="Copyright (c) 2016 MahApps" />
+          <Run Text="Copyright (c) 2016 MahApps, Copyright (c) 2018 GitHub Inc." />
           <LineBreak />
           <!--    -->
           <LineBreak /><Run Text="検索結果の解析に、下記を利用させて頂いております。" />
@@ -84,14 +84,6 @@
             <Run Text="Newtonsoft.Json" />
           </views:HyperlinkEx>
           <Run Text="Copyright (c) 2007 James Newton-King" />
-          <LineBreak />
-          <!--    -->
-          <LineBreak /><Run Text="コミュニティ名・チャンネル名取得に、下記を利用させて頂いております。" />
-          <LineBreak />
-          <views:HyperlinkEx NavigateUri="https://anglesharp.github.io/">
-            <Run Text="AngleSharp" />
-          </views:HyperlinkEx>
-          <Run Text="Copyright (c) 2013 - 2015 AngleSharp" />
           <LineBreak />
         </TextBlock>
       </StackPanel>

@@ -1,5 +1,6 @@
 ﻿using NNS_T.Models.NicoAPI;
 using NNS_T.Utility;
+using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace NNS_T.Models
@@ -40,12 +41,28 @@ namespace NNS_T.Models
             }
         }
 
+        // コミュ限のアイコンを表示するかどうか
+        // アンドキュメントなパラメータで取得できるが規約違反になると思われるので裏設定
+        // 自己責任でuser.configに「<Search ShowMemberOnlyIcon="true">」を追加する
+        [XmlAttribute, DefaultValue(false)]
+        public bool ShowMemberOnlyIcon
+        {
+            get => Fields.HasFlag(Fields.MemberOnly);
+            set
+            {
+                if(ShowMemberOnlyIcon == value) return;
+                Fields = value ? Fields | Fields.MemberOnly
+                               : Fields & ~Fields.MemberOnly;
+                OnPropertyChanged();
+            }
+        }
+
 
         public SearchModel()
         {
             Targets = Targets.Title | Targets.Description | Targets.Tags;
             IntervalSec = 30;
-            Fields = Fields.LiveAll;
+            Fields = Fields.LiveAll & ~Fields.Tags & ~Fields.CategoryTags & ~Fields.LiveStatus;
         }
     }
 }

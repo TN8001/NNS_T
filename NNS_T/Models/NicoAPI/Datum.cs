@@ -28,7 +28,7 @@ namespace NNS_T.Models.NicoAPI
         [JsonProperty("categoryTags")]
         public string CategoryTags;
 
-        ///<summary>再生、来場数</summary>
+        ///<summary>再生、来場者数</summary>
         [JsonProperty("viewCounter")]
         public int ViewCounter;
 
@@ -40,11 +40,11 @@ namespace NNS_T.Models.NicoAPI
         [JsonProperty("commentCounter")]
         public int CommentCounter;
 
-        ///<summary>投稿、放送開始時間 (2017-01-01T01:01:01+09:00等)</summary>
+        ///<summary>投稿、放送開始日時 (2017-01-01T01:01:01+09:00等)</summary>
         [JsonProperty("startTime")]
         public DateTime StartTime;
 
-        ///<summary>最新コメント時間 (生放送では使用不可)</summary>
+        ///<summary>最新コメント日時 (生放送では使用不可)</summary>
         [JsonProperty("lastCommentTime")]
         public DateTime LastCommentTime;
 
@@ -67,5 +67,9 @@ namespace NNS_T.Models.NicoAPI
         ///<summary>放送種別 (生放送のみ 'past'=終了,'onair'=放送中,'reserved'=予約)</summary>
         [JsonProperty("liveStatus")]
         public string LiveStatus;
+
+        ///<summary>注意！！Undocumented Fields コミュ限 (生放送のみ？)</summary>
+        [JsonProperty("memberOnly")]
+        public bool MemberOnly;
     }
 }

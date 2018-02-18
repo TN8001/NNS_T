@@ -22,6 +22,7 @@
       </ResourceDictionary.MergedDictionaries>
 
       <!--  共通リソース  -->
+      <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
       <cnv:StartTimeConverter x:Key="StartTimeConverter" />
       <cnv:LessThanCollapsedConverter x:Key="LessThanCollapsedConverter" />
 
@@ -193,6 +194,19 @@
               Foreground="White"
               Text="{Binding ProviderType}" />
           </Border>
+          <Border
+            Padding="2,2,2,3"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Background="#B2000000"
+            CornerRadius="5"
+            Visibility="{Binding MemberOnly, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <iconPacks:PackIconOcticons
+              Width="20"
+              Height="20"
+              Foreground="White"
+              Kind="Lock" />
+          </Border>
 
           <StackPanel
             Grid.Column="1"
@@ -225,7 +239,9 @@
               FontSize="15"
               FontWeight="Bold"
               TextWrapping="Wrap">
-              <views:HyperlinkEx NavigateUri="{Binding LiveUrl}"><Run Text="{Binding Title, Mode=OneTime}" /></views:HyperlinkEx>
+              <views:HyperlinkEx NavigateUri="{Binding LiveUrl}">
+                <Run Text="{Binding Title, Mode=OneTime}" />
+              </views:HyperlinkEx>
             </TextBlock>
             <TextBlock Text="{Binding NonTagDescription}" />
           </StackPanel>
@@ -286,7 +302,9 @@
             Margin="10,0"
             FontSize="16"
             TextWrapping="Wrap">
-            <views:HyperlinkEx NavigateUri="{Binding RoomUrl}"><Run Text="{Binding Title, Mode=OneTime}" /></views:HyperlinkEx>
+            <views:HyperlinkEx NavigateUri="{Binding RoomUrl}">
+              <Run Text="{Binding Title, Mode=OneTime}" />
+            </views:HyperlinkEx>
           </TextBlock>
           <Button
             Grid.Column="2"

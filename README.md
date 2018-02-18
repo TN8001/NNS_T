@@ -7,7 +7,7 @@
 * コミュニティ・チャンネルごとの通知ミュート（除外）機能
 * 無駄におしゃれな見た目
 ## ダウンロード
-[最新バイナリ](https://github.com/TN8001/NNS_T/releases/download/v1.1.6/NNS_T.zip)（Windows10でのみ動作確認）
+[最新バイナリ](https://github.com/TN8001/NNS_T/releases/download/v1.1.7/NNS_T.zip)（Windows10でのみ動作確認）
 ## 使い方
 **注意事項**に同意された方のみ使用してください。
 1. ダウンロードしたNNS_T.zipを展開し、適当なフォルダに入れます
@@ -36,13 +36,11 @@ APIの仕様のようなのでこちらにはどうしようもありません�
 [MahApps.Metro](https://github.com/MahApps/MahApps.Metro) Copyright (c) 2016 MahApps
 
 アプリアイコン以外のアイコンはすべて、下記を利用させて頂いております。  
-[MahApps.Metro.IconPacks GitHub Octicons](https://github.com/MahApps/MahApps.Metro) Copyright (c) 2016 MahApps
+[MahApps.Metro.IconPacks GitHub Octicons](https://github.com/MahApps/MahApps.Metro.IconPacks) Copyright (c) 2016 MahApps, Copyright (c) 2018 GitHub Inc.
 
 検索結果の解析に、下記を利用させて頂いております。  
 [Newtonsoft.Json](https://www.newtonsoft.com/json) Copyright (c) 2007 James Newton-King
 
-コミュニティ名・チャンネル名取得に、下記を利用させて頂いております。  
-[AngleSharp](https://anglesharp.github.io/) Copyright (c) 2013 - 2015 AngleSharp
 ## 更新履歴
 * 2017/11/13 ver1.0.0 初回リリース
 * 2017/11/14 ver1.0.1 bugfix
@@ -54,4 +52,5 @@ APIの仕様のようなのでこちらにはどうしようもありません�
 * 2017/12/02 ver1.1.4 bugfix
 * 2017/12/19 ver1.1.5 bugfix まれに放送中のアイテムが消える 放送中にタグを追加された場合表示されない
 * 2018/02/13 ver1.1.6 bugfix ミュート部屋判定にバグ
+* 2018/02/18 ver1.1.7 タイトル変更追従 AngleSharp非依存化
 
