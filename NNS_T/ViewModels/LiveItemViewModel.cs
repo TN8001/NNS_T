@@ -11,6 +11,11 @@ namespace NNS_T.ViewModels
     {
         private Datum datum;
 
+        // MainViewModelからインジェクション 雑い
+        ///<summary>放送ミュートコマンド</summary>
+        public static RelayCommand<LiveItemViewModel> ToggleMuteCommand { get; internal set; }
+
+
         ///<summary>生放送ID (lv123456789等)</summary>
         public string LiveID => datum.ContentID;
         ///<summary>タイトル</summary>

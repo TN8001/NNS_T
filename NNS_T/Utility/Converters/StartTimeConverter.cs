@@ -4,7 +4,8 @@ using System.Windows.Data;
 
 namespace NNS_T.Utility.Converters
 {
-    ///<summary>経過時間のみ日時フォーマット</summary>
+    ///<summary>DateTimeから経過時間のみの文字列</summary>
+    [ValueConversion(typeof(DateTime), typeof(string))]
     public class StartTimeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

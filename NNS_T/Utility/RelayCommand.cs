@@ -9,8 +9,8 @@ using System.Windows.Input;
 
 namespace NNS_T.Utility
 {
-    // 直前にuwpを調べていたのでuwpっぽい命名にｗ 
     #region No parameter RelayCommand
+    ///<summary>DelegateCommand</summary>
     public sealed class RelayCommand : ICommand
     {
         private Action _execute;
@@ -35,6 +35,7 @@ namespace NNS_T.Utility
     #endregion
 
     #region Parameter RelayCommand
+    ///<summary>DelegateCommand</summary>
     public sealed class RelayCommand<T> : ICommand
     {
         private Action<T> _execute;

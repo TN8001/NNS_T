@@ -1,19 +1,13 @@
-﻿//using AngleSharp.Parser.Html;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NNS_T.Models.NicoAPI
 {
-    ///<summary>niconicoコンテンツ検索API 取得エラー</summary>
-    public class NicoApiRequestException : HttpRequestException
-    {
-        public NicoApiRequestException(string message) : base(message) { }
-        public NicoApiRequestException(string message, Exception innerException) : base(message, innerException) { }
-    }
-
     // 一応汎用になっているが生放送検索以外未検証
     ///<summary>niconicoコンテンツ検索API</summary>
     public class NicoApi
@@ -29,12 +23,11 @@ namespace NNS_T.Models.NicoAPI
         private const string WebUrl = "http://live.nicovideo.jp/search?";
         private HttpClient httpClient = new HttpClient();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="appName"></param>
+        ///<summary>niconicoコンテンツ検索API</summary>
+        /// <param name="appName">User-Agent</param>
         public NicoApi(string appName = null)
         {
+            //httpClient.Timeout = TimeSpan.FromMilliseconds(10000);
             httpClient.Timeout = TimeSpan.FromMilliseconds(10000);
             if(appName != null)
                 httpClient.DefaultRequestHeaders.Add("User-Agent", appName);
@@ -49,12 +42,26 @@ namespace NNS_T.Models.NicoAPI
 
             return WebUrl + query.GetSearchString(muteOfficial);
         }
+        ///<summary>検索結果取得</summary>
+        /// <param name="service">サービス種別（生以外未検証）</param>
+        /// <param name="query">検索パラメータ</param>
+        /// <exception cref="ArgumentException"></exception> 
+        /// <exception cref="ArgumentNullException"></exception> 
+        /// <exception cref="NicoApiRequestException"></exception> 
+        public async Task<Response> GetResponseAsync(Services service, Query query)
+            => await GetResponseAsync(service, query, CancellationToken.None);
 
         ///<summary>検索結果取得</summary>
         /// <param name="service">サービス種別（生以外未検証）</param>
         /// <param name="query">検索パラメータ</param>
-        public async Task<Response> GetResponseAsync(Services service, Query query)
+        /// <param name="cancellationToken"></param>
+        /// <exception cref="ArgumentException"></exception> 
+        /// <exception cref="ArgumentNullException"></exception> 
+        /// <exception cref="NicoApiRequestException"></exception> 
+        /// <exception cref="OperationCanceledException"></exception> 
+        public async Task<Response> GetResponseAsync(Services service, Query query, CancellationToken cancellationToken)
         {
+            Debug.WriteLine($"GetResponseAsync:{cancellationToken.GetHashCode()}");
             if(!Enum.IsDefined(typeof(Services), service))
                 throw new ArgumentException(nameof(service));
             if(query == null) throw new ArgumentNullException(nameof(query));
@@ -62,8 +69,10 @@ namespace NNS_T.Models.NicoAPI
             var api = ApiUrl.Replace(":service", service.ToStringEx());
             try
             {
-                var s = await GetHttpStringAsync(api + query.ToEncodeString());
+                var s = await GetHttpStringAsync(api + query.ToEncodeString(), cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 var r = JsonConvert.DeserializeObject<Response>(s);
+                cancellationToken.ThrowIfCancellationRequested();
 
                 // エラーメッセージをViewの表示に使用中
                 if(r.Meta.Status != 200)
@@ -78,9 +87,13 @@ namespace NNS_T.Models.NicoAPI
 
                 return r;
             }
-            catch(TaskCanceledException e)
+            catch(OperationCanceledException e)
             {
-                throw new NicoApiRequestException("タイムアウトしました。", e);
+                Debug.Write("NicoApi Canceled:");
+                if(cancellationToken.IsCancellationRequested)
+                    throw;
+                else // release buildだと来ない??
+                    throw new NicoApiRequestException("タイムアウトしました。", e);
             }
             catch(HttpRequestException e)
             {
@@ -94,6 +107,9 @@ namespace NNS_T.Models.NicoAPI
 
         ///<summary>部屋名を取得</summary>
         /// <param name="roomID">部屋ID（co12345 ch12345）</param>
+        /// <exception cref="ArgumentException"></exception> 
+        /// <exception cref="ArgumentNullException"></exception> 
+        /// <exception cref="NicoApiRequestException"></exception> 
         public async Task<string> GetRoomNameAsync(string roomID)
         {
             if(roomID == null) throw new ArgumentNullException(nameof(roomID));
@@ -118,10 +134,10 @@ namespace NNS_T.Models.NicoAPI
             }
         }
 
-        private async Task<string> GetHttpStringAsync(string encodeUri)
+        private async Task<string> GetHttpStringAsync(string encodeUri, CancellationToken cancellationToken)
         {
             // エラーコード取得のためGetAsync
-            var response = await httpClient.GetAsync(encodeUri);
+            var response = await httpClient.GetAsync(encodeUri, cancellationToken);
             return await response.Content.ReadAsStringAsync();
         }
         private async Task<string> GetCommunityNameAsync(string communityID)
@@ -143,12 +159,6 @@ namespace NNS_T.Models.NicoAPI
             // フォロワーのみになっていると404になるのでGetAsync
             var response = await httpClient.GetAsync(url);
             var s = await response.Content.ReadAsStringAsync();
-
-            // タイトル以外に使うことがなさそうなのでAngleSharpを外した
-            //var parser = new HtmlParser();
-            //var doc = await parser.ParseAsync(s);
-
-            //return doc.Title;
 
             return reg.Match(s).Groups["Title"].Value.Trim();
         }

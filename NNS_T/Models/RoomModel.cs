@@ -1,11 +1,12 @@
 ﻿using NNS_T.Models.NicoAPI;
+using System;
 using System.Xml.Serialization;
 
 namespace NNS_T.Models
 {
     // ミュート用
     ///<summary>部屋の情報</summary>
-    public class RoomModel
+    public class RoomModel : IEquatable<RoomModel>
     {
         ///<summary>部屋のID (co1234567等)</summary>
         [XmlAttribute]
@@ -20,10 +21,12 @@ namespace NNS_T.Models
         public string IconUrl { get; set; }
 
         ///<summary>部屋のURL</summary>
-        public string RoomUrl => ID.StartsWith("co") ? NicoApi.CommunityUrl + ID : NicoApi.ChannelUrl + ID;
+        public string RoomUrl => ID.StartsWith("co") ? NicoApi.CommunityUrl + ID
+                                                     : NicoApi.ChannelUrl + ID;
 
         ///<summary>部屋の種類</summary>
-        public ProviderType ProviderType => ID.StartsWith("co") ? ProviderType.User : ProviderType.Channel;
+        public ProviderType ProviderType => ID.StartsWith("co") ? ProviderType.User 
+                                                                : ProviderType.Channel;
 
 
         public RoomModel() { } // XmlSerializer用

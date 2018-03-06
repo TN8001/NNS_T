@@ -13,19 +13,17 @@ namespace NNS_T.Views
     public class HyperlinkEx : Hyperlink
     {
         ///<summary>開くブラウザパス 空はデフォルト</summary>
-        public static string BrowserPath { get; set; }
+        public static string BrowserPath;
 
         // urlドラッグ中にトーストが閉じないようにするためToastWindowでチェック
         // もっといい方法がありそうだが。。。
         public static readonly RoutedEvent DragStartEvent
             = EventManager.RegisterRoutedEvent("DragStart", RoutingStrategy.Bubble,
                 typeof(RoutedEventHandler), typeof(HyperlinkEx));
-        //public event RoutedEventHandler DragStart { add { AddHandler(DragStartEvent, value); } remove { RemoveHandler(DragStartEvent, value); } }
 
         public static readonly RoutedEvent DragEndEvent
             = EventManager.RegisterRoutedEvent("DragEnd", RoutingStrategy.Bubble,
                 typeof(RoutedEventHandler), typeof(HyperlinkEx));
-        //public event RoutedEventHandler DragEnd { add { AddHandler(DragEndEvent, value); } remove { RemoveHandler(DragEndEvent, value); } }
 
         private Point? downPos;
 

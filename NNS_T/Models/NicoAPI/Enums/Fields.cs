@@ -53,14 +53,13 @@ namespace NNS_T.Models.NicoAPI
         ///<summary>放送ステータス (生放送のみ)</summary>
         LiveStatus = 1 << 14,
 
-        ///<summary>注意!! Undocumented Fields
-        ///コミュ限 (生放送のみ？)</summary>
+        ///<summary>注意!! Undocumented Fields コミュ限 (生放送のみ？)</summary>
         MemberOnly = 1 << 15,
 
         ///<summary>すべて</summary>
         All = (1 << 16) - 1,
 
-        ///<summary>生放送で使えるものすべて</summary>
+        ///<summary>生放送で使えるもの</summary>
         LiveAll = All & ~MylistCounter & ~LastCommentTime & ~LengthSeconds & ~MemberOnly,
     }
 
@@ -81,6 +80,7 @@ namespace NNS_T.Models.NicoAPI
 
                     var s = f.ToString();
                     if(f == Fields.ContentID) s = "ContentId";
+                    // to lower camel case
                     l.Add(char.ToLowerInvariant(s[0]) + s.Substring(1));
                 }
             }

@@ -19,7 +19,15 @@ namespace NNS_T.Models
 
         ///<summary>検索間隔</summary>
         [XmlAttribute]
-        public int IntervalSec { get => _IntervalSec; set => Set(ref _IntervalSec, value); }
+        public int IntervalSec
+        {
+            get => _IntervalSec;
+            set
+            {
+                if(value < 10) value = 10;
+                Set(ref _IntervalSec, value);
+            }
+        }
         private int _IntervalSec;
 
         ///<summary>レスポンスに使用するフィールド</summary>

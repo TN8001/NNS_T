@@ -251,7 +251,7 @@
             Height="16"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
-            Command="{Binding DataContext.MuteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"
+            Command="{Binding ToggleMuteCommand}"
             CommandParameter="{Binding}"
             IsChecked="{Binding IsMuted}"
             Style="{StaticResource MuteButton}" />

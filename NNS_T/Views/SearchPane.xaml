@@ -128,7 +128,7 @@
         VerticalAlignment="Center"
         Focusable="False"
         IsTabStop="False"
-        MouseRightButtonUp="OnMouseRightButtonUp">
+        MouseRightButtonDown="OnMouseRightButtonDown">
         <Label
           Padding="0"
           Content="{Binding HitCount}"

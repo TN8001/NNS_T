@@ -21,16 +21,8 @@ namespace NNS_T.Models
         public MuteModel Mute { get; set; }
 
         ///<summary>開くブラウザのパス</summary>
-        public string BrowserPath
-        {
-            get => _BrowserPath;
-            set
-            {
-                if(Set(ref _BrowserPath, value))
-                    HyperlinkEx.BrowserPath = value;
-            }
-        }
-        private string _BrowserPath;
+        public string BrowserPath { get => HyperlinkEx.BrowserPath; set => Set(ref HyperlinkEx.BrowserPath, value); }
+
 
         public SettingsModel()
         {

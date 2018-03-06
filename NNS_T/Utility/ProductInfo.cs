@@ -6,9 +6,13 @@ namespace NNS_T.Utility
     ///<summary>アセンブリ情報</summary>
     public static class ProductInfo
     {
+        ///<summary>アセンブリ名</summary>
         public static string Name { get; }
+        ///<summary>アセンブリバージョン（Major.Minor.Build）</summary>
         public static string Version { get; }
+        ///<summary>アセンブリ説明</summary>
         public static string Description { get; }
+        ///<summary>アセンブリ著作権</summary>
         public static string Copyright { get; }
 
         static ProductInfo()

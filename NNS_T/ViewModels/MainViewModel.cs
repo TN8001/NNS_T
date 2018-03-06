@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -23,10 +24,6 @@ namespace NNS_T.ViewModels
         public string ErrorStatus { get => _ErrorStatus; set => Set(ref _ErrorStatus, value); }
         private string _ErrorStatus;
 
-        ///<summary>取得中</summary>
-        public bool IsBusy { get => _IsBusy; set { if(Set(ref _IsBusy, value)) SearchCommand.RaiseCanExecuteChanged(); } }
-        private bool _IsBusy;
-
         ///<summary>一時ミュート</summary>
         public bool IsTemporaryMuted { get => ToastWindow.IsTemporaryMuted; set => Set(ref ToastWindow.IsTemporaryMuted, value); }
 
@@ -36,7 +33,7 @@ namespace NNS_T.ViewModels
 
         ///<summary>取得タイマonoff</summary>
         public bool IsTimerEnabled { get => _IsTimerEnabled; set { if(Set(ref _IsTimerEnabled, value)) timer.IsEnabled = value; } }
-        private bool _IsTimerEnabled = true;
+        private bool _IsTimerEnabled;
 
         ///<summary>ヒットカウント</summary>
         public int HitCount { get => _HitCount; set => Set(ref _HitCount, value); }
@@ -53,9 +50,6 @@ namespace NNS_T.ViewModels
 
         ///<summary>設定保存コマンド</summary>
         public RelayCommand SaveCommand { get; }
-
-        ///<summary>放送ミュートコマンド</summary>
-        public RelayCommand<LiveItemViewModel> MuteCommand { get; }
 
         ///<summary>放送ミュート解除コマンド</summary>
         public RelayCommand<RoomModel> UnMuteCommand { get; }
@@ -116,9 +110,11 @@ namespace NNS_T.ViewModels
                     item.IsMuted = mute.Official;
             };
 
-            SearchCommand = new RelayCommand(async () => await SearchCommandImplAsync(), () => !IsBusy);
+            SearchCommand = new RelayCommand(async () => await SearchCommandImplAsync());//, () => !IsBusy);
             SaveCommand = new RelayCommand(() => SettingsHelper.Save(Settings, configPath));
-            MuteCommand = new RelayCommand<LiveItemViewModel>(async (liveItem) =>
+
+            // 各アイテム内からバインド可能なようにインジェクション
+            LiveItemViewModel.ToggleMuteCommand = new RelayCommand<LiveItemViewModel>(async (liveItem) =>
             {
                 if(liveItem.ProviderType == ProviderType.Official) return; // 来ないはず
 
@@ -137,6 +133,7 @@ namespace NNS_T.ViewModels
                     ErrorStatus = e.Message;
                 }
             });
+
             UnMuteCommand = new RelayCommand<RoomModel>((room) =>
             {
                 Settings.Mute.Items.Remove(room);
@@ -214,58 +211,58 @@ namespace NNS_T.ViewModels
             ToggleTimerCommand = new RelayCommand(() => IsTimerEnabled = !IsTimerEnabled);
             NicoWebCommand = new RelayCommand(() =>
             {
-                var q = new Query
-                {
-                    Keyword = Settings.Search.Query,
-                    Targets = Settings.Search.Targets,
-                };
-
+                var q = CreateQuery();
                 var s = nicoApi.GetSearchUrl(q, Settings.Mute.Official);
                 OpenBrowserCommand.Execute(s);
             });
 
             timer.Interval = TimeSpan.FromSeconds(Settings.Search.IntervalSec);
-            timer.Tick += (s, e) =>
-            {
-                if(SearchCommand.CanExecute())
-                    SearchCommand.Execute();
-            };
+            timer.Tick += (s, e) => SearchCommand.Execute();
 
             SearchCommand.Execute();
         }
 
-
+        private CancellationTokenSource cts;
+        private object lockObj = new object();
         private async Task SearchCommandImplAsync()
         {
             Debug.WriteLine("SearchCommand");
-            if(IsBusy) return; // 通らないはず
 
-            if(string.IsNullOrEmpty(Settings.Search.Query))
-            {
-                IsTimerEnabled = false;
-                return;
-            }
             // 取得時間があんまり安定しないので取得中は止めてみる
             // よって実際の取得間隔は設定以上の間隔が開く
-            IsTimerEnabled = true;
-            timer.Stop();
+            IsTimerEnabled = false;
+            // 空のQueryの場合タイマ停止のまま
+            if(string.IsNullOrEmpty(Settings.Search.Query)) return;
 
-            IsBusy = true;
-            Response response;
             try
             {
-                var t = DateTime.Now;
-                var q = new Query
+                // 再入時に前回をキャンセル
+                lock(lockObj)
                 {
-                    Keyword = Settings.Search.Query,
-                    Targets = Settings.Search.Targets,
-                    Fields = Settings.Search.Fields,
-                    Filters = new NameValueCollection { { "liveStatus", "onair" } },
-                    Sort = "-startTime",
-                    Limit = 100,
-                    Context = ProductInfo.Name,
-                };
-                response = await nicoApi.GetResponseAsync(Services.Live, q);
+                    if(cts != null)
+                    {
+                        Debug.WriteLine($"cts.Cancel");
+                        cts.Cancel();
+                        cts.Dispose();
+                    }
+                    cts = new CancellationTokenSource();
+                }
+
+                var q = CreateQuery();
+                var response = await nicoApi.GetResponseAsync(Services.Live, q, cts.Token);
+                HitCount = response.Meta.TotalCount;
+                if(isDirty)
+                    Items.Clear();
+                ItemsUpdate(response);
+                ErrorStatus = null;
+                isDirty = false;
+                IsTimerEnabled = true;
+
+                Debug.WriteLine("正常終了");
+            }
+            catch(OperationCanceledException)
+            {
+                Debug.WriteLine($"キャンセル");
             }
             catch(Exception e)
             {
@@ -273,23 +270,20 @@ namespace NNS_T.ViewModels
 
                 ErrorStatus = e.Message;
                 HitCount = 0;
-                IsBusy = false;
-                if(IsTimerEnabled)
-                    timer.Start();
-                return;
+                IsTimerEnabled = true;
             }
-
-            ErrorStatus = null;
-            HitCount = response.Meta.TotalCount;
-            if(isDirty)
-                Items.Clear();
-            ItemsUpdate(response);
-
-            IsBusy = false;
-            isDirty = false;
-            if(IsTimerEnabled)
-                timer.Start();
         }
+
+        private Query CreateQuery() => new Query
+        {
+            Keyword = Settings.Search.Query,
+            Targets = Settings.Search.Targets,
+            Fields = Settings.Search.Fields,
+            Filters = new NameValueCollection { { "liveStatus", "onair" } },
+            Sort = "-startTime",
+            Limit = 100,
+            Context = ProductInfo.Name,
+        };
 
         private int ItemsUpdate(Response response)
         {
@@ -307,23 +301,11 @@ namespace NNS_T.ViewModels
             foreach(var item in updateItems)
             {
                 var i = Array.Find(responseItems, x => x.Equals(item));
-                //if(i == null) continue;
 
                 item.Update(i);
             }
 
-            // ToDo 放送途中でのタグ追加を考慮していなかった
-            // 表示をどうするか。。
-            // 1)時間順で並び替えをやめる（ある意味非常に楽
-            // 2)時間順でそのまま追加（見えなくてもしょうがない
-            // とりあえず1)でやってみる
-            // ↑のため ↓の小細工を中止
-
-            //// 2分の根拠はないが1分だと取り逃しが出そうな気がする
-            //var first = Items.FirstOrDefault();
-            //var time = first != null ? first.StartTime - TimeSpan.FromMinutes(2) : DateTime.MinValue;
             var addItems = responseItems.Except(Items)
-                                        //.Where(x => x.StartTime > time)
                                         .OrderBy(x => x.StartTime).ToArray();
             var addCount = addItems.Count();
             if(addCount > 0) Debug.WriteLine($"Add count:{addCount}");
@@ -355,7 +337,6 @@ namespace NNS_T.ViewModels
         private void ShowToast(IEnumerable<LiveItemViewModel> items)
         {
             if(isDirty) return;
-            //if(!Settings.Notify.IsEnabled) return;
 
             switch(Settings.Notify.State)
             {

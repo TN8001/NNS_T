@@ -4,13 +4,13 @@ using System.Runtime.CompilerServices;
 
 namespace NNS_T.Utility
 {
-    // 直前にuwpを調べていたのでuwpっぽい命名にｗ 
+    ///<summary>ViewModelBase</summary>
     public abstract class Observable : INotifyPropertyChanged
     {
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
-        // SetはSetPropertyより短くて断然良いですね
+        ///<summary>SetProperty</summary>
         protected bool Set<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
             if(Equals(storage, value)) return false;

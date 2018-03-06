@@ -5,6 +5,8 @@ using System.Windows.Data;
 
 namespace NNS_T.Utility.Converters
 {
+    ///<summary>valueがparameter以下なら非表示にする</summary>
+    [ValueConversion(typeof(double), typeof(Visibility))]
     public class LessThanCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
