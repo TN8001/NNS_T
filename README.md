@@ -1,6 +1,6 @@
 ﻿# NNS_T ニコ生サーチ(🍞)
 [![Build status](https://ci.appveyor.com/api/projects/status/rjdt756hw6l8ragb/branch/master?svg=true)](https://ci.appveyor.com/project/TN8001/nns-t/branch/master)
-
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/TN8001/NNS_T/blob/master/LICENSE)
 ![アプリスクリーンショット](https://github.com/TN8001/NNS_T/blob/master/AppImage.png)
 ## 概要
 ニコ生を定期的に監視をして新規放送が始まったら、トースト通知風（Google Chromeの通知のほうが近いです）のポップアップを出して、お知らせするアプリです。

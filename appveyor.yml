@@ -1,0 +1,32 @@
+branches:
+  only:
+  - master
+skip_tags: true
+image: Visual Studio 2017
+configuration: Release
+platform: Any CPU
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+before_build:
+- cmd: nuget restore
+build:
+  verbosity: minimal
+after_build:
+- cmd: >-
+    del %APPVEYOR_BUILD_FOLDER%\NNS_T\bin\Release\*.xml
+
+    del %APPVEYOR_BUILD_FOLDER%\NNS_T\bin\Release\*.pdb
+artifacts:
+- path: NNS_T\bin\Release
+  name: NNS_T
+deploy:
+- provider: GitHub
+  tag: v$(appveyor_build_version)
+  release: version $(appveyor_build_version)
+  auth_token:
+    secure: QXqVcu1scQR9ksaZLa6cKKunkeAT4fd+0lRFaDBf51sffRDkB/MHIHXc/q3yvbQz
+  artifact: NNS_T
