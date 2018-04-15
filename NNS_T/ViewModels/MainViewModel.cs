@@ -306,6 +306,7 @@ namespace NNS_T.ViewModels
             }
 
             var addItems = responseItems.Except(Items)
+                                        .Where(x => !x.MemberOnly || !Settings.Search.HideMemberOnly)
                                         .OrderBy(x => x.StartTime).ToArray();
             var addCount = addItems.Count();
             if(addCount > 0) Debug.WriteLine($"Add count:{addCount}");

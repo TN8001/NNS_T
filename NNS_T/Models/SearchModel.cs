@@ -49,9 +49,12 @@ namespace NNS_T.Models
             }
         }
 
-        // コミュ限のアイコンを表示するかどうか
+        // コミュ限の放送に鍵アイコンを表示するかどうか
         // アンドキュメントなパラメータで取得できるが規約違反になると思われるので裏設定
         // 自己責任でuser.configに「<Search ShowMemberOnlyIcon="true">」を追加する
+        // <Search Targets="Title Description Tags" IntervalSec="60" UnuseDescription="false">
+        // ↑こうなっていたとしたら↓こうする
+        // <Search Targets="Title Description Tags" IntervalSec="60" UnuseDescription="false" ShowMemberOnlyIcon="true">
         [XmlAttribute, DefaultValue(false)]
         public bool ShowMemberOnlyIcon
         {
@@ -64,6 +67,17 @@ namespace NNS_T.Models
                 OnPropertyChanged();
             }
         }
+
+        // コミュ限の放送を検索結果に入れないようにするかどうか
+        // アンドキュメントなパラメータで取得できるが規約違反になると思われるので裏設定
+        // 自己責任でuser.configに「<Search HideMemberOnly="true">」を追加する
+        // <Search Targets="Title Description Tags" IntervalSec="60" UnuseDescription="false" ShowMemberOnlyIcon="true">
+        // ↑こうなっていたとしたら↓こうする
+        // <Search Targets="Title Description Tags" IntervalSec="60" UnuseDescription="false" ShowMemberOnlyIcon="true" HideMemberOnly="true">
+        [XmlAttribute, DefaultValue(false)]
+        public bool HideMemberOnly { get => _HideMemberOnly; set => Set(ref _HideMemberOnly, value); }
+        private bool _HideMemberOnly;
+
 
 
         public SearchModel()
