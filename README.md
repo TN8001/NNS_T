@@ -1,6 +1,6 @@
 ﻿# NNS_T ニコ生サーチ(🍞)
 [![Build status](https://ci.appveyor.com/api/projects/status/rjdt756hw6l8ragb/branch/master?svg=true)](https://ci.appveyor.com/project/TN8001/nns-t/branch/master)
-[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/TN8001/NNS_T/blob/master/LICENSE)
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/TN8001/NNS_T/blob/master/LICENSE)  
 ![アプリスクリーンショット](AppImage.png)
 ## 概要
 ニコ生を定期的に監視をして新規放送が始まったら、トースト通知風（Google Chromeの通知のほうが近いです）のポップアップを出して、お知らせするアプリです。
@@ -9,7 +9,7 @@
 * コミュニティ・チャンネルごとの通知ミュート（除外）機能
 * 無駄におしゃれな見た目
 ## ダウンロード
-[最新バイナリ](../../download/v1.2.0/NNS_T.zip)（Windows10でのみ動作確認）
+[最新バイナリ](../../releases/download/v1.2.0/NNS_T.zip)（Windows10でのみ動作確認）
 ## 使い方
 **注意事項**に同意された方のみ使用してください。
 1. ダウンロードしたNNS_T.zipを展開し、適当なフォルダに入れます
@@ -20,7 +20,7 @@
 
 [画像付きの詳しい説明へ](How2Use/README.md)
 ## ライセンス
-[MIT](https://github.com/TN8001/NNS_T/blob/master/LICENSE)
+[MIT](LICENSE)
 ## 注意事項
 * [niconicoコンテンツ検索API](http://site.nicovideo.jp/search-api-docs/search.html)
 の規約はアプリ利用者にも適用されます  
