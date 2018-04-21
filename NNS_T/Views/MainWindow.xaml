@@ -23,7 +23,6 @@
   mc:Ignorable="d">
   <controls:MetroWindow.Resources>
 
-
     <DataTemplate x:Key="MenuItemTemplate" DataType="{x:Type MenuItem}">
       <Grid Height="48">
         <Grid.ColumnDefinitions>
@@ -80,8 +79,29 @@
   </controls:MetroWindow.LeftWindowCommands>
   <controls:MetroWindow.RightWindowCommands>
     <controls:WindowCommands>
-      <Button Command="{Binding OpenBrowserCommand}" CommandParameter="https://github.com/TN8001/NNS_T">
-        <StackPanel Orientation="Horizontal">
+      <Button
+        BorderBrush="{x:Null}"
+        Command="{Binding OpenBrowserCommand}"
+        Template="{DynamicResource WindowCommandsButtonTemplate}"
+        ToolTip="{Binding NewVersionMassage}"
+        ToolTipService.Placement="Mouse"
+        ToolTipService.ShowDuration="30000">
+        <Button.Style>
+          <Style TargetType="Button">
+            <Setter Property="Background" Value="{x:Null}" />
+            <Setter Property="CommandParameter" Value="https://github.com/TN8001/NNS_T" />
+            <Setter Property="Foreground" Value="White" />
+            <Style.Triggers>
+
+              <DataTrigger Binding="{Binding NewVersionPublished}" Value="True">
+                <Setter Property="Background" Value="#FFFFCC00" />
+                <Setter Property="CommandParameter" Value="https://github.com/TN8001/NNS_T/releases" />
+                <Setter Property="Foreground" Value="Black" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </Button.Style>
+        <StackPanel Margin="5,0" Orientation="Horizontal">
           <Rectangle
             Width="20"
             Height="20"

@@ -2,6 +2,7 @@
 using NNS_T.ViewModels;
 using System.Collections;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 
 namespace NNS_T.Views

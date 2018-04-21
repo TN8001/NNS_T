@@ -15,6 +15,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "How2Use", "How2Use", "{EEAD41E8-3E68-4BAF-A1C9-DD8D020D197B}"
 	ProjectSection(SolutionItems) = preProject
 		How2Use\About.png = How2Use\About.png
+		How2Use\CommandLine1.png = How2Use\CommandLine1.png
+		How2Use\CommandLine2.png = How2Use\CommandLine2.png
 		How2Use\MainWindow.png = How2Use\MainWindow.png
 		How2Use\Mute.png = How2Use\Mute.png
 		How2Use\README.md = How2Use\README.md
@@ -22,6 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "How2Use", "How2Use", "{EEAD
 		How2Use\Settings.png = How2Use\Settings.png
 		How2Use\Sound.png = How2Use\Sound.png
 		How2Use\Toast.png = How2Use\Toast.png
+		How2Use\Update.png = How2Use\Update.png
 	EndProjectSection
 EndProject
 Global

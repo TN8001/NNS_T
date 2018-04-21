@@ -104,7 +104,7 @@
       <RowDefinition />
     </Grid.RowDefinitions>
 
-    <Grid>
+    <Grid Background="#01FFFFFF" MouseRightButtonDown="OnMouseRightButtonDown">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="36" />
         <ColumnDefinition Width="36" />
@@ -121,20 +121,15 @@
         VerticalAlignment="Center"
         FontSize="16"
         Text="Search" />
-      <ContentControl
+      <Label
         Grid.Column="3"
         Margin="5,0"
+        Padding="2"
         HorizontalAlignment="Right"
         VerticalAlignment="Center"
-        Focusable="False"
-        IsTabStop="False"
-        MouseRightButtonDown="OnMouseRightButtonDown">
-        <Label
-          Padding="0"
-          Content="{Binding HitCount}"
-          ContentStringFormat="HitCount: {0}"
-          IsEnabled="{Binding IsTimerEnabled}" />
-      </ContentControl>
+        Content="{Binding HitCount}"
+        ContentStringFormat="{}{0}件"
+        IsEnabled="{Binding IsTimerEnabled}" />
     </Grid>
 
     <Grid Grid.Row="1" Margin="5,0,5,5">
@@ -172,7 +167,7 @@
                 <RadioButton
                   HorizontalAlignment="Left"
                   VerticalAlignment="Bottom"
-                  Content="タグ検索"
+                  Content="タグ検索（完全一致）"
                   GroupName="Target"
                   IsChecked="{Binding Settings.Search.Targets, ConverterParameter={x:Static nicoApi:Targets.TagsExact}, Converter={StaticResource Targets2CheckBoxConverter}}" />
                 <Button

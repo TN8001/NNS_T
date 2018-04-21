@@ -9,11 +9,9 @@
   d:DesignWidth="300"
   mc:Ignorable="d">
   <UserControl.Resources>
-
     <Style TargetType="{x:Type ListBoxItem}">
       <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
-
   </UserControl.Resources>
 
   <Grid>
@@ -41,11 +39,11 @@
       <TextBlock
         Grid.Column="3"
         Margin="5,0"
+        Padding="2"
         VerticalAlignment="Center"
-        Text="{Binding Items.Count, StringFormat=Total: {0}, ElementName=listBox, Mode=OneWay}" />
+        Text="{Binding Items.Count, StringFormat={}{0}件, ElementName=listBox, Mode=OneWay}" />
     </Grid>
 
-    <!--  SearchPageの方は仕組み上バーチャルにできないがこっちは入れてもいいかもしれない？？  -->
     <ListBox
       x:Name="listBox"
       Grid.Row="1"

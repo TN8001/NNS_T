@@ -52,6 +52,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -91,9 +92,11 @@
     <Compile Include="Utility\Converters\FlagsEnum2BoolConverter.cs" />
     <Compile Include="Utility\Converters\StartTimeConverter.cs" />
     <Compile Include="Utility\SettingsHelper.cs" />
+    <Compile Include="Utility\UpdateChecker.cs" />
     <Compile Include="ViewModels\LiveItemViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Utility\Timer.cs" />
+    <Compile Include="Utility\Converters\EnumToVisibilityConverter.cs" />
     <Compile Include="Views\HyperlinkEx.cs" />
     <Compile Include="Models\NicoAPI\Datum.cs" />
     <Compile Include="Models\NicoAPI\Meta.cs" />
@@ -108,6 +111,9 @@
     </Compile>
     <Compile Include="Views\MutePane.xaml.cs">
       <DependentUpon>MutePane.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MetroMessageBox.xaml.cs">
+      <DependentUpon>MetroMessageBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SearchPane.xaml.cs">
       <DependentUpon>SearchPane.xaml</DependentUpon>
@@ -142,6 +148,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\MetroMessageBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SearchPane.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

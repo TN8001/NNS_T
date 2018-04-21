@@ -9,8 +9,9 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:models="clr-namespace:NNS_T.Models"
   xmlns:sys="clr-namespace:System;assembly=mscorlib"
-  d:DesignHeight="400"
+  d:DesignHeight="500"
   d:DesignWidth="300"
+  FontSize="12"
   mc:Ignorable="d">
   <Grid>
     <Grid.RowDefinitions>
@@ -66,13 +67,7 @@
             </ComboBox.ItemsSource>
           </ComboBox>
         </HeaderedContentControl>
-        <Button
-          Margin="5,0,5,5"
-          HorizontalAlignment="Right"
-          Command="{Binding ProcessStartCommand}"
-          CommandParameter="control.exe /name Microsoft.Sound /page 2"
-          Content="サウンドを開く..." />
-        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+        <WrapPanel HorizontalAlignment="Right" Orientation="Horizontal">
           <Button
             Margin="5,0,5,5"
             Command="{Binding PlaySoundCommand}"
@@ -82,9 +77,14 @@
           <Button
             Margin="5,0,5,5"
             Command="{Binding ProcessStartCommand}"
+            CommandParameter="control.exe /name Microsoft.Sound /page 2"
+            Content="サウンドを開く..." />
+          <Button
+            Margin="5,0,5,5"
+            Command="{Binding ProcessStartCommand}"
             CommandParameter="SndVol.exe"
             Content="音量ミキサーを開く..." />
-        </StackPanel>
+        </WrapPanel>
         <HeaderedContentControl Margin="5" Header="通知表示期間:">
           <controls:NumericUpDown
             HorizontalContentAlignment="Left"
@@ -117,21 +117,28 @@
           Margin="5"
           Content="ミュートを表示する"
           IsChecked="{Binding Settings.Mute.ShowList}" />
-        <TextBlock Margin="5,5,5,0" Text="開くブラウザ:" />
-        <Grid Margin="5,0,5,5">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="Auto" />
-          </Grid.ColumnDefinitions>
-          <TextBox
-            VerticalAlignment="Center"
-            controls:TextBoxHelper.Watermark="空でデフォルトブラウザ"
-            Text="{Binding Settings.BrowserPath}" />
-          <Button
-            Grid.Column="1"
-            Command="{Binding SelectBrowserPathCommand}"
-            Content="選択..." />
-        </Grid>
+        <HeaderedContentControl Margin="5" Header="開くブラウザ:">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+              VerticalAlignment="Center"
+              controls:TextBoxHelper.Watermark="空でデフォルトブラウザ"
+              Text="{Binding Settings.BrowserPath}" />
+            <Button
+              Grid.Column="1"
+              Command="{Binding SelectBrowserPathCommand}"
+              Content="選択..." />
+          </Grid>
+
+        </HeaderedContentControl>
+        <CheckBox
+          Margin="5"
+          Content="更新を確認する"
+          IsChecked="{Binding Settings.UpdateCheck}" />
+
         <WrapPanel Orientation="Horizontal">
           <Button
             Margin="5"

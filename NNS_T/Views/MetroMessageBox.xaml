@@ -1,0 +1,74 @@
+﻿<controls:MetroWindow
+  x:Class="NNS_T.Views.MetroMessageBox"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:cnv="clr-namespace:NNS_T.Utility.Converters"
+  xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+  xmlns:local="clr-namespace:NNS_T.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  x:Name="metroWindow"
+  BorderBrush="Black"
+  BorderThickness="1"
+  FontSize="15"
+  ResizeMode="NoResize"
+  ShowMaxRestoreButton="False"
+  ShowMinButton="False"
+  SizeToContent="WidthAndHeight"
+  SnapsToDevicePixels="True"
+  WindowStartupLocation="CenterScreen"
+  mc:Ignorable="d">
+  <controls:MetroWindow.Resources>
+    <cnv:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
+    <Style x:Key="icon" TargetType="{x:Type Rectangle}">
+      <Setter Property="Width" Value="36" />
+      <Setter Property="Height" Value="36" />
+      <Setter Property="Margin" Value="0,0,10,0" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+      <Setter Property="Fill" Value="DarkGray" />
+    </Style>
+  </controls:MetroWindow.Resources>
+  <Grid Margin="5">
+    <Grid.RowDefinitions>
+      <RowDefinition />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <Grid MinHeight="40" Margin="10,30">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
+      <Rectangle Style="{StaticResource icon}" Visibility="{Binding MessageBoxImage, ConverterParameter={x:Static MessageBoxImage.Error}, Converter={StaticResource EnumToVisibilityConverter}, ElementName=metroWindow}">
+        <Rectangle.OpacityMask>
+          <VisualBrush Stretch="Fill" Visual="{iconPacks:PackIconOcticons X}" />
+        </Rectangle.OpacityMask>
+      </Rectangle>
+      <Rectangle Style="{StaticResource icon}" Visibility="{Binding MessageBoxImage, ConverterParameter={x:Static MessageBoxImage.Question}, Converter={StaticResource EnumToVisibilityConverter}, ElementName=metroWindow}">
+        <Rectangle.OpacityMask>
+          <VisualBrush Stretch="Fill" Visual="{iconPacks:PackIconOcticons Question}" />
+        </Rectangle.OpacityMask>
+      </Rectangle>
+      <Rectangle Style="{StaticResource icon}" Visibility="{Binding MessageBoxImage, ConverterParameter={x:Static MessageBoxImage.Exclamation}, Converter={StaticResource EnumToVisibilityConverter}, ElementName=metroWindow}">
+        <Rectangle.OpacityMask>
+          <VisualBrush Stretch="Fill" Visual="{iconPacks:PackIconOcticons IssueOpened}" />
+        </Rectangle.OpacityMask>
+      </Rectangle>
+      <Rectangle Style="{StaticResource icon}" Visibility="{Binding MessageBoxImage, ConverterParameter={x:Static MessageBoxImage.Information}, Converter={StaticResource EnumToVisibilityConverter}, ElementName=metroWindow}">
+        <Rectangle.OpacityMask>
+          <VisualBrush Stretch="Fill" Visual="{iconPacks:PackIconOcticons Info}" />
+        </Rectangle.OpacityMask>
+      </Rectangle>
+
+
+      <ContentPresenter Grid.Column="1" Content="{Binding Message, ElementName=metroWindow}" />
+    </Grid>
+
+    <Border Grid.Row="1" BorderThickness="30,0,0,0">
+      <Grid
+        x:Name="buttonGrid"
+        HorizontalAlignment="Right"
+        Grid.IsSharedSizeScope="True" />
+    </Border>
+  </Grid>
+</controls:MetroWindow>

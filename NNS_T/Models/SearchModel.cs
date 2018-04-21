@@ -49,9 +49,11 @@ namespace NNS_T.Models
             }
         }
 
-        // コミュ限の放送に鍵アイコンを表示するかどうか
+        /////<summary>コミュ限の放送に鍵アイコンを表示するかどうか</summary>
         // アンドキュメントなパラメータで取得できるが規約違反になると思われるので裏設定
         // 自己責任でuser.configに「<Search ShowMemberOnlyIcon="true">」を追加する
+        // user.configを壊すと初期設定にリセットされるのでバックアップを推奨
+        //
         // <Search Targets="Title Description Tags" IntervalSec="60" UnuseDescription="false">
         // ↑こうなっていたとしたら↓こうする
         // <Search Targets="Title Description Tags" IntervalSec="60" UnuseDescription="false" ShowMemberOnlyIcon="true">
@@ -68,12 +70,14 @@ namespace NNS_T.Models
             }
         }
 
-        // コミュ限の放送を検索結果に入れないようにするかどうか
+        /////<summary>コミュ限の放送を検索結果に入れないようにするかどうか</summary>
         // アンドキュメントなパラメータで取得できるが規約違反になると思われるので裏設定
         // 自己責任でuser.configに「<Search HideMemberOnly="true">」を追加する
-        // <Search Targets="Title Description Tags" IntervalSec="60" UnuseDescription="false" ShowMemberOnlyIcon="true">
+        // user.configを壊すと初期設定にリセットされるのでバックアップを推奨
+        //
+        // <Search Targets="Title Description Tags" IntervalSec="60" UnuseDescription="false">
         // ↑こうなっていたとしたら↓こうする
-        // <Search Targets="Title Description Tags" IntervalSec="60" UnuseDescription="false" ShowMemberOnlyIcon="true" HideMemberOnly="true">
+        // <Search Targets="Title Description Tags" IntervalSec="60" UnuseDescription="false" HideMemberOnly="true">
         [XmlAttribute, DefaultValue(false)]
         public bool HideMemberOnly { get => _HideMemberOnly; set => Set(ref _HideMemberOnly, value); }
         private bool _HideMemberOnly;

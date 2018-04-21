@@ -39,6 +39,14 @@ namespace NNS_T.ViewModels
         public int HitCount { get => _HitCount; set => Set(ref _HitCount, value); }
         private int _HitCount;
 
+        ///<summary>新しいバージョンがある</summary>
+        public bool NewVersionPublished { get => _NewVersionPublished; set => Set(ref _NewVersionPublished, value); }
+        private bool _NewVersionPublished;
+
+        ///<summary>新しいバージョンの概要</summary>
+        public string NewVersionMassage { get => _NewVersionMassage; set => Set(ref _NewVersionMassage, value); }
+        private string _NewVersionMassage;
+
         ///<summary>検索結果放送コレクション</summary>
         public ObservableCollection<LiveItemViewModel> Items { get; } = new ObservableCollection<LiveItemViewModel>();
 
@@ -80,16 +88,49 @@ namespace NNS_T.ViewModels
         private NicoApi nicoApi = new NicoApi(ProductInfo.Name);
         // 条件変更フラグ
         private bool isDirty = true;
-        // 設定ファイルフルパス コマンドラインで指定
-        // （ファイル名のみ採用しdirはユーザーフォルダ固定
-        private readonly string configPath;
+
 
         public MainViewModel()
         {
-            configPath = GetConfigPath();
-            Settings = SettingsHelper.LoadOrDefault<SettingsModel>(configPath);
-            // 何故かIconUrlで同定していたため複数追加されている可能性あり
-            Settings.Mute.Items = new MuteCollection(Settings.Mute.Items.Distinct());
+            var configPath = GetConfigPath();
+            try
+            {
+                Settings = SettingsHelper.Load<SettingsModel>(configPath);
+                // 旧版を使っていてUpdateCheck機能がついてから初めての起動の場合
+                // (true falseを決めていない状態)
+                if(Settings.UpdateCheck == null)
+                {
+                    // 一応確認を入れる
+                    Settings.UpdateCheck = InfoUpdateCheck();
+
+                    // UpdateCheckより前のバージョンで対応済みだが無駄な処理なので
+                    // この際ここで解消（一回処理すれば次回以降必要ない）
+
+                    // 何故かIconUrlで同定していたため複数追加されている可能性あり
+                    Settings.Mute.Items = new MuteCollection(Settings.Mute.Items.Distinct());
+                }
+            }
+            catch
+            {
+                Debug.WriteLine("fail Deserialize");
+
+                // 旧版を使っていない場合はチェックするがデフォでいいでしょ
+                Settings = new SettingsModel { UpdateCheck = true };
+            }
+
+            if(Settings.UpdateCheck == true)
+            {
+                var url = "https://github.com/TN8001/NNS_T/releases.atom";
+                var checker = new UpdateChecker(url, ProductInfo.Version);
+                var text = checker.GetNewVersionString();
+
+                if(text != "")
+                {
+                    NewVersionMassage = "新しいバージョンがあります\n\n" + text;
+                    NewVersionPublished = true;
+                }
+            }
+
 
             // 検索間隔 条件変更フラグ 更新
             Settings.Search.PropertyChanged += (s, e) =>
@@ -110,7 +151,7 @@ namespace NNS_T.ViewModels
                     item.IsMuted = mute.Official;
             };
 
-            SearchCommand = new RelayCommand(async () => await SearchCommandImplAsync());//, () => !IsBusy);
+            SearchCommand = new RelayCommand(async () => await SearchCommandImplAsync());
             SaveCommand = new RelayCommand(() => SettingsHelper.Save(Settings, configPath));
 
             // 各アイテム内からバインド可能なようにインジェクション
@@ -370,6 +411,25 @@ namespace NNS_T.ViewModels
                 return Path.Combine(dir, name);
             }
 
+            return null;
+        }
+        // UpdateCheckの説明MessageBox表示
+        private bool? InfoUpdateCheck()
+        {
+            var message =
+@"今更ですが更新確認機能が付きました。
+
+起動時に新しいバージョンが出ていないかを確認します。
+確認するだけで実際に更新するのは手動になります。
+
+新バージョンが出ていた場合、タイトルバーのGitHubボタンが黄色になります。
+クリックするとリリースページに飛びます。
+
+更新確認機能を使いますか？（Settingsページでいつでも変更可能です）";
+
+            var r = MetroMessageBox.Show(message, "NNS_T", "はい,いいえ,後で", MessageBoxImage.Information, 0, 2);
+            if(r == "はい") return true;
+            if(r == "いいえ") return false;
             return null;
         }
     }
