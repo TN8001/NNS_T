@@ -43,7 +43,7 @@ namespace NNS_T.Utility
                 // どうせリリースミスで何度もappveyorする羽目になるので
                 // 満足できる状態になったらgithub releasesに手動でコメントを入れる
                 // コメントを入れるまでは最新版扱いをしない
-                var feeds = GetFeeds().Where(x => x.Version > version && x.Content != "")
+                var feeds = GetFeeds().Where(x => x.Version > version && x.Content != "" && x.Content != "No content.")
                                       .Select(x => x.ToString());
 
                 return string.Join("\n", feeds);
