@@ -1,6 +1,6 @@
 ﻿# NNS_T ニコ生サーチ(🍞)
 [![Build status](https://ci.appveyor.com/api/projects/status/rjdt756hw6l8ragb/branch/master?svg=true)](https://ci.appveyor.com/project/TN8001/nns-t/branch/master)
-[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/TN8001/NNS_T/blob/master/LICENSE)  
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  
 ![アプリスクリーンショット](AppImage.png)
 ## 概要
 ニコ生を定期的に監視をして新規放送が始まったら、トースト通知風（Google Chromeの通知のほうが近いです）のポップアップを出して、お知らせするアプリです。
@@ -57,5 +57,5 @@ APIの仕様のようなのでこちらにはどうしようもありません�
 * 2018/02/18 ver1.1.7 タイトル変更追従 AngleSharp非依存化
 * 2018/03/06 ver1.1.8 bugfix 通知のミュートボタンが機能していなかった 検索ボタンをdisableにしないように変更
 * 2018/04/15 ver1.1.9 要望対応
-* 2018/04/21 ver1.2.0 更新確認機能
+* 2018/04/21 ver1.2.0 更新確認機能追加
 
