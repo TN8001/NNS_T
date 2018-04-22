@@ -10,6 +10,7 @@ environment:
   GITHUB_VERSION:
 before_build:
 - cmd: nuget restore
+
 - ps: |
     Write-Host $env:APPVEYOR_BUILD_VERSION
     Write-Host $env:GITHUB_VERSION
@@ -17,7 +18,7 @@ before_build:
     $split = $appver.Split(".")
     $env:GITHUB_VERSION = $split[0]+"."+$split[1]+"."+$split[2]
     Write-Host $env:GITHUB_VERSION
-	Update-AppveyorBuild -Version $env:GITHUB_VERSION
+    Update-AppveyorBuild -Version $env:GITHUB_VERSION
 
 build:
   verbosity: minimal
