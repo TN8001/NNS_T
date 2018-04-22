@@ -6,10 +6,13 @@ skip_tags: true
 image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
+environment:
+  variable1: value
 before_build:
 - cmd: nuget restore
 - ps: |
     Write-Host $env:APPVEYOR_BUILD_VERSION
+    Write-Host $env:variable1
 #    $appver = $env:APPVEYOR_BUILD_VERSION
 #    $split = $appver.Split(".")
 #    $newver = $split[0]+"."+$split[1]+"."+$split[2]
