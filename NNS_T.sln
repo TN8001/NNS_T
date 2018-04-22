@@ -12,21 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "How2Use", "How2Use", "{EEAD41E8-3E68-4BAF-A1C9-DD8D020D197B}"
-	ProjectSection(SolutionItems) = preProject
-		How2Use\About.png = How2Use\About.png
-		How2Use\CommandLine1.png = How2Use\CommandLine1.png
-		How2Use\CommandLine2.png = How2Use\CommandLine2.png
-		How2Use\MainWindow.png = How2Use\MainWindow.png
-		How2Use\Mute.png = How2Use\Mute.png
-		How2Use\README.md = How2Use\README.md
-		How2Use\Search.png = How2Use\Search.png
-		How2Use\Settings.png = How2Use\Settings.png
-		How2Use\Sound.png = How2Use\Sound.png
-		How2Use\Toast.png = How2Use\Toast.png
-		How2Use\Update.png = How2Use\Update.png
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,9 +25,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{EEAD41E8-3E68-4BAF-A1C9-DD8D020D197B} = {222B2BF1-8C7F-43B8-87E1-C684F3726191}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6E0DE622-B45F-412C-BF68-AD6946BACD4F}
