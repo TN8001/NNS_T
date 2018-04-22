@@ -1,0 +1,26 @@
+version: 1.2.0.{build}
+branches:
+  only:
+  - master
+skip_tags: true
+image: Visual Studio 2017
+configuration: Release
+platform: Any CPU
+before_build:
+- cmd: nuget restore
+- ps: |
+    $ver = $env:APPVEYOR_BUILD_VERSION
+    $split = $result.Split(".")
+    Update-AppveyorBuild -Version $split[0]+"."+$split[1]+"."$split[2]
+
+build:
+  verbosity: minimal
+after_build:
+- cmd: >-
+    del %APPVEYOR_BUILD_FOLDER%\NNS_T\bin\Release\*.xml
+
+    del %APPVEYOR_BUILD_FOLDER%\NNS_T\bin\Release\*.pdb
+artifacts:
+- path: NNS_T\bin\Release
+  name: NNS_T
+deploy: off
