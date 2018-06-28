@@ -88,7 +88,7 @@ namespace NNS_T.Models
         {
             Targets = Targets.Title | Targets.Description | Targets.Tags;
             IntervalSec = 30;
-            Fields = Fields.LiveAll & ~Fields.Tags & ~Fields.CategoryTags & ~Fields.LiveStatus;
+            Fields = Fields.LiveAll & ~Fields.CategoryTags & ~Fields.LiveStatus;
         }
     }
 }

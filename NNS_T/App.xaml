@@ -209,6 +209,17 @@
               Foreground="White"
               Kind="Lock" />
           </Border>
+          <Border Margin="5,0"
+            Padding="2,0,2,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Background="Black"
+            CornerRadius="2"
+            Visibility="{Binding IsHD, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock FontSize="10"
+              Foreground="#FFFFDA44" FontWeight="Bold"
+              Text="HD"  />
+          </Border>
 
           <StackPanel
             Grid.Column="1"

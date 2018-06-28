@@ -2,6 +2,7 @@
 using NNS_T.Models.NicoAPI;
 using NNS_T.Utility;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -38,6 +39,9 @@ namespace NNS_T.ViewModels
         ///<summary>ミュート</summary>
         public bool IsMuted { get => _IsMuted; set => Set(ref _IsMuted, value); }
         private bool _IsMuted;
+        //HD配信の枠制限が撤廃(2018年6月28日)されても「HD配信」タグは残るようなのでこの機会に追加
+        ///<summary>HD配信かどうか</summary>
+        public bool IsHD { get; }
 
         ///<summary>説明文からhtmlタグ、改行を除いたもの</summary>
         public string NonTagDescription => Description == null ? null :
@@ -77,7 +81,12 @@ namespace NNS_T.ViewModels
         // 取得データが不安定なので何回か待ってから削除する用
         private int DeleteCount;
 
-        public LiveItemViewModel(Datum datum) => this.datum = datum;
+        public LiveItemViewModel(Datum datum)
+        {
+            this.datum = datum;
+            //途中で変更できそうもないため最初だけ判定
+            IsHD = datum.Tags?.Split(' ').Contains("HD配信") ?? false;
+        }
 
         public void Update(LiveItemViewModel item)
         {
