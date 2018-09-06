@@ -51,7 +51,7 @@
         </Grid>
         <TextBlock Text="説明:" />
         <TextBlock TextWrapping="Wrap">
-          <Run Text="ニコ生を定期的に監視をして新規放送が始まったら、トースト通知風（Google Chromeの通知のほうが近いです）のポップアップを出して、お知らせするアプリです。" />
+          <Run Text="ニコ生を定期的に監視をして新規放送が始まったら、トースト通知風のポップアップを出して、お知らせするアプリです。" />
           <LineBreak />
           <LineBreak />
           <Run Text="詳しい使い方や、どんなク/ソコードか見てみたい方は" />

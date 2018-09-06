@@ -77,7 +77,15 @@ namespace NNS_T.Views
             var effects = DragDropEffects.Copy | DragDropEffects.Move | DragDropEffects.Link;
 
             RaiseEvent(new RoutedEventArgs(DragStartEvent));
-            DragDrop.DoDragDrop(this, data, effects);
+            try
+            {
+                DragDrop.DoDragDrop(this, data, effects);
+            }
+            // ドロップ中に相手アプリが落ちた場合 System.Runtime.InteropServices.COMException
+            // が発生する場合がある
+            // 巻き添えを食わないようスルーする
+            catch { /* NOP */ }
+
             RaiseEvent(new RoutedEventArgs(DragEndEvent));
         }
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)

@@ -2,8 +2,8 @@
 using NNS_T.Models.NicoAPI;
 using NNS_T.Utility;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace NNS_T.ViewModels
@@ -12,9 +12,11 @@ namespace NNS_T.ViewModels
     {
         private Datum datum;
 
-        // MainViewModelからインジェクション 雑い
         ///<summary>放送ミュートコマンド</summary>
-        public static RelayCommand<LiveItemViewModel> ToggleMuteCommand { get; internal set; }
+        public RelayCommand<LiveItemViewModel> ToggleMuteCommand => _ToggleMuteCommand;
+        // MainViewModelからインジェクション 雑い
+        // staticだと（動くのだが）VS上でエラーが出て目障りなのでちょい変更
+        internal static RelayCommand<LiveItemViewModel> _ToggleMuteCommand;
 
 
         ///<summary>生放送ID (lv123456789等)</summary>

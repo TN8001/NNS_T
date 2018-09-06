@@ -155,7 +155,7 @@ namespace NNS_T.ViewModels
             SaveCommand = new RelayCommand(() => SettingsHelper.Save(Settings, configPath));
 
             // 各アイテム内からバインド可能なようにインジェクション
-            LiveItemViewModel.ToggleMuteCommand = new RelayCommand<LiveItemViewModel>(async (liveItem) =>
+            LiveItemViewModel._ToggleMuteCommand = new RelayCommand<LiveItemViewModel>(async (liveItem) =>
             {
                 if(liveItem.ProviderType == ProviderType.Official) return; // 来ないはず
 
