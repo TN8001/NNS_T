@@ -9,6 +9,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:models="clr-namespace:NNS_T.Models"
   xmlns:sys="clr-namespace:System;assembly=mscorlib"
+  xmlns:utility="clr-namespace:NNS_T.Utility"
   d:DesignHeight="500"
   d:DesignWidth="300"
   FontSize="12"
@@ -138,6 +139,21 @@
           Margin="5"
           Content="更新を確認する"
           IsChecked="{Binding Settings.UpdateCheck}" />
+
+        <HeaderedContentControl Margin="5" Header="配色テーマ:">
+          <ComboBox
+            DisplayMemberPath="Value"
+            SelectedValue="{Binding Settings.Window.Theme, Mode=TwoWay}"
+            SelectedValuePath="Key">
+            <ComboBox.ItemsSource>
+              <local:WindowThemeDictionary>
+                <sys:String x:Key="{x:Static utility:ThemeState.System}">システム</sys:String>
+                <sys:String x:Key="{x:Static utility:ThemeState.Light}">ライト</sys:String>
+                <sys:String x:Key="{x:Static utility:ThemeState.Dark}">ダーク</sys:String>
+              </local:WindowThemeDictionary>
+            </ComboBox.ItemsSource>
+          </ComboBox>
+        </HeaderedContentControl>
 
         <WrapPanel Orientation="Horizontal">
           <Button

@@ -9,7 +9,7 @@
   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:nicoApi="clr-namespace:NNS_T.Models.NicoAPI"
-  d:DesignHeight="200"
+  d:DesignHeight="400"
   d:DesignWidth="400"
   mc:Ignorable="d mc">
   <UserControl.Resources>
@@ -19,9 +19,8 @@
     <!--  新規追加時のアピールアニメーション 赤く3回点滅  -->
     <Storyboard x:Key="Storyboard" FillBehavior="Stop">
       <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)">
-        <EasingColorKeyFrame KeyTime="0:0:2" Value="Pink" />
-        <EasingColorKeyFrame KeyTime="0:0:4" Value="White" />
-
+        <EasingColorKeyFrame KeyTime="0:0:2" Value="#CCFFC0CB" />
+        <EasingColorKeyFrame KeyTime="0:0:4" Value="#00FFC0CB" />
         <!--
           #if DEBUG hack
           https://stackoverflow.com/questions/8732307/does-xaml-have-a-conditional-compiler-directive-for-debug-mode
@@ -30,10 +29,10 @@
         <mc:AlternateContent>
           <mc:Choice Requires="debug" />
           <mc:Fallback>
-            <EasingColorKeyFrame KeyTime="0:0:6" Value="Pink" />
-            <EasingColorKeyFrame KeyTime="0:0:8" Value="White" />
-            <EasingColorKeyFrame KeyTime="0:0:10" Value="Pink" />
-            <EasingColorKeyFrame KeyTime="0:0:12" Value="White" />
+            <EasingColorKeyFrame KeyTime="0:0:6" Value="#CCFFC0CB" />
+            <EasingColorKeyFrame KeyTime="0:0:8" Value="#00FFC0CB" />
+            <EasingColorKeyFrame KeyTime="0:0:10" Value="#CCFFC0CB" />
+            <EasingColorKeyFrame KeyTime="0:0:12" Value="#00FFC0CB" />
           </mc:Fallback>
         </mc:AlternateContent>
       </ColorAnimationUsingKeyFrames>
@@ -229,11 +228,6 @@
       </StackPanel>
 
       <!--  アイテム数が0だった時だけ表示  -->
-      <Label
-        Grid.Row="1"
-        HorizontalContentAlignment="Center"
-        Background="White"
-        Content="Empty" />
 
       <!--
         アニメーションの関係上リサイクリングは問題外
@@ -241,23 +235,40 @@
         最大100件なのでバーチャルなしでも特に問題はないと思う
       -->
       <ListBox
+        x:Name="listBox"
         Grid.Row="1"
         ItemContainerStyle="{StaticResource ListBoxItemBlinkStyle}"
         ItemsSource="{Binding Items}"
         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
         VirtualizingPanel.IsVirtualizing="False"
         VirtualizingPanel.ScrollUnit="Pixel">
-        <ListBox.Style>
+        <!--<ListBox.Style>
           <Style TargetType="ListBox">
-            <Setter Property="Background" Value="White" />
+            <Setter Property="Panel.ZIndex" Value="1" />
             <Style.Triggers>
               <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Items.Count}" Value="0">
-                <Setter Property="Background" Value="{x:Null}" />
+                <Setter Property="Panel.ZIndex" Value="0" />
               </DataTrigger>
             </Style.Triggers>
           </Style>
-        </ListBox.Style>
+        </ListBox.Style>-->
       </ListBox>
+      <Label
+        Grid.Row="1"
+        HorizontalContentAlignment="Center"
+        Content="Empty">
+        <Label.Style>
+          <Style TargetType="Label">
+            <Setter Property="Visibility" Value="Hidden" />
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Items.Count, ElementName=listBox, Mode=OneWay}" Value="0">
+                <Setter Property="Visibility" Value="Visible" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </Label.Style>
+      </Label>
+
     </Grid>
   </Grid>
 </UserControl>

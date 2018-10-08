@@ -1,0 +1,12 @@
+﻿<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+  <SolidColorBrush
+    x:Key="LinkBrush"
+    options:Freeze="True"
+    Color="#FF569CD6" />
+</ResourceDictionary>

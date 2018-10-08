@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -15,7 +16,7 @@ namespace NNS_T.Models.NicoAPI
         ///<summary>コミュニティURL</summary>
         public const string CommunityUrl = "http://com.nicovideo.jp/community/";
         ///<summary>チャンネルURL</summary>
-        public const string ChannelUrl = "http://com.nicovideo.jp/channel/";
+        public const string ChannelUrl = "http://ch.nicovideo.jp/";
 
         // APIエントリポイント
         private const string ApiUrl = "http://api.search.nicovideo.jp/api/v2/:service/contents/search?";
@@ -160,7 +161,7 @@ namespace NNS_T.Models.NicoAPI
             var response = await httpClient.GetAsync(url);
             var s = await response.Content.ReadAsStringAsync();
 
-            return reg.Match(s).Groups["Title"].Value.Trim();
+            return WebUtility.HtmlDecode(reg.Match(s).Groups["Title"].Value.Trim());
         }
     }
 }

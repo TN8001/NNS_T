@@ -2,16 +2,18 @@
   x:Class="NNS_T.Views.MainWindow"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Behaviours="http://metro.mahapps.com/winfx/xaml/shared"
   xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:utility="clr-namespace:NNS_T.Utility"
   xmlns:views="clr-namespace:NNS_T.Views"
   x:Name="metroWindow"
   Title="NNS_T"
   Width="{Binding Settings.Window.Width, Mode=TwoWay}"
   Height="{Binding Settings.Window.Height, Mode=TwoWay}"
-  Background="#FFEDEDED"
   BorderBrush="Black"
   BorderThickness="1"
   Closing="OnClosing"
@@ -21,6 +23,12 @@
   Top="{Binding Settings.Window.Top, Mode=TwoWay}"
   WindowState="{Binding WindowState}"
   mc:Ignorable="d">
+  <i:Interaction.Behaviors>
+    <utility:SystemColorsBehavior Theme="{Binding Settings.Window.Theme}" />
+    <Behaviours:BorderlessWindowBehavior />
+    <Behaviours:WindowsSettingBehaviour />
+    <Behaviours:GlowWindowBehavior />
+  </i:Interaction.Behaviors>
   <controls:MetroWindow.Resources>
 
     <DataTemplate x:Key="MenuItemTemplate" DataType="{x:Type MenuItem}">
@@ -130,7 +138,7 @@
     OpenPaneLength="120"
     OptionsItemClick="HamburgerMenuControl_OnItemClick"
     OptionsItemTemplate="{StaticResource MenuItemTemplate}"
-    PaneForeground="Black"
+    PaneForeground="{DynamicResource BlackBrush}"
     SelectedIndex="0">
     <controls:HamburgerMenu.ItemsSource>
       <controls:HamburgerMenuItemCollection>

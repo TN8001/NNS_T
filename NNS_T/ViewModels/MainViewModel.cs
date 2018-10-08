@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using MahApps.Metro;
+using Microsoft.Win32;
 using NNS_T.Models;
 using NNS_T.Models.NicoAPI;
 using NNS_T.Utility;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -47,6 +49,18 @@ namespace NNS_T.ViewModels
         public string NewVersionMassage { get => _NewVersionMassage; set => Set(ref _NewVersionMassage, value); }
         private string _NewVersionMassage;
 
+        ///<summary>新しいバージョンがある</summary>
+        public ThemeState Theme
+        {
+            get => _Theme;
+            set
+            {
+                Debug.WriteLine($"Theme:{value}");
+                Set(ref _Theme, value);
+            }
+        }
+        private ThemeState _Theme;
+
         ///<summary>検索結果放送コレクション</summary>
         public ObservableCollection<LiveItemViewModel> Items { get; } = new ObservableCollection<LiveItemViewModel>();
 
@@ -86,8 +100,9 @@ namespace NNS_T.ViewModels
 
         private DispatcherTimer timer = new DispatcherTimer();
         private NicoApi nicoApi = new NicoApi(ProductInfo.Name);
-        // 条件変更フラグ
-        private bool isDirty = true;
+        private CancellationTokenSource cts;
+        private readonly object lockObj = new object();
+        private bool isDirty = true; // 条件変更フラグ
 
 
         public MainViewModel()
@@ -96,175 +111,187 @@ namespace NNS_T.ViewModels
             try
             {
                 Settings = SettingsHelper.Load<SettingsModel>(configPath);
-                // 旧版を使っていてUpdateCheck機能がついてから初めての起動の場合
-                // (true falseを決めていない状態)
-                if(Settings.UpdateCheck == null)
-                {
-                    // 一応確認を入れる
-                    Settings.UpdateCheck = InfoUpdateCheck();
-
-                    // UpdateCheckより前のバージョンで対応済みだが無駄な処理なので
-                    // この際ここで解消（一回処理すれば次回以降必要ない）
-
-                    // 何故かIconUrlで同定していたため複数追加されている可能性あり
-                    Settings.Mute.Items = new MuteCollection(Settings.Mute.Items.Distinct());
-                }
+                Settings.Mute.Items = new MuteCollection(Settings.Mute.Items.Distinct());
             }
             catch
             {
                 Debug.WriteLine("fail Deserialize");
-
-                // 旧版を使っていない場合はチェックするがデフォでいいでしょ
                 Settings = new SettingsModel { UpdateCheck = true };
             }
 
-            if(Settings.UpdateCheck == true)
-            {
-                var url = "https://github.com/TN8001/NNS_T/releases.atom";
-                var checker = new UpdateChecker(url, ProductInfo.Version);
-                var text = checker.GetNewVersionString();
-
-                if(text != "")
-                {
-                    NewVersionMassage = "新しいバージョンがあります\n\n" + text;
-                    NewVersionPublished = true;
-                }
-            }
+            // UpdateCheck機能がついてから初めての起動の場合(true falseを決めていない状態)
+            if(Settings.UpdateCheck == null) Settings.UpdateCheck = InfoUpdateCheck();
+            UpdateCheck();
 
 
-            // 検索間隔 条件変更フラグ 更新
-            Settings.Search.PropertyChanged += (s, e) =>
-            {
-                var search = (SearchModel)s;
-                if(e.PropertyName == nameof(search.IntervalSec))
-                    timer.Interval = TimeSpan.FromSeconds(search.IntervalSec);
-                else
-                    isDirty = true;
-            };
-            // 公式をミュート 変更
-            Settings.Mute.PropertyChanged += (s, e) =>
-            {
-                var mute = (MuteModel)s;
-                if(e.PropertyName != nameof(mute.Official)) return;
-
-                foreach(var item in Items.Where(x => x.ProviderType == ProviderType.Official))
-                    item.IsMuted = mute.Official;
-            };
+            Settings.Search.PropertyChanged += Search_PropertyChanged;
+            Settings.Mute.PropertyChanged += Mute_PropertyChanged;
+            Settings.Window.PropertyChanged += Window_PropertyChanged;
 
             SearchCommand = new RelayCommand(async () => await SearchCommandImplAsync());
             SaveCommand = new RelayCommand(() => SettingsHelper.Save(Settings, configPath));
-
-            // 各アイテム内からバインド可能なようにインジェクション
-            LiveItemViewModel._ToggleMuteCommand = new RelayCommand<LiveItemViewModel>(async (liveItem) =>
-            {
-                if(liveItem.ProviderType == ProviderType.Official) return; // 来ないはず
-
-                try
-                {
-                    var name = await nicoApi.GetRoomNameAsync(liveItem.RoomID);
-                    var room = new RoomModel(liveItem.RoomID, name, liveItem.IconUrl);
-                    if(liveItem.IsMuted)
-                        Settings.Mute.Items.Add(room);
-                    else
-                        Settings.Mute.Items.Remove(room);
-                }
-                catch(Exception e)
-                {
-                    Debug.WriteLine($"MuteCommand error {e.Message}");
-                    ErrorStatus = e.Message;
-                }
-            });
-
-            UnMuteCommand = new RelayCommand<RoomModel>((room) =>
-            {
-                Settings.Mute.Items.Remove(room);
-                var liveItem = Items.FirstOrDefault(x => x.RoomID == room.ID);
-                if(liveItem == null) return;
-
-                liveItem.IsMuted = false;
-            });
-            ProcessStartCommand = new RelayCommand<string>((s) =>
-            {
-                try
-                {
-                    var index = s.IndexOf(' ');
-                    if(index < 0)
-                        Process.Start(s);
-                    else
-                        Process.Start(s.Substring(0, index), s.Substring(index + 1));
-                }
-                catch { /* NOP */ Debug.WriteLine($"ProcessStartCommand error"); }
-            });
-
-            //Edgeの場合
-            //shell:AppsFolder\Microsoft.MicrosoftEdge_8wekyb3d8bbwe!MicrosoftEdge
-            OpenBrowserCommand = new RelayCommand<string>((s) =>
-            {
-                try
-                {
-                    if(string.IsNullOrEmpty(Settings.BrowserPath))
-                        Process.Start(s);
-                    else
-                        Process.Start(Settings.BrowserPath, s);
-                }
-                catch { /* NOP */ Debug.WriteLine($"OpenBrowserCommand error"); }
-            });
-            SelectBrowserPathCommand = new RelayCommand<string>((s) =>
-            {
-                var openFileDialog = new OpenFileDialog
-                {
-                    Title = "ブラウザを選択",
-                    FilterIndex = 0,
-                    Filter = "ブラウザ(.exe)|*.exe"
-                };
-                var result = openFileDialog.ShowDialog();
-                if(result == true)
-                    Settings.BrowserPath = openFileDialog.FileName;
-            });
-            OpenFolderCommand = new RelayCommand<FolderType>((f) =>
-            {
-                try
-                {
-                    string path;
-                    switch(f)
-                    {
-                        case FolderType.Assembly:
-                            path = AppDomain.CurrentDomain.BaseDirectory;
-                            break;
-                        case FolderType.Settings:
-                            var p = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                            path = Path.Combine(p, ProductInfo.Name);
-                            break;
-                        default:
-                            return;
-                    }
-
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = path,
-                        UseShellExecute = true,
-                        Verb = "open",
-                    });
-                }
-                catch { /* NOP */ Debug.WriteLine($"OpenFolderCommand error"); }
-            });
+            UnMuteCommand = new RelayCommand<RoomModel>((room) => UnMuteCommandImpl(room));
+            ProcessStartCommand = new RelayCommand<string>((s) => ProcessStartCommandImpl(s));
+            OpenBrowserCommand = new RelayCommand<string>((s) => OpenBrowserCommandImpl(s));
+            SelectBrowserPathCommand = new RelayCommand<string>((s) => SelectBrowserPathCommandImpl(s));
+            OpenFolderCommand = new RelayCommand<FolderType>((f) => OpenFolderCommandImpl(f));
             PlaySoundCommand = new RelayCommand(() => ToastWindow.PlaySound());
             ToggleTimerCommand = new RelayCommand(() => IsTimerEnabled = !IsTimerEnabled);
-            NicoWebCommand = new RelayCommand(() =>
-            {
-                var q = CreateQuery();
-                var s = nicoApi.GetSearchUrl(q, Settings.Mute.Official);
-                OpenBrowserCommand.Execute(s);
-            });
+            NicoWebCommand = new RelayCommand(() => NicoWebCommandImpl());
+
+            // 各アイテム内からバインド可能なようにインジェクション
+            LiveItemViewModel._ToggleMuteCommand = new RelayCommand<LiveItemViewModel>(
+                async (item) => await ToggleMuteCommandImplAsync(item));
 
             timer.Interval = TimeSpan.FromSeconds(Settings.Search.IntervalSec);
             timer.Tick += (s, e) => SearchCommand.Execute();
 
             SearchCommand.Execute();
+            ChangeTheme();
+
+        }
+        private void ChangeTheme()
+        {
+            if(Settings.Window.Theme == ThemeState.Dark)
+                ThemeManager.ChangeAppStyle(Application.Current,
+                                            ThemeManager.GetAccent("Blue"),
+                                            ThemeManager.GetAppTheme("BaseDark"));
+            if(Settings.Window.Theme == ThemeState.Light)
+                ThemeManager.ChangeAppStyle(Application.Current,
+                                            ThemeManager.GetAccent("Blue"),
+                                            ThemeManager.GetAppTheme("BaseLight"));
+        }
+        private void Window_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            //var window = (WindowModel)sender;
+            //if(e.PropertyName != nameof(window.Theme)) return;
+
+            //ChangeTheme();
+
         }
 
-        private CancellationTokenSource cts;
-        private object lockObj = new object();
+        // 公式をミュート 変更
+        private void Mute_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var mute = (MuteModel)sender;
+            if(e.PropertyName != nameof(mute.Official)) return;
+
+            foreach(var item in Items.Where(x => x.ProviderType == ProviderType.Official))
+                item.IsMuted = mute.Official;
+        }
+
+        // 検索間隔 条件変更フラグ 更新
+        private void Search_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var search = (SearchModel)sender;
+            if(e.PropertyName == nameof(search.IntervalSec))
+                timer.Interval = TimeSpan.FromSeconds(search.IntervalSec);
+            else
+                isDirty = true;
+        }
+
+        private void NicoWebCommandImpl()
+        {
+            var q = CreateQuery();
+            var s = nicoApi.GetSearchUrl(q, Settings.Mute.Official);
+            OpenBrowserCommand.Execute(s);
+        }
+        private void UnMuteCommandImpl(RoomModel room)
+        {
+            while(Settings.Mute.Items.Contains(room))
+                Settings.Mute.Items.Remove(room);
+            var liveItem = Items.FirstOrDefault(x => x.RoomID == room.ID);
+            if(liveItem == null) return;
+
+            liveItem.IsMuted = false;
+        }
+        private void ProcessStartCommandImpl(string s)
+        {
+            try
+            {
+                var index = s.IndexOf(' ');
+                if(index < 0) Process.Start(s);
+                else Process.Start(s.Substring(0, index), s.Substring(index + 1));
+            }
+            catch { Debug.WriteLine($"ProcessStartCommand error"); }
+        }
+        private void OpenBrowserCommandImpl(string s)
+        {
+            //Edgeの場合
+            //shell:AppsFolder\Microsoft.MicrosoftEdge_8wekyb3d8bbwe!MicrosoftEdge
+
+            try
+            {
+                if(string.IsNullOrEmpty(Settings.BrowserPath)) Process.Start(s);
+                else Process.Start(Settings.BrowserPath, s);
+            }
+            catch { Debug.WriteLine($"OpenBrowserCommand error"); }
+        }
+        private void SelectBrowserPathCommandImpl(string s)
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Title = "ブラウザを選択",
+                FilterIndex = 0,
+                Filter = "ブラウザ(.exe)|*.exe"
+            };
+
+            var result = openFileDialog.ShowDialog();
+            if(result == true) Settings.BrowserPath = openFileDialog.FileName;
+        }
+        private void OpenFolderCommandImpl(FolderType type)
+        {
+            try
+            {
+                string path;
+                switch(type)
+                {
+                    case FolderType.Assembly:
+                        path = AppDomain.CurrentDomain.BaseDirectory;
+                        break;
+                    case FolderType.Settings:
+                        var p = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                        path = Path.Combine(p, ProductInfo.Name);
+                        break;
+                    default:
+                        return;
+                }
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = path,
+                    UseShellExecute = true,
+                    Verb = "open",
+                });
+            }
+            catch { Debug.WriteLine($"OpenFolderCommand error"); }
+        }
+        private async Task ToggleMuteCommandImplAsync(LiveItemViewModel liveItem)
+        {
+            if(liveItem.ProviderType == ProviderType.Official) return; // 来ないはず
+
+            try
+            {
+                var name = await nicoApi.GetRoomNameAsync(liveItem.RoomID);
+                var room = new RoomModel(liveItem.RoomID, name, liveItem.IconUrl);
+                if(liveItem.IsMuted)
+                {
+                    if(!Settings.Mute.Items.Contains(room))
+                        Settings.Mute.Items.Add(room);
+                }
+                else
+                {
+                    while(Settings.Mute.Items.Contains(room))
+                        Settings.Mute.Items.Remove(room);
+                }
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine($"MuteCommand error {e.Message}");
+                ErrorStatus = e.Message;
+            }
+        }
+
         private async Task SearchCommandImplAsync()
         {
             Debug.WriteLine("SearchCommand");
@@ -384,15 +411,12 @@ namespace NNS_T.ViewModels
             {
                 case NotifyState.Always:
                     break;
-
                 case NotifyState.Inactive:
                     if(Application.Current.MainWindow.IsActive) return;
                     break;
-
                 case NotifyState.Minimize:
                     if(WindowState != WindowState.Minimized) return;
                     break;
-
                 default:
                     return;
             }
@@ -413,6 +437,23 @@ namespace NNS_T.ViewModels
 
             return null;
         }
+
+        private void UpdateCheck()
+        {
+            if(Settings.UpdateCheck == true)
+            {
+                var url = "https://github.com/TN8001/NNS_T/releases.atom";
+                var checker = new UpdateChecker(url, ProductInfo.Version);
+                var text = checker.GetNewVersionString();
+
+                if(text != "")
+                {
+                    NewVersionMassage = "新しいバージョンがあります\n\n" + text;
+                    NewVersionPublished = true;
+                }
+            }
+        }
+
         // UpdateCheckの説明MessageBox表示
         private bool? InfoUpdateCheck()
         {
