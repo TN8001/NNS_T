@@ -5,8 +5,16 @@
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
   </ResourceDictionary.MergedDictionaries>
+
+  <!--  ハイパーリンクの青  -->
   <SolidColorBrush
     x:Key="LinkBrush"
     options:Freeze="True"
     Color="#FF569CD6" />
+  
+  <!--  終了見込み放送のグレイ  -->
+  <SolidColorBrush
+    x:Key="GrayBrush"
+    options:Freeze="True"
+    Color="DimGray" />
 </ResourceDictionary>

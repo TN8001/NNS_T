@@ -81,7 +81,8 @@ namespace NNS_T.ViewModels
         private bool _IsLoaded;
 
         // 取得データが不安定なので何回か待ってから削除する用
-        private int DeleteCount;
+        public int DeleteCount { get => _DeleteCount; set => Set(ref _DeleteCount, value); }
+        private int _DeleteCount;
 
         public LiveItemViewModel(Datum datum)
         {

@@ -172,6 +172,18 @@
           Height="80"
           Margin="1"
           TextBlock.FontSize="12">
+          <Grid.Style>
+            <Style TargetType="{x:Type Grid}">
+              <!--  終了見込み放送をグレイで表示  -->
+              <Setter Property="Background" Value="{DynamicResource GrayBrush}" />
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding DeleteCount}" Value="0">
+                  <Setter Property="Background" Value="Transparent" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Grid.Style>
+
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />

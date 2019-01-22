@@ -44,6 +44,7 @@ APIの仕様のようなのでこちらにはどうしようもありません�
 [Newtonsoft.Json](https://www.newtonsoft.com/json) Copyright (c) 2007 James Newton-King
 
 ## 更新履歴
+* 2019/01/22 ver1.2.5 終了見込み放送をグレイで表示
 * 2018/10/08 ver1.2.4 ダークテーマ対応
 * 2018/09/13 ver1.2.3 bugfix チャンネルページに飛べない 部屋名のHtmlDecode忘れ
 * 2018/09/03 ver1.2.2 bugfix リンクドロップ中にまれに落ちる不具合 放送タイトル変更追従したつもりがされていなかった
