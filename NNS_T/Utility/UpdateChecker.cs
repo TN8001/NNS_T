@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace NNS_T.Utility
 {
-    public class Feed
+    internal class Feed
     {
         public Version Version;
         public string Content;
@@ -20,10 +20,10 @@ namespace NNS_T.Utility
     }
 
     /// <summary>githubから新しいバージョンが出ていないか確認する</summary>
-    public class UpdateChecker
+    internal class UpdateChecker
     {
-        private string url;
-        private Version version;
+        private readonly string url;
+        private readonly Version version;
 
         /// <summary>githubから新しいバージョンが出ていないか確認する</summary>
         /// <param name="url">github releases.atomのurl</param>

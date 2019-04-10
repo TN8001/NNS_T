@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace NNS_T.Utility
 {
     ///<summary>設定ファイルヘルパ</summary>
-    public static class SettingsHelper
+    internal static class SettingsHelper
     {
         ///<summary>ファイルからデシリアライズ (ファイル名省略時[ユーザー]\AppData\Local\[アセンブリ名]\user.config)</summary>
         public static T Load<T>(string path = null) where T : new()

@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace NNS_T.Models.NicoAPI
 {
@@ -71,5 +71,9 @@ namespace NNS_T.Models.NicoAPI
         ///<summary>注意！！Undocumented Fields コミュ限 (生放送のみ？)</summary>
         [JsonProperty("memberOnly")]
         public bool MemberOnly;
+
+        ///<summary>注意！！Undocumented Fields 放送者種別 (生放送のみ？ 'official'=公式,'channel'=チャンネル,'community'=ユーザー)</summary>
+        [JsonProperty("providerType")]
+        public string ProviderType;
     }
 }

@@ -1,4 +1,5 @@
-﻿<Application
+﻿
+ <Application
   x:Class="NNS_T.App"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -211,6 +212,9 @@
                   <DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.Channel}">
                     <Setter Property="Background" Value="#FFD9A300" />
                   </DataTrigger>
+                  <!--<DataTrigger Binding="{Binding ProviderType}" Value="{x:Static models:ProviderType.NicoCas}">
+                    <Setter Property="Background" Value="#FF252525" />
+                  </DataTrigger>-->
                 </Style.Triggers>
               </Style>
             </Border.Style>

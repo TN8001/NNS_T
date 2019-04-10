@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http;
 
@@ -12,21 +11,21 @@ namespace NNS_T.Models.NicoAPI
         ///<summary>検索キーワード (省略不可)</summary>
         public string Keyword;
 
-        ///<summary>検索方法 (省略不可)</summary>
+        ///<summary>検索対象 (省略不可)</summary>
         public Targets Targets;
 
         /////<summary>レスポンスフィールド (省略可:totalCountだけ返ってくる)</summary>
         public Fields Fields;
 
         ///<summary>検索結果フィルタ (省略可)</summary>
-        public NameValueCollection Filters;
+        public FilterCollection Filters;
 
-        // UIまわりが面倒すぎるので対応しない
-        /////<summary>検索結果フィルタJson (省略可)</summary>
-        //public string JsonFilter;
+        // UIは対応しないが設定は許可
+        ///<summary>検索結果フィルタJson (省略可)</summary>
+        public string JsonFilter;
 
         ///<summary>ソート順 (省略不可)</summary>
-        public string Sort;
+        public Sort Sort;
 
         ///<summary>返ってくるコンテンツの取得オフセット (省略可:0)</summary>
         public int Offset = 0;
@@ -34,11 +33,20 @@ namespace NNS_T.Models.NicoAPI
         ///<summary>返ってくるコンテンツの最大数 (省略可:10)</summary>
         public int Limit = 10;
 
+        // 省略しても返ってくるようだが公式ドキュメントがそうなっているので。。。
         ///<summary>サービスまたはアプリケーション名 (省略不可)</summary>
         public string Context;
 
+        /// <summary>niconico コンテンツ検索API GETクエリパラメータ</summary>
+        /// <param name="keyword">検索キーワード</param>
+        /// <param name="targets">検索対象</param>
+        /// <param name="sort">ソート順</param>
+        /// <param name="context">サービスまたはアプリケーション名</param>
+        public Query(string keyword, Targets targets, Sort sort, string context)
+            => (Keyword, Targets, Sort, Context) = (keyword, targets, sort, context);
+
         ///<summary>クエリ文字列</summary>
-        public override string ToString()
+        public string ToQueryString()
             => string.Join("&", GetQueryDict().Select(x => $"{x.Key}={x.Value}"));
 
         ///<summary>エンコード済みクエリ文字列</summary>
@@ -48,39 +56,20 @@ namespace NNS_T.Models.NicoAPI
                 return content.ReadAsStringAsync().Result;
         }
 
-        // ここに置くのは冗長な感じがしないでもないが似た処理なのでまかせてみた
-        ///<summary>エンコード済みWeb版検索クエリ文字列</summary>
-        public string GetSearchString(bool muteOfficial)
-        {
-            var d = new Dictionary<string, string>();
-            d.Add("sort", "recent");
-            d.Add("keyword", Keyword);
-            if(muteOfficial)
-                d.Add("filter", ":onair:+:channel:+:community:");
-            else
-                d.Add("filter", ":onair:");
-            if(Targets.HasFlag(Targets.TagsExact))
-                d.Add("kind", "tags");
-
-            using(var content = new FormUrlEncodedContent(d))
-                return content.ReadAsStringAsync().Result;
-        }
-
         private Dictionary<string, string> GetQueryDict()
         {
-            var d = new Dictionary<string, string>();
-            d.Add("q", Keyword);
-            d.Add("targets", Targets.ToStringEx());
-            if(Fields != 0) d.Add("fields", Fields.ToStringEx());
-
-            foreach(var key in Filters.AllKeys)
+            var d = new Dictionary<string, string>
             {
-                var values = Filters.GetValues(key);
-                for(var i = 0; i < values.Length; i++)
-                    d.Add($"filters[{key}][{i}]", values[i]);
-            }
+                { "q", Keyword },
+                { "targets", Targets.ToQueryString() }
+            };
+            if(Fields != 0) d.Add("fields", Fields.ToQueryString());
 
-            d.Add("_sort", Sort);
+            foreach(var kv in Filters.GetQueryPairs()) d.Add(kv.Key, kv.Value);
+
+            if(JsonFilter != null) d.Add("jsonFilter", JsonFilter);
+
+            d.Add("_sort", Sort.ToQueryString());
             if(Offset != 0) d.Add("_offset", Offset.ToString());
             if(Limit != 10) d.Add("_limit", Limit.ToString());
             d.Add("_context", Context);

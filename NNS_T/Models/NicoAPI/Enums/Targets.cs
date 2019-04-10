@@ -2,7 +2,7 @@
 
 namespace NNS_T.Models.NicoAPI
 {
-    ///<summary>検索対象フラグ</summary>
+    ///<summary>[Flags] 検索対象フラグ</summary>
     [Flags]
     public enum Targets
     {
@@ -22,10 +22,10 @@ namespace NNS_T.Models.NicoAPI
         All = Title | Description | Tags | TagsExact,
     }
 
-    public static class TargetsExtensions
+    internal static class TargetsExtensions
     {
         ///<summary>Query用の文字列</summary>
-        public static string ToStringEx(this Targets self)
+        public static string ToQueryString(this Targets self)
         {
             if(self == 0) return "";
 

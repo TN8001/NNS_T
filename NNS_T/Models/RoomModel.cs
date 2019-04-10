@@ -1,6 +1,6 @@
-﻿using NNS_T.Models.NicoAPI;
-using System;
+﻿using System;
 using System.Xml.Serialization;
+using NNS_T.Models.NicoAPI;
 
 namespace NNS_T.Models
 {
@@ -25,7 +25,7 @@ namespace NNS_T.Models
                                                      : NicoApi.ChannelUrl + ID;
 
         ///<summary>部屋の種類</summary>
-        public ProviderType ProviderType => ID.StartsWith("co") ? ProviderType.User 
+        public ProviderType ProviderType => ID.StartsWith("co") ? ProviderType.User
                                                                 : ProviderType.Channel;
 
 

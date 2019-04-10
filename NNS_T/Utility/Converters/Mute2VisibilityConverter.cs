@@ -7,7 +7,7 @@ using System.Windows.Data;
 namespace NNS_T.Utility.Converters
 {
     ///<summary>ミュートを非表示用</summary>
-    public class Mute2VisibilityConverter : IMultiValueConverter
+    internal class Mute2VisibilityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {

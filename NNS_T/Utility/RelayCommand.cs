@@ -13,8 +13,8 @@ namespace NNS_T.Utility
     ///<summary>DelegateCommand</summary>
     public sealed class RelayCommand : ICommand
     {
-        private Action _execute;
-        private Func<bool> _canExecute;
+        private readonly Action _execute;
+        private readonly Func<bool> _canExecute;
 
         public RelayCommand(Action execute) : this(execute, () => true) { }
         public RelayCommand(Action execute, Func<bool> canExecute)
@@ -38,8 +38,8 @@ namespace NNS_T.Utility
     ///<summary>DelegateCommand</summary>
     public sealed class RelayCommand<T> : ICommand
     {
-        private Action<T> _execute;
-        private Func<T, bool> _canExecute;
+        private readonly Action<T> _execute;
+        private readonly Func<T, bool> _canExecute;
         private static readonly bool IS_VALUE_TYPE;
 
         static RelayCommand() => IS_VALUE_TYPE = typeof(T).IsValueType;
@@ -62,9 +62,9 @@ namespace NNS_T.Utility
 
         private T Cast(object parameter)
         {
-            if(parameter == null && IS_VALUE_TYPE) return default(T);
+            if(parameter == null && IS_VALUE_TYPE) return default;
             if(parameter is T) return (T)parameter;
-            else return default(T);
+            else return default;
         }
     }
     #endregion

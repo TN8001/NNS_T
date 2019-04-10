@@ -4,6 +4,7 @@ using System.Net.Http;
 namespace NNS_T.Models.NicoAPI
 {
     ///<summary>niconicoコンテンツ検索API 取得エラー</summary>
+    [Serializable]
     public class NicoApiRequestException : HttpRequestException
     {
         public NicoApiRequestException(string message) : base(message) { }

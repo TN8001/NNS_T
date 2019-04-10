@@ -35,16 +35,14 @@ namespace NNS_T.Models.NicoAPI
 
         ///<summary>mylist_video 動画マイリスト</summary>
         MylistVideo,
-    }
 
-    public static class ServicesExtensions
-    {
-        ///<summary>スネークケースに</summary>
-        public static string ToStringEx(this Services value)
-        {
-            var e = value.ToString()
-                   .Select(x => char.IsUpper(x) ? "_" + x.ToString() : x.ToString());
-            return string.Concat(e).ToLower().TrimStart('_');
-        }
+        ///<summary>summary まとめ</summary>
+        Summary,
+
+        ///<summary>community コミュニティ</summary>
+        Community,
+
+        ///<summary>commons コモンズ</summary>
+        Commons,
     }
 }

@@ -4,7 +4,7 @@ using System.Reflection;
 namespace NNS_T.Utility
 {
     ///<summary>アセンブリ情報</summary>
-    public static class ProductInfo
+    internal static class ProductInfo
     {
         ///<summary>アセンブリ名</summary>
         public static string Name { get; }

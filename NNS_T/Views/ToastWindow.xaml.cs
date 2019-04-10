@@ -1,7 +1,4 @@
-﻿using Microsoft.Win32;
-using NNS_T.Models;
-using NNS_T.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -12,6 +9,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using Microsoft.Win32;
+using NNS_T.Models;
+using NNS_T.ViewModels;
 
 namespace NNS_T.Views
 {
@@ -36,7 +36,7 @@ namespace NNS_T.Views
         // デフォルト通知音wav？？
         private static readonly string soundFilePath = @"C:\WINDOWS\media\Windows Notify System Generic.wav";
         // NoImageイメージ
-        private static readonly DrawingImage noImageImage = Application.Current.Resources["NoImageImage"] as DrawingImage;
+        //private static readonly DrawingImage noImageImage = Application.Current.Resources["NoImageImage"] as DrawingImage;
         // プレイヤ 遅延初期化
         private static SoundPlayer player => _player ?? (_player = new SoundPlayer(soundFilePath));
         private static SoundPlayer _player;

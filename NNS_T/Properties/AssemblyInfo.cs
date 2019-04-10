@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Markup;
@@ -12,6 +13,7 @@ using System.Windows.Markup;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
+[assembly: InternalsVisibleTo("NNS_TTests")]
 
 // XAML debug mode hack
 // https://stackoverflow.com/questions/8732307/does-xaml-have-a-conditional-compiler-directive-for-debug-mode
@@ -23,5 +25,5 @@ using System.Windows.Markup;
 [assembly: ComVisible(false)]
 [assembly: ThemeInfo(ResourceDictionaryLocation.None, ResourceDictionaryLocation.SourceAssembly)]
 
-[assembly: AssemblyVersion("1.2.5")]
-[assembly: AssemblyFileVersion("1.2.5")]
+[assembly: AssemblyVersion("1.2.6")]
+[assembly: AssemblyFileVersion("1.2.6")]

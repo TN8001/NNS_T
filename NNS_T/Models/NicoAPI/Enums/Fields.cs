@@ -4,12 +4,12 @@ using System.Collections.Generic;
 namespace NNS_T.Models.NicoAPI
 {
     // 一応汎用になっているが生放送検索以外未検証
-    ///<summary>レスポンスに含むフィールド</summary>
+    ///<summary>[Flags] レスポンスに含むフィールド</summary>
     [Flags]
     public enum Fields
     {
         ///<summary>コンテンツID</summary>
-        ContentID = 1,
+        ContentId = 1,
 
         ///<summary>タイトル</summary>
         Title = 1 << 1,
@@ -56,17 +56,20 @@ namespace NNS_T.Models.NicoAPI
         ///<summary>注意!! Undocumented Fields コミュ限 (生放送のみ？)</summary>
         MemberOnly = 1 << 15,
 
+        ///<summary>注意！！Undocumented Fields 放送者種別 (生放送のみ？)</summary>
+        ProviderType = 1 << 16,
+
         ///<summary>すべて</summary>
-        All = (1 << 16) - 1,
+        All = (1 << 17) - 1,
 
         ///<summary>生放送で使えるもの</summary>
-        LiveAll = All & ~MylistCounter & ~LastCommentTime & ~LengthSeconds & ~MemberOnly,
+        LiveAll = All & ~MylistCounter & ~LastCommentTime & ~LengthSeconds & ~MemberOnly & ~ProviderType,
     }
 
-    public static class FieldsExtensions
+    internal static class FieldsExtensions
     {
         ///<summary>Query用の文字列</summary>
-        public static string ToStringEx(this Fields self)
+        public static string ToQueryString(this Fields self)
         {
             if(self == 0) return "";
 
@@ -78,10 +81,7 @@ namespace NNS_T.Models.NicoAPI
                     if(f == Fields.All) continue;
                     if(f == Fields.LiveAll) continue;
 
-                    var s = f.ToString();
-                    if(f == Fields.ContentID) s = "ContentId";
-                    // to lower camel case
-                    l.Add(char.ToLowerInvariant(s[0]) + s.Substring(1));
+                    l.Add(f.ToLowerCamelCaseString());
                 }
             }
 

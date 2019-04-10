@@ -1,13 +1,6 @@
-﻿using MahApps.Metro;
-using Microsoft.Win32;
-using NNS_T.Models;
-using NNS_T.Models.NicoAPI;
-using NNS_T.Utility;
-using NNS_T.Views;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -16,10 +9,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using MahApps.Metro;
+using Microsoft.Win32;
+using NNS_T.Models;
+using NNS_T.Models.NicoAPI;
+using NNS_T.Utility;
+using NNS_T.Views;
 
 namespace NNS_T.ViewModels
 {
-    public class MainViewModel : Observable
+    internal class MainViewModel : Observable
     {
         #region public property
         ///<summary>レスポンスエラー理由</summary>
@@ -49,18 +48,6 @@ namespace NNS_T.ViewModels
         public string NewVersionMassage { get => _NewVersionMassage; set => Set(ref _NewVersionMassage, value); }
         private string _NewVersionMassage;
 
-        ///<summary>新しいバージョンがある</summary>
-        public ThemeState Theme
-        {
-            get => _Theme;
-            set
-            {
-                Debug.WriteLine($"Theme:{value}");
-                Set(ref _Theme, value);
-            }
-        }
-        private ThemeState _Theme;
-
         ///<summary>検索結果放送コレクション</summary>
         public ObservableCollection<LiveItemViewModel> Items { get; } = new ObservableCollection<LiveItemViewModel>();
 
@@ -80,7 +67,7 @@ namespace NNS_T.ViewModels
         public RelayCommand<string> OpenBrowserCommand { get; }
 
         ///<summary>ブラウザ選択コマンド</summary>
-        public RelayCommand<string> SelectBrowserPathCommand { get; }
+        public RelayCommand SelectBrowserPathCommand { get; }
 
         ///<summary>ProcessStartコマンド</summary>
         public RelayCommand<string> ProcessStartCommand { get; }
@@ -98,8 +85,8 @@ namespace NNS_T.ViewModels
         public RelayCommand NicoWebCommand { get; }
         #endregion
 
-        private DispatcherTimer timer = new DispatcherTimer();
-        private NicoApi nicoApi = new NicoApi(ProductInfo.Name);
+        private readonly DispatcherTimer timer = new DispatcherTimer();
+        private readonly NicoApi nicoApi = new NicoApi(ProductInfo.Name);
         private CancellationTokenSource cts;
         private readonly object lockObj = new object();
         private bool isDirty = true; // 条件変更フラグ
@@ -126,14 +113,13 @@ namespace NNS_T.ViewModels
 
             Settings.Search.PropertyChanged += Search_PropertyChanged;
             Settings.Mute.PropertyChanged += Mute_PropertyChanged;
-            Settings.Window.PropertyChanged += Window_PropertyChanged;
 
             SearchCommand = new RelayCommand(async () => await SearchCommandImplAsync());
             SaveCommand = new RelayCommand(() => SettingsHelper.Save(Settings, configPath));
             UnMuteCommand = new RelayCommand<RoomModel>((room) => UnMuteCommandImpl(room));
             ProcessStartCommand = new RelayCommand<string>((s) => ProcessStartCommandImpl(s));
             OpenBrowserCommand = new RelayCommand<string>((s) => OpenBrowserCommandImpl(s));
-            SelectBrowserPathCommand = new RelayCommand<string>((s) => SelectBrowserPathCommandImpl(s));
+            SelectBrowserPathCommand = new RelayCommand(() => SelectBrowserPathCommandImpl());
             OpenFolderCommand = new RelayCommand<FolderType>((f) => OpenFolderCommandImpl(f));
             PlaySoundCommand = new RelayCommand(() => ToastWindow.PlaySound());
             ToggleTimerCommand = new RelayCommand(() => IsTimerEnabled = !IsTimerEnabled);
@@ -160,14 +146,6 @@ namespace NNS_T.ViewModels
                 ThemeManager.ChangeAppStyle(Application.Current,
                                             ThemeManager.GetAccent("Blue"),
                                             ThemeManager.GetAppTheme("BaseLight"));
-        }
-        private void Window_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            //var window = (WindowModel)sender;
-            //if(e.PropertyName != nameof(window.Theme)) return;
-
-            //ChangeTheme();
-
         }
 
         // 公式をミュート 変更
@@ -227,7 +205,7 @@ namespace NNS_T.ViewModels
             }
             catch { Debug.WriteLine($"OpenBrowserCommand error"); }
         }
-        private void SelectBrowserPathCommandImpl(string s)
+        private void SelectBrowserPathCommandImpl()
         {
             var openFileDialog = new OpenFileDialog
             {
@@ -318,9 +296,11 @@ namespace NNS_T.ViewModels
 
                 var q = CreateQuery();
                 var response = await nicoApi.GetResponseAsync(Services.Live, q, cts.Token);
+
                 HitCount = response.Meta.TotalCount;
                 if(isDirty)
                     Items.Clear();
+
                 ItemsUpdate(response);
                 ErrorStatus = null;
                 isDirty = false;
@@ -342,21 +322,24 @@ namespace NNS_T.ViewModels
             }
         }
 
-        private Query CreateQuery() => new Query
+        private Query CreateQuery()
         {
-            Keyword = Settings.Search.Query,
-            Targets = Settings.Search.Targets,
-            Fields = Settings.Search.Fields,
-            Filters = new NameValueCollection { { "liveStatus", "onair" } },
-            Sort = "-startTime",
-            Limit = 100,
-            Context = ProductInfo.Name,
-        };
+            var k = Settings.Search.Query;
+            var t = Settings.Search.Targets;
+            var s = new Sort { Field = SortField.StartTime, Ascending = false };
+            var c = ProductInfo.Name;
+
+            return new Query(k, t, s, c)
+            {
+                Fields = Settings.Search.Fields,
+                Filters = new FilterCollection { Filters.LiveStatus(LiveStatus.Onair), },
+                Limit = 100,
+            };
+        }
 
         private int ItemsUpdate(Response response)
         {
             // ToArrayとか多すぎｗ
-
             var responseItems = response.Data.Select(x => new LiveItemViewModel(x)).ToArray();
             var removeItems = Items.Except(responseItems).ToArray();
             var updateItems = Items.Intersect(responseItems).ToArray();
@@ -378,6 +361,7 @@ namespace NNS_T.ViewModels
                                         .OrderBy(x => x.StartTime).ToArray();
             var addCount = addItems.Count();
             if(addCount > 0) Debug.WriteLine($"Add count:{addCount}");
+
 
             foreach(var item in addItems)
             {

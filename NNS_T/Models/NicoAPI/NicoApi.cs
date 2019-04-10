@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace NNS_T.Models.NicoAPI
 {
@@ -14,21 +15,20 @@ namespace NNS_T.Models.NicoAPI
     public class NicoApi
     {
         ///<summary>コミュニティURL</summary>
-        public const string CommunityUrl = "http://com.nicovideo.jp/community/";
+        public const string CommunityUrl = "https://com.nicovideo.jp/community/";
         ///<summary>チャンネルURL</summary>
-        public const string ChannelUrl = "http://ch.nicovideo.jp/";
+        public const string ChannelUrl = "https://ch.nicovideo.jp/";
 
         // APIエントリポイント
-        private const string ApiUrl = "http://api.search.nicovideo.jp/api/v2/:service/contents/search?";
+        private const string ApiUrl = "https://api.search.nicovideo.jp/api/v2/:service/contents/search?";
         // Web版検索ページエントリポイント
-        private const string WebUrl = "http://live.nicovideo.jp/search?";
-        private HttpClient httpClient = new HttpClient();
+        private const string WebUrl = "https://live.nicovideo.jp/search?";
+        private readonly HttpClient httpClient = new HttpClient();
 
         ///<summary>niconicoコンテンツ検索API</summary>
         /// <param name="appName">User-Agent</param>
         public NicoApi(string appName = null)
         {
-            //httpClient.Timeout = TimeSpan.FromMilliseconds(10000);
             httpClient.Timeout = TimeSpan.FromMilliseconds(10000);
             if(appName != null)
                 httpClient.DefaultRequestHeaders.Add("User-Agent", appName);
@@ -41,8 +41,26 @@ namespace NNS_T.Models.NicoAPI
         {
             if(query == null) throw new ArgumentNullException(nameof(query));
 
-            return WebUrl + query.GetSearchString(muteOfficial);
+            return WebUrl + GetSearchString(query, muteOfficial);
+
+
+            string GetSearchString(Query q, bool m)
+            {
+                var d = new Dictionary<string, string>
+                {
+                    { "sort", "recent" },
+                    { "keyword", q.Keyword }
+                };
+                if(m) d.Add("filter", ":onair:+:channel:+:community:");
+                else d.Add("filter", ":onair:");
+
+                if(q.Targets.HasFlag(Targets.TagsExact)) d.Add("kind", "tags");
+
+                using(var content = new FormUrlEncodedContent(d))
+                    return content.ReadAsStringAsync().Result;
+            }
         }
+
         ///<summary>検索結果取得</summary>
         /// <param name="service">サービス種別（生以外未検証）</param>
         /// <param name="query">検索パラメータ</param>
@@ -67,7 +85,7 @@ namespace NNS_T.Models.NicoAPI
                 throw new ArgumentException(nameof(service));
             if(query == null) throw new ArgumentNullException(nameof(query));
 
-            var api = ApiUrl.Replace(":service", service.ToStringEx());
+            var api = ApiUrl.Replace(":service", service.ToSnakeCaseString());
             try
             {
                 var s = await GetHttpStringAsync(api + query.ToEncodeString(), cancellationToken);
@@ -154,7 +172,7 @@ namespace NNS_T.Models.NicoAPI
             return t.Substring(0, i);
         }
 
-        private static Regex reg = new Regex(@"\<title\b[^>]*\>\s*(?<Title>[\s\S]*?)\</title\>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex reg = new Regex(@"\<title\b[^>]*\>\s*(?<Title>[\s\S]*?)\</title\>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private async Task<string> GetTitleAsync(string url)
         {
             // フォロワーのみになっていると404になるのでGetAsync

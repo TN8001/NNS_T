@@ -6,7 +6,7 @@ using System.Windows.Data;
 namespace NNS_T.Utility.Converters
 {
     ///<summary>valueがparameterならVisible（flags未対応）</summary>
-    public class EnumToVisibilityConverter : IValueConverter
+    internal class EnumToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

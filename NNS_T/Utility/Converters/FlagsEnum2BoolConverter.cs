@@ -9,10 +9,10 @@ namespace NNS_T.Utility.Converters
     // xamlでCheckBoxとのbinding用
     ///<summary>検索対象フラグとboolの変換</summary>
     [ValueConversion(typeof(Targets), typeof(bool))]
-    public class Targets2CheckBoxConverter : FlagsEnum2BoolConverter<Targets> { }
+    internal class Targets2CheckBoxConverter : FlagsEnum2BoolConverter<Targets> { }
 
     ///<summary>フラグenumとboolの変換</summary>
-    public class FlagsEnum2BoolConverter<T> : IValueConverter where T : struct, IConvertible
+    internal class FlagsEnum2BoolConverter<T> : IValueConverter where T : Enum
     {
         private int target;
 

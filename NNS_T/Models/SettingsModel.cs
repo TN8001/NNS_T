@@ -1,6 +1,6 @@
-﻿using NNS_T.Utility;
+﻿using System.Xml.Serialization;
+using NNS_T.Utility;
 using NNS_T.Views;
-using System.Xml.Serialization;
 
 namespace NNS_T.Models
 {

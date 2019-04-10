@@ -1,16 +1,16 @@
-﻿using NNS_T.Models;
-using NNS_T.Models.NicoAPI;
-using NNS_T.Utility;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using NNS_T.Models;
+using NNS_T.Models.NicoAPI;
+using NNS_T.Utility;
 
 namespace NNS_T.ViewModels
 {
     public class LiveItemViewModel : Observable, IEquatable<LiveItemViewModel>
     {
-        private Datum datum;
+        private readonly Datum datum;
 
         ///<summary>放送ミュートコマンド</summary>
         public RelayCommand<LiveItemViewModel> ToggleMuteCommand => _ToggleMuteCommand;
@@ -50,7 +50,7 @@ namespace NNS_T.ViewModels
             Regex.Replace(Description, @"<.*?>", "").Replace("\r", " ").Replace("\n", " ");
 
         ///<summary>放送ページURL</summary>
-        public string LiveUrl => $"http://nico.ms/{LiveID}";
+        public string LiveUrl => $"https://nico.ms/{LiveID}";
 
         ///<summary>サムネイルURL (CommunityIcon優先 なかったらThumbnailUrl)</summary>
         // パラメータを削っているが意味があるかは不明（Imageはある程度キャッシュされるようなのだが。。。

@@ -1,7 +1,7 @@
-﻿using NNS_T.Utility;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Xml.Serialization;
+using NNS_T.Utility;
 
 namespace NNS_T.Models
 {

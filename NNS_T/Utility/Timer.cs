@@ -4,7 +4,7 @@ using System.Windows.Threading;
 namespace NNS_T.Utility
 {
     ///<summary>DispatcherTimerにポーズ機能つけただけ</summary>
-    public class Timer : DispatcherTimer
+    internal class Timer : DispatcherTimer
     {
         public new TimeSpan Interval
         {

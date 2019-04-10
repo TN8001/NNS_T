@@ -6,7 +6,7 @@ namespace NNS_T.Utility.Converters
 {
     ///<summary>DateTimeから経過時間のみの文字列</summary>
     [ValueConversion(typeof(DateTime), typeof(string))]
-    public class StartTimeConverter : IValueConverter
+    internal class StartTimeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
