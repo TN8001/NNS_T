@@ -11,7 +11,9 @@ namespace NicoLiveSearch
         private static readonly string communityUrl = "https://com.nicovideo.jp/community/co";
         private static readonly string channelUrl = "https://ch.nicovideo.jp/ch";
         private static readonly string userPageUrl = "https://www.nicovideo.jp/user/";
-        private static readonly string contentsUrl = "https://nico.ms/";
+        // 謎だがhttpsだとncvがリンクをdropさせてくれない
+        // 今のところどっちでも放送ページにリダイレクトされるが...
+        private static readonly string contentsUrl = "http://nico.ms/";
 
         ///<summary>チャンネル or コミュニティページURL</summary>
         public string RoomUrl => CommunityPageUrl ?? ChannelPageUrl;
