@@ -11,8 +11,8 @@ using System.Windows;
 using System.Windows.Threading;
 using MahApps.Metro;
 using Microsoft.Win32;
+using NicoLiveSearch;
 using NNS_T.Models;
-using NNS_T.Models.NicoAPI;
 using NNS_T.Utility;
 using NNS_T.Views;
 
@@ -54,6 +54,10 @@ namespace NNS_T.ViewModels
         ///<summary>ユーザー設定</summary>
         public SettingsModel Settings { get; }
 
+        public string AssemblyPath { get; } = AppDomain.CurrentDomain.BaseDirectory;
+        public string SettingsPath { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ProductInfo.Name);
+        #endregion
+        #region Command
         ///<summary>検索コマンド</summary>
         public RelayCommand SearchCommand { get; }
 
@@ -73,7 +77,7 @@ namespace NNS_T.ViewModels
         public RelayCommand<string> ProcessStartCommand { get; }
 
         ///<summary>規定ファイラで開くコマンド</summary>
-        public RelayCommand<FolderType> OpenFolderCommand { get; }
+        public RelayCommand<string> OpenFolderCommand { get; }
 
         ///<summary>通知音を鳴らすコマンド</summary>
         public RelayCommand PlaySoundCommand { get; }
@@ -85,8 +89,9 @@ namespace NNS_T.ViewModels
         public RelayCommand NicoWebCommand { get; }
         #endregion
 
+
         private readonly DispatcherTimer timer = new DispatcherTimer();
-        private readonly NicoApi nicoApi = new NicoApi(ProductInfo.Name);
+        private readonly NicoLiveApi nicoApi = new NicoLiveApi(ProductInfo.Name);
         private CancellationTokenSource cts;
         private readonly object lockObj = new object();
         private bool isDirty = true; // 条件変更フラグ
@@ -102,7 +107,7 @@ namespace NNS_T.ViewModels
             }
             catch
             {
-                Debug.WriteLine("fail Deserialize");
+                Debug.Fail("fail Deserialize");
                 Settings = new SettingsModel { UpdateCheck = true };
             }
 
@@ -110,6 +115,8 @@ namespace NNS_T.ViewModels
             if(Settings.UpdateCheck == null) Settings.UpdateCheck = InfoUpdateCheck();
             UpdateCheck();
 
+            // 
+            //LiveItemViewModel._UseDescription = !Settings.Search.UnuseDescription;
 
             Settings.Search.PropertyChanged += Search_PropertyChanged;
             Settings.Mute.PropertyChanged += Mute_PropertyChanged;
@@ -120,22 +127,22 @@ namespace NNS_T.ViewModels
             ProcessStartCommand = new RelayCommand<string>((s) => ProcessStartCommandImpl(s));
             OpenBrowserCommand = new RelayCommand<string>((s) => OpenBrowserCommandImpl(s));
             SelectBrowserPathCommand = new RelayCommand(() => SelectBrowserPathCommandImpl());
-            OpenFolderCommand = new RelayCommand<FolderType>((f) => OpenFolderCommandImpl(f));
+            OpenFolderCommand = new RelayCommand<string>((s) => OpenFolderCommandImpl(s));
             PlaySoundCommand = new RelayCommand(() => ToastWindow.PlaySound());
             ToggleTimerCommand = new RelayCommand(() => IsTimerEnabled = !IsTimerEnabled);
             NicoWebCommand = new RelayCommand(() => NicoWebCommandImpl());
 
             // 各アイテム内からバインド可能なようにインジェクション
             LiveItemViewModel._ToggleMuteCommand = new RelayCommand<LiveItemViewModel>(
-                async (item) => await ToggleMuteCommandImplAsync(item));
+                 (item) => ToggleMuteCommandImpl(item));
 
             timer.Interval = TimeSpan.FromSeconds(Settings.Search.IntervalSec);
             timer.Tick += (s, e) => SearchCommand.Execute();
 
             SearchCommand.Execute();
             ChangeTheme();
-
         }
+
         private void ChangeTheme()
         {
             if(Settings.Window.Theme == ThemeState.Dark)
@@ -152,20 +159,28 @@ namespace NNS_T.ViewModels
         private void Mute_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var mute = (MuteModel)sender;
-            if(e.PropertyName != nameof(mute.Official)) return;
-
-            foreach(var item in Items.Where(x => x.ProviderType == ProviderType.Official))
-                item.IsMuted = mute.Official;
+            if(e.PropertyName == nameof(mute.Official))
+            {
+                foreach(var item in Items.Where(x => x.ProviderType == ProviderType.Official))
+                    item.IsMuted = mute.Official;
+            }
         }
 
-        // 検索間隔 条件変更フラグ 更新
+
         private void Search_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var search = (SearchModel)sender;
+
+            // 検索間隔の変更
             if(e.PropertyName == nameof(search.IntervalSec))
+            {
                 timer.Interval = TimeSpan.FromSeconds(search.IntervalSec);
-            else
+            }
+            // 検索条件の変更
+            else if(e.PropertyName == nameof(search.Query) || e.PropertyName == nameof(search.Targets))
+            {
                 isDirty = true;
+            }
         }
 
         private void NicoWebCommandImpl()
@@ -178,7 +193,7 @@ namespace NNS_T.ViewModels
         {
             while(Settings.Mute.Items.Contains(room))
                 Settings.Mute.Items.Remove(room);
-            var liveItem = Items.FirstOrDefault(x => x.RoomID == room.ID);
+            var liveItem = Items.FirstOrDefault(x => x.RoomId == room.Id);
             if(liveItem == null) return;
 
             liveItem.IsMuted = false;
@@ -217,24 +232,11 @@ namespace NNS_T.ViewModels
             var result = openFileDialog.ShowDialog();
             if(result == true) Settings.BrowserPath = openFileDialog.FileName;
         }
-        private void OpenFolderCommandImpl(FolderType type)
+
+        private void OpenFolderCommandImpl(string path)
         {
             try
             {
-                string path;
-                switch(type)
-                {
-                    case FolderType.Assembly:
-                        path = AppDomain.CurrentDomain.BaseDirectory;
-                        break;
-                    case FolderType.Settings:
-                        var p = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                        path = Path.Combine(p, ProductInfo.Name);
-                        break;
-                    default:
-                        return;
-                }
-
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = path,
@@ -244,14 +246,13 @@ namespace NNS_T.ViewModels
             }
             catch { Debug.WriteLine($"OpenFolderCommand error"); }
         }
-        private async Task ToggleMuteCommandImplAsync(LiveItemViewModel liveItem)
+        private void ToggleMuteCommandImpl(LiveItemViewModel liveItem)
         {
             if(liveItem.ProviderType == ProviderType.Official) return; // 来ないはず
 
             try
             {
-                var name = await nicoApi.GetRoomNameAsync(liveItem.RoomID);
-                var room = new RoomModel(liveItem.RoomID, name, liveItem.IconUrl);
+                var room = new RoomModel(liveItem.RoomId, liveItem.CommunityText, liveItem.IconUrl);
                 if(liveItem.IsMuted)
                 {
                     if(!Settings.Mute.Items.Contains(room))
@@ -295,7 +296,7 @@ namespace NNS_T.ViewModels
                 }
 
                 var q = CreateQuery();
-                var response = await nicoApi.GetResponseAsync(Services.Live, q, cts.Token);
+                var response = await nicoApi.GetResponseAsync(q, cts.Token);
 
                 HitCount = response.Meta.TotalCount;
                 if(isDirty)
@@ -325,8 +326,10 @@ namespace NNS_T.ViewModels
         private Query CreateQuery()
         {
             var k = Settings.Search.Query;
-            var t = Settings.Search.Targets;
-            var s = new Sort { Field = SortField.StartTime, Ascending = false };
+            var t = Settings.Search.Targets.HasFlag(Targets.TagsExact)
+                    ? Targets.TagsExact
+                    : Settings.Search.Targets;
+            var s = SortOrder.StartTimeDesc;
             var c = ProductInfo.Name;
 
             return new Query(k, t, s, c)
@@ -357,7 +360,7 @@ namespace NNS_T.ViewModels
             }
 
             var addItems = responseItems.Except(Items)
-                                        .Where(x => !x.MemberOnly || !Settings.Search.HideMemberOnly)
+                                        //.Where(x => !x.MemberOnly || !Settings.Search.HideMemberOnly)
                                         .OrderBy(x => x.StartTime).ToArray();
             var addCount = addItems.Count();
             if(addCount > 0) Debug.WriteLine($"Add count:{addCount}");
@@ -367,14 +370,14 @@ namespace NNS_T.ViewModels
             {
                 if(item.ProviderType == ProviderType.Official && Settings.Mute.Official)
                     item.IsMuted = true;
-                else if(Settings.Mute.Items.Any(x => x.ID == item.RoomID))
+                else if(Settings.Mute.Items.Any(x => x.Id == item.RoomId))
                 {
                     item.IsMuted = true;
                     // 新サムネ対応入れ替え処理 2018/02/13
                     // http://icon.nimg.jp/community/373/co3734277.jpg
                     // to
                     // https://secure-dcdn.cdn.nimg.jp/comch/community-icon/128x128/co3734277.jpg
-                    var m = Settings.Mute.Items.First(x => x.ID == item.RoomID);
+                    var m = Settings.Mute.Items.First(x => x.Id == item.RoomId);
                     if(m.IconUrl != item.IconUrl) m.IconUrl = item.IconUrl;
                 }
 

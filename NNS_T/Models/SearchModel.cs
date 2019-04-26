@@ -1,7 +1,6 @@
-﻿using NNS_T.Models.NicoAPI;
+﻿using System.Xml.Serialization;
+using NicoLiveSearch;
 using NNS_T.Utility;
-using System.ComponentModel;
-using System.Xml.Serialization;
 
 namespace NNS_T.Models
 {
@@ -17,7 +16,7 @@ namespace NNS_T.Models
         public Targets Targets { get => _Targets; set => Set(ref _Targets, value); }
         private Targets _Targets;
 
-        ///<summary>検索間隔</summary>
+        ///<summary>検索間隔(秒)</summary>
         [XmlAttribute]
         public int IntervalSec
         {
@@ -32,53 +31,24 @@ namespace NNS_T.Models
 
         ///<summary>レスポンスに使用するフィールド</summary>
         [XmlIgnore]
-        public Fields Fields;
+        public ResponseFields Fields;
 
         // 否定形はいまいちだが面倒なのでxamlでの使い勝手を優先ｗ
         ///<summary>レスポンスに説明文を含めないかどうか</summary>
         [XmlAttribute]
         public bool UnuseDescription
         {
-            get => !Fields.HasFlag(Fields.Description);
+            get => !Fields.HasFlag(ResponseFields.Description);
             set
             {
                 if(UnuseDescription == value) return;
-                Fields = value ? Fields & ~Fields.Description
-                               : Fields | Fields.Description;
+                Fields = value ? Fields & ~ResponseFields.Description
+                               : Fields | ResponseFields.Description;
                 OnPropertyChanged();
             }
         }
 
-        /////<summary>コミュ限の放送に鍵アイコンを表示するかどうか</summary>
-        // アンドキュメントなパラメータで取得できるが規約違反になると思われるので裏設定
-        // 自己責任でuser.configに「<Search ShowMemberOnlyIcon="true">」を追加する
-        // user.configを壊すと初期設定にリセットされるのでバックアップを推奨
-        //
-        // <Search Targets="Title Description Tags" IntervalSec="60" UnuseDescription="false">
-        // ↑こうなっていたとしたら↓こうする
-        // <Search Targets="Title Description Tags" IntervalSec="60" UnuseDescription="false" ShowMemberOnlyIcon="true">
-        [XmlAttribute, DefaultValue(false)]
-        public bool ShowMemberOnlyIcon
-        {
-            get => Fields.HasFlag(Fields.MemberOnly);
-            set
-            {
-                if(ShowMemberOnlyIcon == value) return;
-                Fields = value ? Fields | Fields.MemberOnly
-                               : Fields & ~Fields.MemberOnly;
-                OnPropertyChanged();
-            }
-        }
-
-        /////<summary>コミュ限の放送を検索結果に入れないようにするかどうか</summary>
-        // アンドキュメントなパラメータで取得できるが規約違反になると思われるので裏設定
-        // 自己責任でuser.configに「<Search HideMemberOnly="true">」を追加する
-        // user.configを壊すと初期設定にリセットされるのでバックアップを推奨
-        //
-        // <Search Targets="Title Description Tags" IntervalSec="60" UnuseDescription="false">
-        // ↑こうなっていたとしたら↓こうする
-        // <Search Targets="Title Description Tags" IntervalSec="60" UnuseDescription="false" HideMemberOnly="true">
-        [XmlAttribute, DefaultValue(false)]
+        [XmlAttribute]
         public bool HideMemberOnly { get => _HideMemberOnly; set => Set(ref _HideMemberOnly, value); }
         private bool _HideMemberOnly;
 
@@ -88,7 +58,14 @@ namespace NNS_T.Models
         {
             Targets = Targets.Title | Targets.Description | Targets.Tags;
             IntervalSec = 30;
-            Fields = Fields.LiveAll & ~Fields.CategoryTags & ~Fields.LiveStatus;
+
+            // UserId OpenTime LiveStatus 以外
+            Fields = ResponseFields.ContentId | ResponseFields.Title | ResponseFields.Description
+                   | ResponseFields.ChannelId | ResponseFields.CommunityId | ResponseFields.ProviderType
+                   | ResponseFields.Tags | ResponseFields.ViewCounter | ResponseFields.CommentCounter
+                   | ResponseFields.StartTime | ResponseFields.TimeshiftEnabled | ResponseFields.ScoreTimeshiftReserved
+                   | ResponseFields.ThumbnailUrl | ResponseFields.CommunityText | ResponseFields.CommunityIcon
+                   | ResponseFields.MemberOnly;
         }
     }
 }

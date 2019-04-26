@@ -9,7 +9,7 @@
   xmlns:debug="debug-mode"
   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:nicoApi="clr-namespace:NNS_T.Models.NicoAPI"
+  xmlns:nicoApi="clr-namespace:NicoLiveSearch;assembly=NicoLiveSearch"
   d:DesignHeight="400"
   d:DesignWidth="400"
   mc:Ignorable="d mc">
@@ -47,6 +47,8 @@
           <MultiBinding Converter="{StaticResource Mute2VisibilityConverter}">
             <Binding Path="DataContext.Settings.Mute.HideList" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBox}}" />
             <Binding Path="IsMuted" />
+            <Binding Path="DataContext.Settings.Search.HideMemberOnly" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBox}}" />
+            <Binding Path="MemberOnly" />
           </MultiBinding>
         </Setter.Value>
       </Setter>
@@ -128,7 +130,7 @@
         Padding="2"
         HorizontalAlignment="Right"
         VerticalAlignment="Center"
-        Content="{Binding HitCount}"
+        Content="{Binding HitCount, Converter={StaticResource ShortNunberConverter}}"
         ContentStringFormat="{}{0}件"
         IsEnabled="{Binding IsTimerEnabled}">
         <Label.Style>
@@ -220,9 +222,13 @@
               <WrapPanel Margin="0,5,0,0" Orientation="Horizontal">
                 <CheckBox
                   Margin="0,0,5,0"
-                  Content="公式をミュートする"
+                  Content="公式をミュート"
                   IsChecked="{Binding Settings.Mute.Official}" />
-                <CheckBox Content="ミュートを表示する" IsChecked="{Binding Settings.Mute.ShowList}" />
+                <CheckBox
+                  Margin="0,0,5,0"
+                  Content="ミュートを表示"
+                  IsChecked="{Binding Settings.Mute.ShowList}" />
+                <CheckBox Content="コミュ限を非表示" IsChecked="{Binding Settings.Search.HideMemberOnly}" />
               </WrapPanel>
             </StackPanel>
           </Border>

@@ -105,7 +105,6 @@
             StringFormat="{}{0} 秒"
             Value="{Binding Settings.Search.IntervalSec}" />
         </HeaderedContentControl>
-
         <CheckBox
           Margin="5"
           Content="説明文を取得しない"
@@ -118,6 +117,11 @@
           Margin="5"
           Content="ミュートを表示する"
           IsChecked="{Binding Settings.Mute.ShowList}" />
+        <CheckBox
+          Margin="5"
+          Content="コミュ限を表示しない"
+          IsChecked="{Binding Settings.Search.HideMemberOnly}" />
+
         <HeaderedContentControl Margin="5" Header="開くブラウザ:">
           <Grid>
             <Grid.ColumnDefinitions>
@@ -135,10 +139,6 @@
           </Grid>
 
         </HeaderedContentControl>
-        <CheckBox
-          Margin="5"
-          Content="更新を確認する"
-          IsChecked="{Binding Settings.UpdateCheck}" />
 
         <HeaderedContentControl Margin="5" Header="配色テーマ:">
           <ComboBox
@@ -159,14 +159,18 @@
           <Button
             Margin="5"
             Command="{Binding OpenFolderCommand}"
-            CommandParameter="{x:Static models:FolderType.Settings}"
+            CommandParameter="{Binding SettingsPath}"
             Content="設定ファイルフォルダを開く..." />
           <Button
             Margin="5"
             Command="{Binding OpenFolderCommand}"
-            CommandParameter="{x:Static models:FolderType.Assembly}"
+            CommandParameter="{Binding AssemblyPath}"
             Content="インストールフォルダを開く..." />
         </WrapPanel>
+        <CheckBox
+          Margin="5"
+          Content="更新を確認する"
+          IsChecked="{Binding Settings.UpdateCheck}" />
       </StackPanel>
     </ScrollViewer>
   </Grid>

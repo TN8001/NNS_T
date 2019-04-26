@@ -1,6 +1,5 @@
-﻿using NNS_T.Utility;
-using System.ComponentModel;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
+using NNS_T.Utility;
 
 namespace NNS_T.Models
 {
@@ -33,7 +32,7 @@ namespace NNS_T.Models
         private bool _IsExpanded;
 
         ///<summary>ウィンドウテーマ</summary>
-        [XmlAttribute, DefaultValue(ThemeState.System)]
+        [XmlAttribute]
         public ThemeState Theme { get => _Theme; set => Set(ref _Theme, value); }
         private ThemeState _Theme;
 

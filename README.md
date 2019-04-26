@@ -9,7 +9,7 @@
 * コミュニティ・チャンネルごとの通知ミュート（除外）機能
 * 無駄におしゃれな見た目
 ## ダウンロード
-[最新バイナリ](/../../releases/download/v1.2.6/NNS_T.zip)（Windows10でのみ動作確認）
+[最新バージョン](/../../releases/latest)（Windows10でのみ動作確認）
 ## 使い方
 **注意事項**に同意された方のみ使用してください。
 1. ダウンロードしたNNS_T.zipを展開し、適当なフォルダに入れます
@@ -24,7 +24,7 @@
 ## 注意事項
 * [niconicoコンテンツ検索API](https://site.nicovideo.jp/search-api-docs/search.html)
 の規約はアプリ利用者にも適用されます  
-[API利用規約](https://site.nicovideo.jp/search-api-docs/search.html#toc9)を**必ず確認してください!!**
+上記リンクの一番下 [API利用規約] を**必ず確認してください!!**
 * niconicoのwebページでの検索結果と異なることがあります  
 APIの仕様のようなのでこちらにはどうしようもありません。（確認した相違点： webページではコミュ名も検索対象になるところ、APIでは対象になりません）
 
@@ -44,7 +44,7 @@ APIの仕様のようなのでこちらにはどうしようもありません�
 [Newtonsoft.Json](https://www.newtonsoft.com/json) Copyright (c) 2007 James Newton-King
 
 ## 更新履歴
-* 2019/04/10 ver1.2.6 .NET Framework4.7化 各URLをhttpsに
+* 2019/04/26 ver1.2.6 .NET Framework4.7化 各URLをhttps化 コミュ名・コミュ限の表示 検索をLiveに特化しDLL化
 * 2019/01/22 ver1.2.5 終了見込み放送をグレイで表示
 * 2018/10/08 ver1.2.4 ダークテーマ対応
 * 2018/09/13 ver1.2.3 bugfix チャンネルページに飛べない 部屋名のHtmlDecode忘れ

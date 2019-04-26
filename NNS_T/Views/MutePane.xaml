@@ -41,7 +41,7 @@
         Margin="5,0"
         Padding="2"
         VerticalAlignment="Center"
-        Text="{Binding Items.Count, StringFormat={}{0}件, ElementName=listBox, Mode=OneWay}" />
+        Text="{Binding Items.Count, Converter={StaticResource ShortNunberConverter}, StringFormat={}{0}件, ElementName=listBox, Mode=OneWay}" />
     </Grid>
 
     <ListBox

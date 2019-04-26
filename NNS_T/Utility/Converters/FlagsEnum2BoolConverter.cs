@@ -1,4 +1,4 @@
-﻿using NNS_T.Models.NicoAPI;
+﻿using NicoLiveSearch;
 using System;
 using System.Globalization;
 using System.Windows;
