@@ -62,9 +62,9 @@ namespace NNS_T.Utility
 
         private T Cast(object parameter)
         {
-            if(parameter == null && IS_VALUE_TYPE) return default;
+            if(parameter == null && IS_VALUE_TYPE) return default(T);
             if(parameter is T) return (T)parameter;
-            else return default;
+            else return default(T);
         }
     }
     #endregion

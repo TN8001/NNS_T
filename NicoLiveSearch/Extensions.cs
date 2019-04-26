@@ -7,7 +7,7 @@ namespace NicoLiveSearch
     internal static class DictionaryExtensions
     {
         /// <summary>値を取得 keyがなければデフォルト値を取得</summary>
-        public static TValue GetOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue = default)
+        public static TValue GetOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue = default(TValue))
         {
             if(dictionary == null) throw new ArgumentNullException(nameof(dictionary));
             if(key == null) throw new ArgumentNullException(nameof(key));

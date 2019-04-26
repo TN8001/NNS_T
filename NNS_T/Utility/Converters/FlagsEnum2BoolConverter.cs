@@ -12,7 +12,7 @@ namespace NNS_T.Utility.Converters
     internal class Targets2CheckBoxConverter : FlagsEnum2BoolConverter<Targets> { }
 
     ///<summary>フラグenumとboolの変換</summary>
-    internal class FlagsEnum2BoolConverter<T> : IValueConverter where T : Enum
+    internal class FlagsEnum2BoolConverter<T> : IValueConverter where T : struct // Enum
     {
         private int target;
 
