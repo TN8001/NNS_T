@@ -6,8 +6,10 @@ namespace NicoLiveSearch
 {
     internal static class DictionaryExtensions
     {
+#pragma warning disable IDE0034 // default' 式を単純化する appveyor C#7.0
         /// <summary>値を取得 keyがなければデフォルト値を取得</summary>
         public static TValue GetOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue = default(TValue))
+#pragma warning restore IDE0034 // default' 式を単純化する
         {
             if(dictionary == null) throw new ArgumentNullException(nameof(dictionary));
             if(key == null) throw new ArgumentNullException(nameof(key));

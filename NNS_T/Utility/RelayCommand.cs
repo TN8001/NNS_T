@@ -62,9 +62,11 @@ namespace NNS_T.Utility
 
         private T Cast(object parameter)
         {
+#pragma warning disable IDE0034 // default' 式を単純化する appveyor C#7.0
             if(parameter == null && IS_VALUE_TYPE) return default(T);
             if(parameter is T) return (T)parameter;
             else return default(T);
+#pragma warning restore IDE0034 // default' 式を単純化する
         }
     }
     #endregion
