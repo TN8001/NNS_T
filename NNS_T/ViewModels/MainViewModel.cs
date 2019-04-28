@@ -360,7 +360,8 @@ namespace NNS_T.ViewModels
             }
 
             var addItems = responseItems.Except(Items)
-                                        //.Where(x => !x.MemberOnly || !Settings.Search.HideMemberOnly)
+                                        .Where(x => !x.MemberOnly || !Settings.Search.HideMemberOnly)
+                                        .Where(x => x.ProviderType != ProviderType.Official || !Settings.Mute.Official)
                                         .OrderBy(x => x.StartTime).ToArray();
             var addCount = addItems.Count();
             if(addCount > 0) Debug.WriteLine($"Add count:{addCount}");
@@ -368,9 +369,10 @@ namespace NNS_T.ViewModels
 
             foreach(var item in addItems)
             {
-                if(item.ProviderType == ProviderType.Official && Settings.Mute.Official)
-                    item.IsMuted = true;
-                else if(Settings.Mute.Items.Any(x => x.Id == item.RoomId))
+                //if(item.ProviderType == ProviderType.Official && Settings.Mute.Official)
+                //    item.IsMuted = true;
+                //else
+                if(Settings.Mute.Items.Any(x => x.Id == item.RoomId))
                 {
                     item.IsMuted = true;
                     // 新サムネ対応入れ替え処理 2018/02/13

@@ -34,10 +34,10 @@ namespace NNS_T.ViewModels
         public DateTime StartTime => datum.StartTime;
 
         ///<summary>来場者数</summary>
-        public int ViewCount { get => datum.ViewCounter; private set => Set(ref datum.ViewCounter, value); }
+        public int? ViewCount { get => datum.ViewCounter; private set => Set(ref datum.ViewCounter, value); }
 
         ///<summary>コメント数</summary>
-        public int CommentCount { get => datum.CommentCounter; private set => Set(ref datum.CommentCounter, value); }
+        public int? CommentCount { get => datum.CommentCounter; private set => Set(ref datum.CommentCounter, value); }
 
         ///<summary>タイムシフト予約数</summary>
         public int TimeshiftCount { get => datum.ScoreTimeshiftReserved; private set => Set(ref datum.ScoreTimeshiftReserved, value); }

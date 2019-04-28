@@ -67,13 +67,14 @@ namespace NicoLiveSearch
         [JsonProperty("tags")]
         public string Tags;
 
-        ///<summary>来場者数</summary>
+        ///<summary>来場者数(有料放送？ではnull)</summary>
+        //そんなの罠すぎんだろｗ
         [JsonProperty("viewCounter")]
-        public int ViewCounter;
+        public int? ViewCounter;
 
-        ///<summary>コメント数</summary>
+        ///<summary>コメント数(有料放送？ではnull)</summary>
         [JsonProperty("commentCounter")]
-        public int CommentCounter;
+        public int? CommentCounter;
 
         ///<summary>開場日時 (2017-01-01T01:01:01+09:00 等)</summary>
         [JsonProperty("openTime")]

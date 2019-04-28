@@ -256,20 +256,49 @@
             Grid.Column="1"
             Margin="10,0,0,0"
             VerticalAlignment="Top">
+            <!--  視聴数  -->
             <StackPanel Margin="0,0,20,0" Orientation="Horizontal">
-              <iconPacks:PackIconOcticons Foreground="#FFB2BAC2" Kind="Person" />
-              <TextBlock Margin="5,0,10,0" Text="{Binding ViewCount, Converter={StaticResource ShortNunberConverter}}" />
-              <iconPacks:PackIconOcticons
-                VerticalAlignment="Bottom"
-                Foreground="#FFB2BAC2"
-                Kind="Comment" />
-              <TextBlock Margin="5,0,10,0" Text="{Binding CommentCount, Converter={StaticResource ShortNunberConverter}}" />
+              <StackPanel Orientation="Horizontal">
+                <iconPacks:PackIconOcticons Foreground="#FFB2BAC2" Kind="Person" />
+                <TextBlock Margin="5,0,10,0" Text="{Binding ViewCount, Converter={StaticResource ShortNunberConverter}}" />
+                <StackPanel.Style>
+                  <Style TargetType="{x:Type StackPanel}">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding ViewCount}" Value="{x:Null}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </StackPanel.Style>
+              </StackPanel>
+              <!--  コメント数  -->
+              <StackPanel Orientation="Horizontal">
+                <iconPacks:PackIconOcticons
+                  VerticalAlignment="Bottom"
+                  Foreground="#FFB2BAC2"
+                  Kind="Comment" />
+                <TextBlock Margin="5,0,10,0" Text="{Binding CommentCount, Converter={StaticResource ShortNunberConverter}}" />
+                <StackPanel.Style>
+                  <Style TargetType="{x:Type StackPanel}">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding CommentCount}" Value="{x:Null}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </StackPanel.Style>
+              </StackPanel>
+              <!--  タイムシフト数  -->
               <StackPanel Orientation="Horizontal">
                 <iconPacks:PackIconOcticons Foreground="#FFB2BAC2" Kind="Clock" />
                 <TextBlock Margin="5,0,10,0" Text="{Binding TimeshiftCount, Converter={StaticResource ShortNunberConverter}}" />
                 <StackPanel.Style>
                   <Style TargetType="{x:Type StackPanel}">
                     <Style.Triggers>
+                      <!--
+                        TimeshiftEnabled で切り替えるほうが正しいのだろうが
+                        0 ばっかり並んでもスペースの無断なので
+                      -->
                       <DataTrigger Binding="{Binding TimeshiftCount}" Value="0">
                         <Setter Property="Visibility" Value="Collapsed" />
                       </DataTrigger>
@@ -287,16 +316,16 @@
                 <Run Text="{Binding Title, Mode=OneWay}" />
               </views:HyperlinkEx>
             </TextBlock>
-            <TextBlock Text="{Binding NonTagDescription}"  >
+            <TextBlock Text="{Binding NonTagDescription}">
               <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">
-                    <Style.Triggers>
+                  <Style.Triggers>
                     <DataTrigger Binding="{Binding NonTagDescription}" Value="{x:Null}">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                      </DataTrigger>
-                    </Style.Triggers>
-                  </Style>
-                </TextBlock.Style>
+                      <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </TextBlock.Style>
             </TextBlock>
             <TextBlock>
               <views:HyperlinkEx NavigateUri="{Binding RoomUrl}">
@@ -337,8 +366,8 @@
           <TextBlock
             Grid.Column="1"
             Margin="10,0"
-              FontSize="15"
-              FontWeight="Bold"
+            FontSize="15"
+            FontWeight="Bold"
             TextWrapping="Wrap">
             <views:HyperlinkEx NavigateUri="{Binding RoomUrl}">
               <Run Text="{Binding Title, Mode=OneWay}" />
